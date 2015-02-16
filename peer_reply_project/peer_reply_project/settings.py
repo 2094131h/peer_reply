@@ -36,6 +36,8 @@ TEMPLATE_DIRS = [
     TEMPLATE_PATH,
 ]
 
+LOGIN_URL = '/peer_reply/login/'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media directory
 
@@ -65,6 +67,10 @@ ROOT_URLCONF = 'peer_reply_project.urls'
 
 WSGI_APPLICATION = 'peer_reply_project.wsgi.application'
 
+PASSWORD_HASHERS = (
+        'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+)
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -95,7 +101,7 @@ USE_TZ = True
 
 STATIC_PATH = os.path.join(BASE_DIR,'static')
 
-STATIC_URL = '/static/' # You may find this is already defined as such.
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     STATIC_PATH,

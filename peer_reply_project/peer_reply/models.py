@@ -6,12 +6,15 @@ from django.contrib.auth.models import User
 class University(models.Model):
     name = models.CharField(max_length=128, unique=True)
     location = models.CharField(max_length=128)
+
+    # Create slug field for url
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(University, self).save(*args, **kwargs)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.name
 
@@ -19,12 +22,17 @@ class University(models.Model):
 class School(models.Model):
     name = models.CharField(max_length=128)
     university = models.ForeignKey(University)
+
+    def display_levels(self):
+        return ', '.join([level.name for level in self.level_set.all()[:5]])
+
     slug = models.SlugField(unique=False)
     
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(School, self).save(*args, **kwargs)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.name
 
@@ -33,12 +41,9 @@ class Level(models.Model):
     name = models.CharField(max_length=128, unique=False)
     school = models.ForeignKey(School)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.name
-
-# class School_Level(models.Model):
-#     level = models.ForeignKey(Level)
-#     school = models.ForeignKey(School)
 
 
 class Course(models.Model):
@@ -50,6 +55,7 @@ class Course(models.Model):
         self.slug = slugify(self.name)
         super(Course, self).save(*args, **kwargs)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.name
 
@@ -59,38 +65,46 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
     # The additional attributes we wish to include.
+    username = models.CharField(max_length=60, unique=True)
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', blank=True)
-    forename = models.CharField(max_length=20)
-    surname = models.CharField(max_length=20)
-    email = models.EmailField()
-    is_valid = models.BooleanField(default=False)
     location = models.CharField(max_length=20)
+    courses = models.ManyToManyField(Course)
     no_best_answers = models.IntegerField(default=0)
     no_quiz_likes = models.IntegerField(default=0)
-    courses = models.ManyToManyField(Course)
+
+    # method for displaying list of users courses
+    def display_courses(self):
+        return ', '.join([ course.name for course in self.courses.all()[:5] ])
+
+    # Create slug field for url
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.username)
+        super(UserProfile, self).save(*args, **kwargs)
+
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.user.username
+        return self.username
 
 
-class Enrolled(models.Model):
-    course = models.ForeignKey(Course)
-    user = models.ForeignKey(User)
-
-
+# Normal question class (not used for quiz questions!)
 class Question(models.Model):
     course = models.ForeignKey(Course)
     user = models.ForeignKey(User)
     title = models.CharField(max_length=128)
-    body = models.CharField(max_length=3000)
-    likes = models.IntegerField(default=0)
+    body = models.TextField()
+    views = models.IntegerField(default=0)
+
+    # Create slug field for url
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Question, self).save(*args, **kwargs)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.title
 
@@ -98,34 +112,54 @@ class Question(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)
-    body = models.CharField(max_length=3000)
-    likes = models.IntegerField()
-    isBest = models.BooleanField(default=False)
+    body = models.TextField()
+    likes = models.IntegerField(default=0)
+    is_best = models.BooleanField(default=False)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.body
+        return question.title + " answer"
 
 
-class QuizQuestion(models.Model):
+class Quiz(models.Model):
     course = models.ForeignKey(Course)
     user = models.ForeignKey(User)
-    title = models.CharField(max_length=128)
-    body = models.CharField(max_length=1000)
-    likes = models.IntegerField()
+    name = models.CharField(max_length=60,unique=True)
+    likes = models.IntegerField(default=0)
+
+    # Create slug field for url
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify(self.name)
         super(QuizQuestion, self).save(*args, **kwargs)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.title
+        return self.name
+
+
+class QuizQuestion(models.Model):
+    question_string = models.TextField()
+    quiz = models.ForeignKey(Quiz)
+
+    # Create slug field for url
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.question_string)
+        super(QuizQuestion, self).save(*args, **kwargs)
+
+    # Override the __unicode__() method to return out something meaningful!
+    def __unicode__(self):
+        return self.question_string
 
 
 class QuizAnswer(models.Model):
     question = models.ForeignKey(QuizQuestion)
-    answer_string = models.CharField(max_length=255)
+    answer_string = models.TextField()
     correct_answer = models.BooleanField(default=False)
 
+    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.answer_string
