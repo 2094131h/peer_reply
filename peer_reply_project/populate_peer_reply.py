@@ -12,7 +12,7 @@ def populate():
 
     python_school = 0;
     python_level = 0;
-    count = 0
+    course_count = 0
     school_count = 0
 
 
@@ -22,11 +22,15 @@ def populate():
             # if line starts with ';' then it is a school name so create new school
             if line.startswith(';'):
                 python_school = add_school(line[1:], python_university)
+                school_count += 1
+
             # only add levels and courses to first 15 schools during development (to save time)
             elif line.startswith('Level') and school_count <= 15:
                 python_level = add_level(line, python_school)
-            elif count < 12 and school_count <= 15:
+                course_count = 0
+            elif course_count < 12 and school_count <= 15:
                 add_course(line, python_level)
+                course_count += 1
 
 
 def add_question(course, user, title, body):
