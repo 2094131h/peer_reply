@@ -1,0 +1,66 @@
+.navbar {
+    background-color: #ED2427;
+    background-image: none;
+    margin-bottom: 20px;
+}
+body, html { height: 100vh; }
+
+.navbar-brand{
+left:10px;
+color:white;
+}
+
+#brand_name{
+color:white;
+ font-weight: bold;
+}
+
+#search-input{
+background-color: #403F45; 
+box-shadow: none; 
+border-radius:5px 0px 0px 5px;
+opacity:0.6;
+border-right:0px;
+height:30px;
+}
+
+#search_button{
+background-color: #403F45; 
+opacity:0.6;
+border-radius:0px 5px 5px 0px;
+margin-left:-4px;
+border-left:0px;
+height:30px;
+}
+
+#search_icon{
+color:white;
+}
+
+#main_window{
+top:50px;
+min-width:99%;
+height: 100vh;
+position:absolute;
+}
+
+#left_block{
+width:20%;
+position:fixed;
+left:0%;
+border-right:2px solid black;
+height: 100vh;
+}
+#centre_block{
+position:absolute;
+width:60%;
+right:20%;
+}
+#right_block{
+top:20px;
+position:fixed;
+right:0%;
+width:20%;
+height: 100vh;
+border-left:2px solid black;
+}

@@ -4,7 +4,8 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^peer_reply/', include('peer_reply.urls')))
+    url(r'^peer_reply/', include('peer_reply.urls')),
+    (r'^accounts/', include('registration.backends.simple.urls')),)
 
 if settings.DEBUG:
     urlpatterns += patterns(
