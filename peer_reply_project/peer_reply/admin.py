@@ -34,8 +34,7 @@ class QuizAdmin(admin.ModelAdmin):
 
 
 class QuizQuestionAdmin(admin.ModelAdmin):
-    list_display = ('quiz', 'question_string')
-    prepopulated_fields = {'slug':('question_string',)}
+    list_display = ('quiz', 'question_string', 'display_answers')
 
 
 class QuizAnswerAdmin(admin.ModelAdmin):

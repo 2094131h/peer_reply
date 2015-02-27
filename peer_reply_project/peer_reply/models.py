@@ -65,7 +65,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
     # The additional attributes we wish to include.
-    username = models.CharField(max_length=60, unique=True)
+    username = models.CharField(max_length=60, unique=False)
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', blank=True)
     location = models.CharField(max_length=20)
@@ -132,7 +132,7 @@ class Quiz(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        super(QuizQuestion, self).save(*args, **kwargs)
+        super(Quiz, self).save(*args, **kwargs)
 
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
@@ -143,13 +143,8 @@ class QuizQuestion(models.Model):
     question_string = models.TextField()
     quiz = models.ForeignKey(Quiz)
 
-    # Create slug field for url
-    slug = models.SlugField(unique=True)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.question_string)
-        super(QuizQuestion, self).save(*args, **kwargs)
-
+    def display_answers(self):
+        return ', '.join([quiz_answer.answer_string for quiz_answer in self.quizanswer_set.all()[:5]])
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.question_string
