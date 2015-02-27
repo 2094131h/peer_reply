@@ -46,6 +46,25 @@ def course(request, course_name_slug):
     # Go render the response and return it to the client.
     return render(request, 'peer_reply/course.html', context_dict)
 
+def school(request, school_name_slug):
+
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+
+    try:
+
+        cur_school = School.objects.get(slug=school_name_slug)
+        level_list = Level.objects.all().filter(school=cur_school).order_by('name')
+        context_dict['levels'] = level_list
+        context_dict['school'] = cur_school
+    except School.DoesNotExist:
+        # We get here if we didn't find the specified category.
+        # Don't do anything - the template displays the "no category" message for us.
+        pass
+
+    # Go render the response and return it to the client.
+    return render(request, 'peer_reply/school.html', context_dict)
+
 
 def add_course( request, university_name_slug):
     try:

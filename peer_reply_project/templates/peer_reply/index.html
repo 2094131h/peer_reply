@@ -2,20 +2,23 @@
 
 {% load staticfiles %}
 
-{% block title %}{{ university_name }}{% endblock %}
+{% block title %}Peer Reply Home{% endblock %}
 
 {% block body_block %}
 
         {% if universities %}
-            <ul>
 
+               <h1>Welcome to Peer Reply!</h1>
+               </br>
+               <h3>Login to post quizzes, questions and answers.</h3>
+               <h3>However, if you just want to browse you can click on a school bellow or enter a query in the search bar.</h3>
                 {% for university in universities %}
-                   <li><a href="">{{ university }}</a></li>
-                   <li><h3>Schools</h3></li>
-                        <ul>
+
+                   <h3>Schools</h3>
+                        <div>
                         {% for school in university.school_set.all %}
-                            <li><h4>{{ school.name }}</h4></li>
-                                <ul>
+                           <a class="school_button" href="{% url 'school' school.slug %}"><div class="link_button_inner">{{ school.name }}</div></a>
+                                <!--<ul>
                                     {% for level in school.level_set.all %}
                                         <li><h5>{{ level.name }}</h5></li>
                                         <ul>
@@ -25,13 +28,12 @@
                                         {% endfor %}
                                             </ul>
                                     {% endfor %}
-                                </ul>
+                                </ul>-->
 
                     {% endfor %}
-                            </ul>
+                            </div>
                 {% endfor %}
 
-            </ul>
 
        {% else %}
             <strong>There are no categories present.</strong>

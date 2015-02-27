@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% if school %}
+    {% block title %}School {{ school.name }}{% endblock %}
+{% endif %}
+
+{% block body_block %}
+
+
+                         </br>
+                        {% if levels %}
+                            <h3>{{ school.name }}</h3>
+
+                                    {% for level in levels %}
+
+                                        <h5 class="level">{{ level.name }}</h5>
+
+
+                                            <div class="courses">
+                                        {% for course in level.course_set.all %}
+                                            <a class="link_button"  href="{% url 'course' course.slug %}"><div class="link_button_inner">{{ course.name }}</div></a>
+
+
+                                        {% endfor %}
+                                         </div>
+
+                                    {% endfor %}
+
+
+                 
+
+                         {% else %}
+                            <strong>Error! Couldn't load Courses.</strong>
+                         {% endif %}
+{% endblock %}
