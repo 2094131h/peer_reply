@@ -3,17 +3,21 @@ from peer_reply.models import University, School, Level, Course, Quiz, QuizQuest
 from peer_reply.models import Question, Answer, UserProfile
 from django.contrib.auth.models import User
 
-
-
-
 # Add in these classes to customized the Admin Interface
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('name', 'level')
     prepopulated_fields = {'slug':('name',)}
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('username','website', 'picture', 'location', 'no_best_answers', 'no_quiz_likes', 'display_courses')
-    prepopulated_fields = {'slug':('username',)}
+    list_display = ('username','website', 'picture', 'location', 'no_best_answers', 'no_quiz_likes', 'display_courses', 'user')
+
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+
+
+class UserAdmin(admin.ModelAdmin):
+
+    list_display = ('first_name', 'last_name', 'email', 'password')
+
 
 class LevelAdmin(admin.ModelAdmin):
     list_display = ('name', 'school')
@@ -53,7 +57,7 @@ class AnswerAdmin(admin.ModelAdmin):
 # Update the registration to include this customised interface
 admin.site.register(University, UniversityAdmin)
 admin.site.register(School, SchoolAdmin)
-# admin.site.register(School_Level, School_LevelAdmin)
+# admin.site.register(User, UserAdmin,)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(Course, CourseAdmin,)
 admin.site.register(Quiz, QuizAdmin,)

@@ -5,16 +5,25 @@
 {% block title %}Peer Reply Home{% endblock %}
 
 {% block body_block %}
-
+        <div id="questions">
+        {% if questions %}
+            {% for question in questions %}
+                 <div class="question_link"><a  >{{ question.title }}<h2>{{ question.views }}</h2></a></div>
+            {% endfor %}
+        {% endif %}
+        </div>
         {% if universities %}
-
-               <h1>Welcome to Peer Reply!</h1>
+              </br>
+              </br>
+              <strong> <h1>Welcome to Peer Reply!</h1></strong>
                <h2>Login to post quizzes, questions and answers related to your courses.</h2>
-               <h3>If you just want to browse questions you can click on a school bellow or enter a query in the search bar.</h3>
+               <h3>If you just want to browse questions you can click on a school bellow, or enter a query in the search bar.</h3>
                </br>
+
                 {% for university in universities %}
 
                    <h3>Schools</h3>
+                        </br>
                         <div>
                         {% for school in university.school_set.all %}
                            <a class="school_button" href="{% url 'school' school.slug %}"><div class="link_button_inner">{{ school.name }}</div></a>
@@ -34,8 +43,9 @@
                             </div>
                 {% endfor %}
 
-
        {% else %}
-            <strong>There are no categories present.</strong>
+            <strong>There are no courses present.</strong>
        {% endif %}
+
+
 {% endblock %}

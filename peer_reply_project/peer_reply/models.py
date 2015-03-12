@@ -77,12 +77,7 @@ class UserProfile(models.Model):
     def display_courses(self):
         return ', '.join([ course.name for course in self.courses.all()[:5] ])
 
-    # Create slug field for url
-    slug = models.SlugField(unique=True)
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.username)
-        super(UserProfile, self).save(*args, **kwargs)
 
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
@@ -91,11 +86,12 @@ class UserProfile(models.Model):
 
 # Normal question class (not used for quiz questions!)
 class Question(models.Model):
-    course = models.ForeignKey(Course)
-    user = models.ForeignKey(User)
     title = models.CharField(max_length=128)
     body = models.TextField()
     views = models.IntegerField(default=0)
+    course = models.ForeignKey(Course)
+    user = models.ForeignKey(User)
+    slug = models.SlugField(unique=True)
 
     # Create slug field for url
     slug = models.SlugField(unique=True)
@@ -158,3 +154,4 @@ class QuizAnswer(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.answer_string
+

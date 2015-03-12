@@ -18,7 +18,8 @@ def populate():
     school_count = 0
     quiz_count = 0
 
-    user = add_user('Default', 'User', 'defaultuser@glasgow.ac.uk', 'password', "defaultusername")
+    user = add_user('Default', 'User', 'defaultuser@glasgow.ac.uk', 'password', "default_username")
+    # user_profile = add_profile(user,'username', 'Glasgow')
     # loop through each line in glasgow uni data file and add data to database
 
     with open('glasgow_uni_data.txt', 'r') as f:
@@ -35,6 +36,11 @@ def populate():
             elif course_count < 7 and school_count <= 15:
                 course_count += 1
                 course = add_course(line, python_level)
+
+                if course_count == 1:
+                    user.profile.courses.add(course)
+                    user.save()
+
                 question = add_question(course, user, 'default question about ' + course.name,
                                         'Default question body text.')
                 add_answer(question, user, 'Default reply to question about' + course.name, course_count)
@@ -53,8 +59,8 @@ def populate():
 
 
 def add_user(fname, lname, email, password, username):
-    u = User.objects.create_user(fname, email, password)
-    UserProfile.objects.get_or_create(user=u, username=username)[0]
+    u = User.objects.create_user(first_name=fname,last_name=lname, email=email, password=password,username=username)
+    UserProfile.objects.get_or_create(user=u )[0]
     u.last_name = lname
     u.save
     return u
@@ -104,6 +110,9 @@ def add_course(name, level):
     c.save()
     return c
 
+def add_profile(user, username, location):
+    profile = UserProfile.objects.get_or_create(useer=user, username=username, location=location)
+    return profile
 
 # Start execution here!
 if __name__ == '__main__':
