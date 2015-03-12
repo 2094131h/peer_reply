@@ -114,7 +114,8 @@ class Answer(models.Model):
 
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return question.title + " answer"
+        #return question.title + " answer"
+        return self.body
 
 
 class Quiz(models.Model):

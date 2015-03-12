@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}{{ question.title }}{% endblock %}
+
+{% block body_block %}
+
+{% if question %}
+    <h1>Question</h1>
+    <b>Question:</b> {{ question.title}}<br>
+    <b>For course:</b> {{ question.course }}<br>
+    <b>Question body:</b> {{ question.body }}<br>
+    <b>Views:</b> {{ question.views }}<br><br>
+    <b>Posted by user:</b> {{ question.user}}<br><br><br>
+    
+
+
+{% if best_answer %}
+test
+{% endif %}
+{% if answers %}
+<h1>Answers</h1>
+{% for answer in answers %}
+    <b>Posted by:</b> {{ answer.user }}<br>
+    <b>Answer body:</b> {{ answer.body }}<br>
+    <b>Likes:</b> {{ answer.likes }}<br>
+    <b>Is best:</b> {{ answer.is_best }}<br><br><br>
+{% endfor %}
+{% else %}
+No answers for this question
+{% endif %}
+
+{% else %}
+Question does not exist
+{% endif %}
+
+{% endblock %}

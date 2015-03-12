@@ -176,3 +176,41 @@ def search(request, course_name_slug):
     # # return  suggestion
     # response = HttpResponse(suggestion)
     # return response
+
+def view_question(request, question_id, question_title_slug):
+    context_dict = {}
+
+    try:
+        # Can we find a category name slug with the given name?
+        # If we can't, the .get() method raises a DoesNotExist exception
+        # so the .get() method returns one model instance or raises an exception.
+        question = Question.objects.get(id=question_id, slug=question_title_slug)
+        #answer = Answer.objects.get(slug=answer_title_slug)
+        #context_dict['question_title'] = question.name
+
+        # Retrieve all of the associated answers.
+        # Note that filter returns >= 1 model instance.
+        try:
+            bestAnswer = Answer.objects.filter(question=question, is_best=True)
+
+        except Answer.DoesNotExist:
+            pass
+
+        answers = Answer.objects.filter(question=question, is_best=False).order_by('-likes')
+
+
+
+
+        # Adds our results list to the template context under name pages.
+        context_dict['answers'] = answers
+        context_dict['best_answer'] = bestAnswer
+        # We also add the category object from the database to the context dictionary.
+        # We'll use this in the template to verify that the category exists.
+        context_dict['question'] = question
+        # Pass the slug
+        context_dict['question_slug'] = question_title_slug
+    except Question.DoesNotExist:
+        # We get here if we didn't find the specified category.
+        # Don't do anything - the template displays the "no category" message for us.
+        pass
+    return render(request, 'peer_reply/view_question.html', context_dict)
