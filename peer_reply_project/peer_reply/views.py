@@ -145,9 +145,9 @@ def add_course(request, university_name_slug):
 
 
 def search(request, course_name_slug):
-
+    
     """generate  search  suggestions"""
-    # get  suggestion  so  far  from  post
+    # get 
     context_dict = {}
     # if request.user:
     #     context_dict['user'] = request.user

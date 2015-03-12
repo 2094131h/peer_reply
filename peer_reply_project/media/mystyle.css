@@ -48,7 +48,7 @@ color:white;
 }
 
 #main_window{
-margin-top:50px;
+margin-top:1000px;
 
 
 
@@ -143,11 +143,9 @@ margin: 5px;
 
 #questions{
 top:200px;
-position:absolute;
 
 }
 .question_link{
-
 background-color:white;
 height:100px;
 margin:0px 0px 20px 30px;
