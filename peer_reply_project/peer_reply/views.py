@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from peer_reply.models import Course
-from peer_reply.models import University, School, Level, UserProfile
-from peer_reply.forms import CourseForm, QuestionForm, Question
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer
+from peer_reply.forms import CourseForm, QuestionForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 
