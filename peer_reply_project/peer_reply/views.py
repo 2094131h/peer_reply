@@ -5,6 +5,8 @@ from peer_reply.models import University, School, Level, UserProfile, Question, 
 from peer_reply.forms import CourseForm, QuestionForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
+from django.db.models import Q
+
 
 @ensure_csrf_cookie
 def index(request):
@@ -26,10 +28,12 @@ def index(request):
     # Render the response and send it back!
     return render(request, 'peer_reply/index.html', context_dict)
 
+
 def base(request):
     user = request.user
     userprofile = UserProfile.objects.get(user=user)
-    return  {'userprofile': userprofile,}
+    return {'userprofile': userprofile, }
+
 
 def course(request, course_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
@@ -42,7 +46,6 @@ def course(request, course_name_slug):
 
         context_dict['course_name'] = course.name
         context_dict['course_slug'] = course.slug
-
 
         context_dict['course'] = course
     except Course.DoesNotExist:
@@ -74,7 +77,7 @@ def school(request, school_name_slug):
 
 
 def add_question(request, course_name_slug):
-     # Create a context dictionary which we can pass to the template rendering engine.
+    # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
     try:
         course = Course.objects.get(slug=course_name_slug)
@@ -102,7 +105,7 @@ def add_question(request, course_name_slug):
     else:
         # If the request was not a POST, display the form to enter details.
         form = QuestionForm()
-    context_dict = {'form':form, 'course': course}
+    context_dict = {'form': form, 'course': course}
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
     return render(request, 'peer_reply/ask.html', context_dict)
@@ -145,18 +148,21 @@ def add_course(request, university_name_slug):
 
 
 def search(request, course_name_slug):
-    
     """generate  search  suggestions"""
     # get 
     context_dict = {}
     # if request.user:
-    #     context_dict['user'] = request.user
+    # context_dict['user'] = request.user
     if request.method == 'GET':
         search = request.GET.get('text')
-            # search = request.GET['search']
+        # search = request.GET['search']
         if search:
+            qset = Q()
+            for term in search.split():
+                qset |= Q(title__contains=term)
 
-            context_dict['questions'] = Question.objects.filter(title__contains=search).order_by('-views')[:20]
+            # matching_results = YourModel.objects.filter(qset)
+            context_dict['questions'] = Question.objects.filter(qset).order_by('-views')[:20]
         return render(request, 'peer_reply/index.html', context_dict)
     else:
         course = Course.objects.get(slug=course_name_slug)
@@ -164,18 +170,19 @@ def search(request, course_name_slug):
         return render(request, 'peer_reply/index.html', context_dict)
 
 
-    #  search  for  pattern  from  list
-    # html = render_to_string( 'index.html', { } )
-    # res = {'html': html}
-    # return HttpResponse( simplejson.dumps(res), mimetype )
-    # suggestion = ""
-    # suggestion_list = ["Java", "cats  hate  dogs", "raining  cats  and  dogs"]
-    # for s in suggestion_list:
-    #     if s.startswith(search):
-    #         suggestion = s
-    # # return  suggestion
-    # response = HttpResponse(suggestion)
-    # return response
+        #  search  for  pattern  from  list
+        # html = render_to_string( 'index.html', { } )
+        # res = {'html': html}
+        # return HttpResponse( simplejson.dumps(res), mimetype )
+        # suggestion = ""
+        # suggestion_list = ["Java", "cats  hate  dogs", "raining  cats  and  dogs"]
+        # for s in suggestion_list:
+        #     if s.startswith(search):
+        #         suggestion = s
+        # # return  suggestion
+        # response = HttpResponse(suggestion)
+        # return response
+
 
 def view_question(request, question_id, question_title_slug):
     context_dict = {}
@@ -185,7 +192,7 @@ def view_question(request, question_id, question_title_slug):
         # If we can't, the .get() method raises a DoesNotExist exception
         # so the .get() method returns one model instance or raises an exception.
         question = Question.objects.get(id=question_id, slug=question_title_slug)
-        #answer = Answer.objects.get(slug=answer_title_slug)
+        # answer = Answer.objects.get(slug=answer_title_slug)
         #context_dict['question_title'] = question.name
 
         # Retrieve all of the associated answers.

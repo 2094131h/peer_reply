@@ -18,7 +18,7 @@
 
                                             <div class="courses">
                                         {% for course in level.course_set.all %}
-                                            <a class="link_button"  href="{% url 'course' course.slug %}"><div class="link_button_inner">{{ course.name }}</div></a>
+                                            <a class="link_button"  href="{% url 'school' course.slug %}"><div class="link_button_inner">{{ course.name }}</div></a>
 
 
                                         {% endfor %}
