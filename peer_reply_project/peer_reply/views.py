@@ -163,11 +163,11 @@ def search(request, course_name_slug):
 
             # matching_results = YourModel.objects.filter(qset)
             context_dict['questions'] = Question.objects.filter(qset).order_by('-views')[:20]
-        return render(request, 'peer_reply/index.html', context_dict)
+        return render(request, 'peer_reply/course.html', context_dict)
     else:
         course = Course.objects.get(slug=course_name_slug)
         context_dict['questions'] = Question.objects.all().filter(course=course).order_by('-views')[:20]
-        return render(request, 'peer_reply/index.html', context_dict)
+        return render(request, 'peer_reply/course.html', context_dict)
 
 
         #  search  for  pattern  from  list

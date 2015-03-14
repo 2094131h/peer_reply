@@ -3,14 +3,16 @@
 
 {% block body_block %}
 {% load widget_tweaks %}
+
     </br>
-    <h1>Post a question</h1>
+    </br>
+    <h1  id="ask-text">Post a question</h1>
 
     {% if error %}
         <h2>Please enter both fields</h2>
     {% endif %}
-    </br>
-    <form method="POST" action="/peer_reply/ask/{{course.slug}}/" >
+
+    <form method="POST" action="/peer_reply/ask/{{course.slug}}/">
         {% csrf_token %}
         <ul>
            {% csrf_token %}
@@ -18,9 +20,9 @@
                         {{ hidden }}
                     {% endfor %}
                     {% render_field form.title placeholder="Title" size="50" %}
-                    {% render_field form.body rows="20" cols="100" placeholder="Question"  %}
+                    {% render_field form.body rows="10" cols="80" placeholder="Question" id="q-body" %}
         </ul>
-        <input type ="submit" value="Submit question" class="submit"/>
+        <input type ="submit" value="Submit your question" class="submit" id="question-submit"/>
     </form>
 
 {% endblock %}

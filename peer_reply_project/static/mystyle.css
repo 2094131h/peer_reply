@@ -4,6 +4,7 @@
     margin-bottom: 20px;
     padding-left:5px;
     color:white;
+    padding-right:20px;
 }
 .navbar .nav > li > a {
 
@@ -34,70 +35,63 @@ box-shadow: none;
 border-radius:5px 0px 0px 5px;
 opacity:0.6;
 border-right:0px;
-height:30px;
+height:28px;
 color:white;
+position:absolute;
+right:60px;
 }
 
 #search_button{
 background-color: #403F45; 
 opacity:0.6;
 border-radius:0px 5px 5px 0px;
-margin-left:-3px;
+right:20px;
 border-left:0px;
-height:30px;
+height:28px;
 color:white;
+position:absolute;
 }
-
+#search_button img {
+    width: 100%;
+    height: auto;
+}
 #search_div{
 float:left;
 }
 #search_icon{
 color:white;
+height:15px;
 }
 
 #main_window{
-margin-top:1000px;
-
-
-
+margin-top:100px;
 }
 
 #navbar{
 color:white;
 }
 
-#left_block{
+#left-block{
 margin-left:2px;
 box-shadow:1px 1px 1px 1px grey;
+width:20%;
 }
 
 #centre_block{
 margin-top:80px;
 position:absolute;
-width:70%;
-margin-left:16%;
+left:20%;
+width:60%;
 }
 
 #right_block{
 top:20px;
 position:fixed;
 right:0%;
-width:15%;
-height: 100vh;
 
 }
 
-.link_button{
-width:250px;
-background-color:white;
-height:70px;
-margin:0px 0px 20px 30px;
-padding:3px;
-box-shadow:1px 1px 1px 1px grey;
-text-align:center;
-color:black;
-float:left;
-}
+
 
 .link_button_inner{
 position: relative;
@@ -110,7 +104,7 @@ color:white;
 text-decoration: none;
 }
 
-.school_button{
+.link_button{
 width:250px;
 background-color:white;
 height:70px;
@@ -139,24 +133,32 @@ display:inline-block;
 margin:0px auto;
 margin-top:30px;
 }
-
+.nav-courses{
+background-color:white;
+box-shadow:1px 1px 1px 1px grey;
+padding-left:5px;
+display:inline-block;
+position:fixed;
+}
 .my-courses{
 background-color:white;
 box-shadow:1px 1px 1px 1px grey;
 padding-left:5px;
 display:inline-block;
-width:100%;
+position:fixed;
 }
 .my_course{
 height:80px;
 margin-bottom:20px;
 padding:3px;
 margin: 5px;
+width:250px;
 }
 
 #questions{
 top:200px;
-
+position:absolute;
+width:98%;
 }
 .question_link{
 background-color:white;
@@ -175,6 +177,98 @@ width:150px;
 height:50px;
 font-weight:bold;
 font-size:13px;
-left:55px;
+right:20%;
 position:absolute;
 }
+input[type="text"],
+
+textarea{
+margin-bottom:5%;
+
+}
+
+
+
+
+
+    /* Large desktop */
+    @media (min-width: 1200px) {
+
+}
+
+    /* Portrait tablet to landscape and desktop */
+    @media (min-width: 768px) and (max-width: 979px) {
+     }
+
+    /* Landscape phone to portrait tablet */
+    @media (max-width: 767px) {
+        .link_button{
+
+width:80%;
+}
+     }
+ /* Landscape phones and down */
+@media (max-width: 480px) {
+#centre_block{
+
+width:100%;
+}
+
+.courses{
+width:100%;
+display:inline-block;
+margin-top:30px;
+}
+.link_button{
+float:left;
+width:47%;
+font-size:1em;
+margin:0px 0px 5px 5px;
+background-color:white;
+box-shadow:1px 1px 1px 1px grey;
+height:50px;
+text-align:center;
+}
+.school_button{
+width:47%;
+margin:0px 0px 5px 5px;
+margin-bottom:5px;
+}
+#welcome_text{
+display:none;
+}
+#centre_block{
+left:0px;
+}
+#search{
+width:200px;
+}
+#search_form{
+width:225px;
+display:inline-block;
+}
+#question-submit{
+background-color: #ED2427;
+color:white;
+text-decoration: none;
+width:150px;
+right:1em;
+}
+input[type="submit"] {
+height:40px;
+width:160px;
+left:76%;
+}
+input[type="text"],
+
+textarea{
+margin-top:10%;
+width:180%;
+margin-left:-12%;
+font-size:1em;
+}
+#ask-text{
+display:none;
+}
+
+ }
