@@ -4,26 +4,99 @@
 {% block body_block %}
 {% load widget_tweaks %}
 
-    </br>
-    </br>
-    <h1  id="ask-text">Post a question</h1>
 
-    {% if error %}
-        <h2>Please enter both fields</h2>
+{% if schools %}
+
+<div id="ask_form">
+<br>
+        <div>
+            <table class="table table-striped table-condensed" id="ask_table">
+                <thead>
+                    <tr>
+                        <th>School </th>
+                        <th>Level </th>
+                        <th>Course </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <select name="school" id="school_select" size="7">
+                                {% for school in schools %}
+                                        <option value="{{ school.id }}" >{{ school.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                             <select name="level" id="level_select" size="7">
+                                 {% if selected_school %}
+                                     {% for level in selected_school %}
+
+                                         <option value="{{ level.id }}">{{ level.name }}</option>
+                                     {% endfor %}
+                                 {% else %}
+                                     <option value="...">...</option>
+                                     <option value="..."></option>
+                                     <option value="..."></option>
+                                     <option value="..."></option>
+                                     <option value="..."></option>
+                                 {% endif %}
+
+                            </select>
+                        </td>
+                         <td>
+                             <select name="course" id="course_select" size="7">
+                                 {% if selected_level %}
+                                     {% for course in selected_level %}
+
+                                         <option value="{{ course.id }}">{{ course.name }} </option>
+                                     {% endfor %}
+                                 {% else %}
+                                     <option value="..."></option>
+                                     <option value="..."></option>
+                                     <option value="..."></option>
+                                     <option value="..."></option>
+                                     <option value="..."></option>
+
+                                 {% endif %}
+
+                            </select>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
     {% endif %}
 
-    <form method="POST" action="/peer_reply/ask/{{course.slug}}/">
-        {% csrf_token %}
-        <ul>
+
+    </form>
+         <form class="form-horizontal" method="POST" action="/peer_reply/ask/{{course.slug}}/">
+
            {% csrf_token %}
                     {% for hidden in form.hidden_fields %}
                         {{ hidden }}
                     {% endfor %}
-                    {% render_field form.title placeholder="Title" size="50" %}
-                    {% render_field form.body rows="10" cols="80" placeholder="Question" id="q-body" %}
-        </ul>
-        <input type ="submit" value="Submit your question" class="submit" id="question-submit"/>
-    </form>
+    <div class="control-group">
 
+    <div class="control-group">
+    <label class="control-label" for="title"><h2>Type your question</h2></label>
+    <div class="controls">
+    {% render_field form.title placeholder="Title" size="82" %}
+    </div>
+    </div>
+    <div class="control-group">
+    <div class="controls">
+
+    {% render_field form.body rows="10" cols="80" placeholder="Question" %}
+    </div>
+    </div>
+   <input type ="submit" value="Submit your question" class="submit" id="question-submit"/>
+    </div>
+
+    </form>
+    </div>
 {% endblock %}
 

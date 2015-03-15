@@ -6,9 +6,10 @@ from peer_reply.forms import CourseForm, QuestionForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.db.models import Q
+import json
 
 
-@ensure_csrf_cookie
+# @ensure_csrf_cookie
 def index(request):
     # Query the database for the universities ordered by name
 
@@ -18,16 +19,25 @@ def index(request):
     levels = Level.objects.all()
 
     context_dict = {'schools': school_list, 'universities': universities}
+
+    # Render the response and send it back!
+    return render(request, 'peer_reply/index.html', context_dict)
+
+def left_block(request):
+
     if request.user.is_authenticated():
         user_profile = request.user.profile
         # user = User.objects.get(username=user.username)
 
         # userprofile = UserProfile.objects.all().filter(user=user)
         context_dict['user_profile'] = user_profile
-
+    else:
+        universities = University.objects.order_by('-name')[:1]
+        university = University.objects.get(slug='university-of-glasgow')
+        school_list = School.objects.all().filter(university=university).order_by('-name')
+        context_dict['schools'] = School.objects.all().filter(university=university).order_by('-name')
     # Render the response and send it back!
-    return render(request, 'peer_reply/index.html', context_dict)
-
+    return render(request, 'peer_reply/left_block.html', context_dict)
 
 def base(request):
     user = request.user
@@ -41,13 +51,11 @@ def course(request, course_name_slug):
 
     try:
 
-        university = University.objects.get(slug=university_name_slug)
+
         course = Course.objects.get(slug=course_name_slug)
+        context_dict['universities'] = University.objects.order_by('-name')[:1]
+        context_dict['questions'] = Question.objects.all().filter(course=course).order_by('-views')[:20]
 
-        context_dict['course_name'] = course.name
-        context_dict['course_slug'] = course.slug
-
-        context_dict['course'] = course
     except Course.DoesNotExist:
         # We get here if we didn't find the specified category.
         # Don't do anything - the template displays the "no category" message for us.
@@ -76,14 +84,14 @@ def school(request, school_name_slug):
     return render(request, 'peer_reply/school.html', context_dict)
 
 
-def add_question(request, course_name_slug):
+def add_question(request):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
-    try:
-        course = Course.objects.get(slug=course_name_slug)
+    # if(course_name_slug ):
+    #
+    #     course = Course.objects.get(slug=course_name_slug)
+    # else:
 
-    except Course.DoesNotExist:
-        course = None
 
     # A HTTP POST?
     if request.method == 'POST':
@@ -99,13 +107,17 @@ def add_question(request, course_name_slug):
                 # probably better to use a redirect here.
                 return render(request, 'peer_reply/ask.html')
         else:
-            context_dict = {'error': 'error', 'form': form}
+
+            context_dict['error'] = 'error'
+            context_dict['form'] = form
             return render(request, 'peer_reply/ask.html', context_dict)
 
     else:
+        university = University.objects.get(slug='university-of-glasgow')
+        schools = School.objects.all().filter(university=university).order_by('name')
         # If the request was not a POST, display the form to enter details.
         form = QuestionForm()
-    context_dict = {'form': form, 'course': course}
+        context_dict = {'form': form, 'course': course, 'schools':schools}
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
     return render(request, 'peer_reply/ask.html', context_dict)
@@ -170,6 +182,36 @@ def search(request, course_name_slug):
         return render(request, 'peer_reply/course.html', context_dict)
 
 
+def get_levels(request):
+    if request.method == 'GET':
+
+        school_id = request.GET['school_id']
+        cur_school = School.objects.get(id=int(school_id))
+
+        if cur_school:
+            levels = Level.objects.all().filter(school=cur_school)
+            level_list = []
+            for level in levels:
+                level_list.append('<option value="' + str(level.id) + '">' + level.name + '</option>')
+
+
+    return HttpResponse(level_list)
+
+
+def get_courses(request):
+    if request.method == 'GET':
+
+        level_id = request.GET['level_id']
+        cur_level = School.objects.get(id=int(level_id))
+
+        if cur_level:
+            courses = Course.objects.all().filter(level=cur_level)
+            course_list = []
+            for course in courses:
+                course_list.append('<option value="' + str(course.id) + '">' + course.name + '</option>')
+
+
+    return HttpResponse(course_list)
         #  search  for  pattern  from  list
         # html = render_to_string( 'index.html', { } )
         # res = {'html': html}
@@ -188,15 +230,9 @@ def view_question(request, question_id, question_title_slug):
     context_dict = {}
 
     try:
-        # Can we find a category name slug with the given name?
-        # If we can't, the .get() method raises a DoesNotExist exception
-        # so the .get() method returns one model instance or raises an exception.
-        question = Question.objects.get(id=question_id, slug=question_title_slug)
-        # answer = Answer.objects.get(slug=answer_title_slug)
-        #context_dict['question_title'] = question.name
 
-        # Retrieve all of the associated answers.
-        # Note that filter returns >= 1 model instance.
+        question = Question.objects.get(id=question_id, slug=question_title_slug)
+
         try:
             bestAnswer = Answer.objects.filter(question=question, is_best=True)
 
