@@ -49,7 +49,7 @@ def populate():
                     quiz_count += 1
                     for i in range(1, 5, 1):
                         quiz_question = add_quiz_question("Default Quiz question " + i.__str__(), quiz)
-                        for j in range(1, 4, 1):
+                        for j in range(1, 5, 1):
                             if j == 4:
                                 quiz_answer = add_quiz_answer(quiz_question , "Default quiz answer" + j.__str__(), True)
                             else:
