@@ -2,9 +2,28 @@
 
 {% load staticfiles %}
 
-{% block title %}{% endblock %}
+
+{% if quiz %}
+    {% block title %}{{ quiz.name }}{% endblock %}
+{% endif %}
 
 {% block body_block %}
-
+           {% if quiz %}
+             <h2>{{ quiz.name }}</h2>{{ likes }} {% if likes == 1 %} like. {% else %} likes. {% endif %}
+             <form action='/peer_reply/quiz/{{ quiz.slug }}/quiz_results/' method = "POST">
+               {% csrf_token %}
+               <br/>{% for question in questions %}
+                   <h3> {{ question }} </h3>
+                   <div>{% for answer in question.quizanswer_set.all %}
+                      <input type="radio" name="{{ question.question_string }}" value="{{ answer.answer_string }}"  required />{{ answer }}<br>
+                       
+                        {% endfor %}</div><br>
+                  {% endfor %}
+                    <input type="submit" value="Submit" /><br>
+               </form>
+              <p>Created by: {{ user.username }}</p>
+           {% else %}
+              <p>The requested quiz does not exist.</p>
+           {% endif %}
 
 {% endblock %}

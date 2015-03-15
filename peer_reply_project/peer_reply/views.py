@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from peer_reply.models import Course
-from peer_reply.models import University, School, Level, UserProfile, Question, Answer
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course
 from peer_reply.forms import CourseForm, QuestionForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
@@ -221,3 +220,32 @@ def view_question(request, question_id, question_title_slug):
         # Don't do anything - the template displays the "no category" message for us.
         pass
     return render(request, 'peer_reply/view_question.html', context_dict)
+
+
+
+def quiz(request, quiz_name_slug):
+        slug=quiz_name_slug
+        context_dict = {}
+        points = 0
+        try:            
+            quiz = Quiz.objects.get(slug=quiz_name_slug)
+            user = quiz.user
+            likes = quiz.likes
+            questions = quiz.quizquestion_set.all()
+            context_dict = {'quiz':quiz,'user':user, 'likes':likes,'slug':slug, 'questions':questions}
+        except:
+            pass
+
+        if request.method == 'POST':
+            for question in questions:
+                if question.question_string in request.POST:
+                    answer = question.quizanswer_set.get(answer_string=request.POST[question.question_string])
+                    if answer.correct_answer:
+                        points=points+1
+            context_dict['points']=points
+            return render(request,'peer_reply/quiz_results.html', context_dict)
+        
+        else:
+            return render(request,'peer_reply/quiz.html',context_dict)
+        
+        return render(request,'peer_reply/quiz.html',context_dict)

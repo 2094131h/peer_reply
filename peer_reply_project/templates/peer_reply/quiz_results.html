@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+{% if school %}
+    {% block title %}{{ quiz.name }}{% endblock %}
+{% endif %}
+
+{% block body_block %}
+           
+             <h2>{{ quiz.name }}</h2>
+             {% if points != 1 %} 
+             <div>Your score is: {{ points }} points.</div>
+             {% else %}
+             <div>Your score is: {{ points }} point.</div>
+             {% endif %}
+
+{% endblock %}
