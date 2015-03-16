@@ -9,7 +9,7 @@
                     <br>
                     {% for course in user.profile.courses.all %}
                     <div class="my_course">
-                        <a href="{% url 'search' course.slug %}"><div class="link_button_inner">
+                        <a href="{% url 'course' course.slug %}"><div class="link_button_inner">
                             {{ course.name }}{{ course.level }}
                             </div>
                             </a>

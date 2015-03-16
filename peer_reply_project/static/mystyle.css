@@ -225,13 +225,48 @@ width:630px;
 .table-striped>tbody{
 width:100%;
 }
+.ask-form-header-inner{
+display:inline-block;
+
+}
+.circle-image{
+margin-top:-12px;
+margin-right:10px;
+}
 #ask_form{
 background:white;
 width:140%;
 padding:10px;
-margin-left:-15%;
+margin-left:-22%;
 
 }
+
+#question-textarea{
+
+}
+
+#quiz{
+background-color:white;
+padding:20px;
+}
+hr{
+height:5px;
+}
+#quiz-results-div{
+background-color:white;
+position:absolute;
+left:15%;
+margin-top:25%;
+width:75%;
+height:300px;
+}
+#quiz-results-inner{
+left:40%;
+    vertical-align: middle;
+    top:30%;
+    position:absolute;
+}
+
 input[type="submit"] {
 background-color: #ED2427;
 color:white;
@@ -240,12 +275,12 @@ width:150px;
 height:50px;
 font-weight:bold;
 font-size:13px;
-right:20%;
+margin-left:57.5%;
 }
 input[type="text"],
 
 textarea{
-
+width:70%;
 }
 
 

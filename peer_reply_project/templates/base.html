@@ -124,6 +124,7 @@ $('#school_select').change(function(){
          $('#level_select').html(data);
           $('select option:first-child').delay(5000).attr("selected", "selected");
          $( "#level_select" ).trigger( "change" );
+          $("#level_select").selectpicker('refresh');
         });
 
 
