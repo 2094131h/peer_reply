@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+{% if school %}
+    {% block title %}{{ quiz.name }}{% endblock %}
+{% endif %}
+
+{% block body_block %}
+<div id="quiz-results-div">
+    <div id="quiz-results-inner">
+             <h2>{{ quiz.name }}</h2>
+             {% if points != 1 %} 
+             <div>Your score is: {{ points }} points.</div>
+             {% else %}
+             <div>Your score is: {{ points }} point.</div>
+             {% endif %}
+        </div>
+</div>
+{% endblock %}
+{% block left_block %}
+    {% include 'peer_reply/left_block.html' %}
+{% endblock %}

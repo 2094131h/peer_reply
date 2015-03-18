@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body_block %}
+<link href="/netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-2 column  picturecl">
+			<figure>
+                 {% if profile.picture %}
+                <img width="200" height="200" src="{{ profile.picture.url }}" class="img-rounded img-responsive">
+                {% else %}
+                <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded">
+                {% endif %}
+                <figcaption class="ratings"> <!--We can use this to add ratings, so far it does nothing -->
+                    <p>Ratings
+                    <a href="#">
+                        <span class="fa fa-star"></span>
+                    </a>
+                    <a href="#">
+                        <span class="fa fa-star"></span>
+                    </a>
+                    <a href="#">
+                        <span class="fa fa-star"></span>
+                    </a>
+                    <a href="#">
+                        <span class="fa fa-star"></span>
+                    </a>
+                    <a href="#">
+                         <span class="fa fa-star-o"></span>
+                    </a> 
+                    </p>
+                </figcaption>
+            </figure>
+		</div>
+		<div class="col-md-10 column">
+            <div><h2>{{ user.username }}</h2>
+                    <p><strong>About: </strong> Web Designer / UI. </p>
+                    <p><strong>Hobbies: </strong> Read, out with friends, listen to music, draw and learn new things. </p>
+                    <p><strong>Courses: </strong>
+                    {% if courses %}
+                        {% for course in courses %}
+                        <span class="tags">course</span> 
+                        {% endfor %}
+                    {% endif %}
+                        <span class="tags">css3</span>
+                        <span class="tags">jquery</span>
+                        <span class="tags">bootstrap3</span>
+            </div>           
+            <div class="btn-group dropup btn-block">
+                  <button type="button" class="btn btn-primary  dropdown-toggle" data-toggle="dropdown" ><span class="fa fa-gear" ></span> Options </button>
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                 
+                  <ul class="dropdown-menu text-left" role="menu">
+                    {% if user_profile %}
+                    <li><a href="{% url 'auth_password_change' %}"><span class="fa fa-lock pull-right"></span>Change password</a></li>
+                    <li><a href="{% url 'edit_profile' %}"><span class="fa fa-edit pull-right"></span> Edit Profile </a></li>
+                    {% endif %}
+                    <li class="divider"></li>
+                    <li><a href="#"><span class="fa fa-warning pull-right"></span>Report this user for spam</a></li>
+                    <li class="divider"></li>
+                  </ul>
+            </div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+</script>
+
+{% endblock %}

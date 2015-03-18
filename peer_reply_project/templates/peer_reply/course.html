@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block body_block %}
+<div id="questions">
+    {% if questions %}
+    {% for question in questions %}
+    <a><div class="question_link"><div>{{ question.title }}</div><div>{{ question.body }}</div> <div>{{question.user.picture}}</div><div>{{ question.views }}</div></div></a>
+    {% endfor %}
+
+    {% endif %}
+
+</div>
+{% endblock %}

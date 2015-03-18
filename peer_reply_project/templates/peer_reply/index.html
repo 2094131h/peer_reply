@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Peer Reply Home{% endblock %}
+
+{% block body_block %}
+        {% if universities %}
+              </br>
+              </br>
+              <div id="welcome_text">
+
+              <strong> <h1>Welcome to Peer Reply!</h1></strong>
+               <h2>Login to post quizzes, questions and answers related to your courses.</h2>
+               <h3>If you just want to browse questions you can click on a school bellow, or enter a query in the search bar.</h3>
+               </br>
+                  </div>
+                {% for university in universities %}
+
+                   <h3>Schools</h3>
+                        </br>
+                        <div>
+                        {% for school in university.school_set.all %}
+                           <a class="link_button" href="{% url 'school' school.slug %}"><div class="link_button_inner">{{ school.name }}</div></a>
+                                <!--<ul>
+                                    {% for level in school.level_set.all %}
+                                        <li><h5>{{ level.name }}</h5></li>
+                                        <ul>
+                                        {% for course in level.course_set.all %}
+
+                                            <li><a href="{% url 'course' course.slug %}">{{ course.name }}</a></li>
+                                        {% endfor %}
+                                            </ul>
+                                    {% endfor %}
+                                </ul>-->
+
+                    {% endfor %}
+                            </div>
+                {% endfor %}
+
+       {% else %}
+            <strong>There are no courses present.</strong>
+       {% endif %}
+
+
+{% endblock %}
+{% block left_block %}
+    {% include 'peer_reply/left_block.html' %}
+{% endblock %}

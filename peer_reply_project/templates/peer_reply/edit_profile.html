@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body_block %}
+
+<div class="page-header">
+    <h1>{{ user.username }}</h1>
+</div>
+<form id="userprofile_form" class="form" method="post" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
+{% csrf_token %}    
+<div class="container-fluid well span6">
+
+    <h3> Edit Profile </h3>
+
+      <hr>
+      <!-- left column -->
+      <div class="col-md-3">
+        <div class="text-center">
+        {% if user_profile.picture %}
+          <img width="85" height="85" src="{{ user_profile.picture.url }}" class="avatar img-rounded" alt="profile picture"></img>
+        {% else %}
+        <p>profile picture</p>
+        {% endif %}
+        </div>
+        
+         <div class="uploadfile-name"><label> {{ form.picture }} </label></div>
+      </div>     
+      <!-- edit form column -->
+      <div class="col-md-9">
+        <h4>Personal info</h4>
+
+           <div class="form">
+            <label class="col-lg-3 control-label">Website: </label>
+                <p><strong>{{ form.website }} </strong></p>
+       </div>
+   
+   <div class="btn-align">
+        <button class="btn btn-primary " type="submit" value="Submit" />Save</button>
+        <button class="btn btn-secondary " type="reset" value="Cancel" />Cancel</button>
+        </div>
+        </div></div>
+</form>
+<hr>
+{% endblock %}
+
