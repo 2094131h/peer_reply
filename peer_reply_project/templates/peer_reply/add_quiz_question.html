@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Add a quiz-question{% endblock %}
+
+{% block body_block %}
+
+
+<br><br>
+
+<div>
+    <form id="quiz_forms" method="post" action="/peer_reply/course/{{course_name_slug}}/{{quiz_name_slug}}/add_quiz_question/">
+        <p><h1> Enter question text </h1></p>
+        {% csrf_token %}
+	    {% for hidden in quizQuestionForm.hidden_fields %}
+		     {{ hidden }}
+	    {% endfor %}
+	    {% for field in quizQuestionForm.visible_fields %}
+		     {{ field.errors }}
+		     {{ field.help_text }}
+		     <p>{{ field }}</p>
+	    {% endfor %}
+
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+        <p><h1> Enter answer text </h1></p>
+             {% for hidden in form.hidden_fields %}
+                 {{ hidden }}
+             {% endfor %}
+             {% for field in form.visible_fields %}
+                 {{ field.errors }}
+                 {{ field.help_text}}
+                 <p>{{ field}}</p>
+             {% endfor %}
+        {% endfor %}
+        <input type="submit" value="Save answers" />
+
+    </form>
+</div>
+
+
+<br><br>
+
+<p>
+<a href="/peer_reply/course/{{course_name_slug}}/{{quiz_name_slug}}/add_quiz_question/"> Add a question </a>
+</p>
+<p>
+<a href="/peer_reply/course/{{course_name_slug}}/"> Complete quiz </a>
+</p>
+
+
+{% endblock %}

@@ -1,6 +1,7 @@
 from django import forms
-from peer_reply.models import Course, UserProfile, Question
+from peer_reply.models import Course, UserProfile, Question, Quiz, QuizQuestion, QuizAnswer
 from django.contrib.auth.models import User
+from django.forms.formsets import formset_factory
 
 
 class CourseForm(forms.ModelForm):
@@ -42,5 +43,30 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('website', 'picture')
+
+
+class QuizForm(forms.ModelForm):
+
+	name = forms.CharField(max_length=60, help_text="Please enter name of quiz.")
+	slug = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+	class Meta:
+		model = Quiz
+		fields = ('name',)
+
+class QuizQuestionForm(forms.ModelForm):
+	question_string = forms.Textarea()
+
+	class Meta:
+		model = QuizQuestion
+		fields = ('question_string',)
+
+class QuizAnswerForm(forms.ModelForm):
+	answer_string = forms.Textarea()
+	correct_answer = forms.BooleanField(required=False, help_text="Correct?")
+
+	class Meta:
+		model = QuizAnswer
+		fields = ('answer_string', 'correct_answer',)
 
 

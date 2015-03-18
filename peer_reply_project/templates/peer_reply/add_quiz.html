@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %} Create a new quiz {% endblock %}
+
+{% block body_block %}
+
+<br><br>
+<form id="quiz_form" method="post" action="/peer_reply/course/{{course_name_slug}}/add_quiz/">
+    <p><h1> Name the quiz </h1></p>
+	{% csrf_token %}
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+	{% for field in form.visible_fields %}
+		{{ field.errors }}
+		{{ field.help_text }}
+		<p>{{ field }}</p>
+	{% endfor %}
+    {% if quiz_name_slug == None %}
+	<p><input type="submit" name="submit" value="Save quiz name" /></p>
+    {% endif %}
+</form>
+
+{% if quiz_name_slug %}
+<p>
+<a href="/peer_reply/course/{{course_name_slug}}/{{quiz_name_slug}}/add_quiz_question/"> Add a question </a>
+</p>
+{% endif %}
+
+
+{% endblock %}
