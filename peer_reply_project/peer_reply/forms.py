@@ -16,13 +16,14 @@ class CourseForm(forms.ModelForm):
 
 
 class QuestionForm(forms.ModelForm):
+
     title = forms.CharField(max_length=128, help_text="Please enter question title.", required=True)
     body = forms.Textarea()
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     course = forms.CharField(max_length=128,widget=forms.HiddenInput())
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
 
-    error_css_class = 'error'
+
     # An inline class to provide additional information on the form.
     class Meta:
         # Provide an association between the ModelForm and a model
