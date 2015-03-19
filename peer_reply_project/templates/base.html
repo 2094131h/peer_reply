@@ -112,8 +112,8 @@ $(document).ready(function () {
         $(this).parent().find('.school_down_icon').toggleClass('glyphicon glyphicon-chevron-left glyphicon glyphicon-chevron-down');
 		$(this).parent().children('ul.tree').toggle(600);
         $(this).parent().siblings().toggle(800);
-
-         $(".navcourses").customScrollbar("resize", true);
+         $(".navcourses").delay(600).customScrollbar();
+        $(".navcourses").delay(700).customScrollbar("resize", true);
 	});
 
     $('label.tree-toggler-level').parent().children('ul.tree').toggle(600);
@@ -121,7 +121,8 @@ $(document).ready(function () {
         $(this).parent().find('.school_down_icon').toggleClass('glyphicon glyphicon-chevron-down glyphicon glyphicon-chevron-up');
 		$(this).parent().children('ul.tree').toggle(600);
 
-       $(".navcourses").customScrollbar("resize", true);
+       $(".navcourses").delay(700).customScrollbar("resize", true);
+
 
 	});
 
