@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName
-from peer_reply.forms import CourseForm, QuestionForm
+from django.forms.formsets import formset_factory
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, QuizAnswer, QuizQuestion
+from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -293,3 +294,87 @@ def quiz(request, quiz_name_slug):
 
 
         return render(request,'peer_reply/quiz.html',context_dict)
+
+
+def add_quiz(request, course_name_slug):  #Any other parameters required?
+
+    #Check if course exists
+    try:
+        course = Course.objects.get(slug=course_name_slug)
+    except Course.DoesNotExist:
+        course = None
+
+    context_dict = { 'course_name_slug' : course_name_slug, 'quiz_name_slug' : None}
+
+    if request.method == 'POST':
+        quizForm = QuizForm(request.POST) #Bind data to form
+
+        if quizForm.is_valid():
+            if course:  #If there was indeed a course by that name...
+                quiz = quizForm.save(commit=False) #Saves quiz name, delay committing
+                quiz.course = course
+                quiz.user = request.user
+                quiz.likes = 0
+                quiz.save()
+                quiz_name_slug = quiz.slug ##Should now be name, slugified
+                context_dict['quiz_name_slug'] = quiz_name_slug
+                #return render(request, 'peer_reply/add_quiz.html', context_dict)
+                return render(request, 'peer_reply/add_quiz.html', context_dict )
+        else:
+            print quizForm.errors    #Can I handle errors in a better way?
+    else:
+        quizForm = QuizForm()
+    #I will have to pass quiz-name-slug also since I use it for adding quiz question link.
+    context_dict['form'] = quizForm
+
+    return render(request, 'peer_reply/add_quiz.html', context_dict)
+
+def add_quiz_question(request,quiz_name_slug):
+
+    #First check if arguments exist in database
+    # try:
+    #     course = Course.objects.get(slug=course_name_slug)
+    # except Course.DoesNotExist:
+    #     course = None
+    try:
+        quiz = Quiz.objects.get(slug=quiz_name_slug)
+    except Quiz.DoesNotExist:
+        quiz = None
+
+    QuizAnswerFormSet = formset_factory(QuizAnswerForm, extra=4) #Creating four instances of form
+    if request.method == 'POST':
+        quizQuestionForm = QuizQuestionForm(request.POST)   #Bind data to forms
+        formset = QuizAnswerFormSet(request.POST)
+
+        if quizQuestionForm.is_valid() and formset.is_valid():
+            if quiz:
+                quizQuestion = quizQuestionForm.save(commit=False) #Saving question-string, I suppose
+                quizQuestion.quiz = quiz
+                quizQuestion.save()
+
+                for form in formset:
+                    quizAnswer = form.save(commit=False) #Saving answer_string and correct_answer, I suppose
+                    quizAnswer.question = quizQuestion
+                    quizAnswer.save()
+
+                context_dict = {}
+                # context_dict['course_name_slug'] = course_name_slug
+                context_dict['quiz_name_slug'] = quiz_name_slug
+                context_dict['quizQuestionForm'] = quizQuestionForm
+                context_dict['formset'] = formset
+
+                return render(request, 'peer_reply/add_quiz_question.html',context_dict) #Redirect to same, empty page
+        else:
+            print quizQuestionForm.errors, formset.errors
+    else: #Instantiate forms to display
+        formset = QuizAnswerFormSet()
+        quizQuestionForm = QuizQuestionForm()
+
+
+    context_dict = { 'quizQuestionForm' : quizQuestionForm}
+    context_dict['formset'] = formset
+    # context_dict['course_name_slug'] = course_name_slug
+    context_dict['quiz_name_slug'] = quiz_name_slug
+
+    return render(request, 'peer_reply/add_quiz_question.html', context_dict )
+
