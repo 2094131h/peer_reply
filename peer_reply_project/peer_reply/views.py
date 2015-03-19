@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName
 from peer_reply.forms import CourseForm, QuestionForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.db.models import Q
 import json
-
+from django.http import HttpResponseRedirect, HttpResponse
 
 # @ensure_csrf_cookie
 def index(request):
@@ -18,7 +18,8 @@ def index(request):
     levels = Level.objects.all()
 
     context_dict = {'schools': school_list, 'universities': universities}
-
+    levels = LevelName.objects.all().order_by('name')
+    context_dict['levels'] = levels
     # Render the response and send it back!
     return render(request, 'peer_reply/index.html', context_dict)
 
@@ -41,16 +42,19 @@ def left_block(request):
 def base(request):
     user = request.user
     userprofile = UserProfile.objects.get(user=user)
-    return {'userprofile': userprofile, }
+    levels = LevelName.objects.all().order_by('name')
+
+    context_dict['levels'] = levels
+    context_dict['user_profile'] = userprofile
+    return {context_dict}
 
 
 def course(request, course_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
-
+    levels = LevelName.objects.all().order_by('name')
+    context_dict['levels'] = levels
     try:
-
-
         course = Course.objects.get(slug=course_name_slug)
         context_dict['universities'] = University.objects.order_by('-name')[:1]
         context_dict['questions'] = Question.objects.all().filter(course=course).order_by('-views')[:20]
@@ -86,25 +90,24 @@ def school(request, school_name_slug):
 def add_question(request):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
-    # if(course_name_slug ):
-    #
-    #     course = Course.objects.get(slug=course_name_slug)
-    # else:
 
-
+    university = University.objects.get(slug='university-of-glasgow')
+    schools = School.objects.all().filter(university=university).order_by('name')
+    context_dict['schools'] = schools
     # A HTTP POST?
     if request.method == 'POST':
         form = QuestionForm(request.POST)
-
+        course = request.POST['course']
         # Have we been provided with a valid form?
+
         if form.is_valid():
             if course:
                 question = form.save(commit=False)
-                question.course = course
+                question.course = Course.objects.get(id=course)
                 question.user = request.user
                 question.save()
                 # probably better to use a redirect here.
-                return render(request, 'peer_reply/ask.html')
+                return HttpResponseRedirect('/peer_reply/')
         else:
 
             context_dict['error'] = 'error'
@@ -112,11 +115,10 @@ def add_question(request):
             return render(request, 'peer_reply/ask.html', context_dict)
 
     else:
-        university = University.objects.get(slug='university-of-glasgow')
-        schools = School.objects.all().filter(university=university).order_by('name')
+
         # If the request was not a POST, display the form to enter details.
         form = QuestionForm()
-        context_dict = {'form': form, 'course': course, 'schools':schools}
+        context_dict = {'form': form, 'schools':schools}
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
     return render(request, 'peer_reply/ask.html', context_dict)
@@ -164,6 +166,9 @@ def search(request, course_name_slug):
     context_dict = {}
     # if request.user:
     # context_dict['user'] = request.user
+
+    levels = LevelName.objects.all().order_by('name')
+    context_dict['levels'] = levels
     if request.method == 'GET':
         search = request.GET.get('text')
         # search = request.GET['search']
@@ -191,7 +196,7 @@ def get_levels(request):
             levels = Level.objects.all().filter(school=cur_school)
             level_list = []
             for level in levels:
-                level_list.append('<option value="' + str(level.id) + '">' + level.name + '</option>')
+                level_list.append('<option value="' + str(level.id) + '">' + level.name.name + '</option>')
 
 
     return HttpResponse(level_list)
@@ -241,7 +246,8 @@ def view_question(request, question_id, question_title_slug):
         answers = Answer.objects.filter(question=question, is_best=False).order_by('-likes')
 
 
-
+        levels = LevelName.objects.all().order_by('name')
+        context_dict['levels'] = levels
 
         # Adds our results list to the template context under name pages.
         context_dict['answers'] = answers
@@ -263,12 +269,13 @@ def quiz(request, quiz_name_slug):
         slug=quiz_name_slug
         context_dict = {}
         points = 0
-        try:            
+        try:
             quiz = Quiz.objects.get(slug=quiz_name_slug)
             user = quiz.user
             likes = quiz.likes
             questions = quiz.quizquestion_set.all()
             context_dict = {'quiz':quiz,'user':user, 'likes':likes,'slug':slug, 'questions':questions}
+
         except:
             pass
 
@@ -277,11 +284,12 @@ def quiz(request, quiz_name_slug):
                 if question.question_string in request.POST:
                     answer = question.quizanswer_set.get(answer_string=request.POST[question.question_string])
                     if answer.correct_answer:
-                        points=points+1
-            context_dict['points']=points
-            return render(request,'peer_reply/quiz_results.html', context_dict)
-        
+                        points = points + 1
+            context_dict['points'] = points
+            return render(request, 'peer_reply/quiz_results.html', context_dict)
+
         else:
-            return render(request,'peer_reply/quiz.html',context_dict)
-        
+            return render(request,'peer_reply/quiz.html', context_dict)
+
+
         return render(request,'peer_reply/quiz.html',context_dict)

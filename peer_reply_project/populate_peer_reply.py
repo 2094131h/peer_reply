@@ -2,7 +2,7 @@ import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'peer_reply_project.settings')
 from peer_reply.models import Course, School, Level, University,Quiz, Question, Answer, QuizQuestion, QuizAnswer
-from peer_reply.models import UserProfile
+from peer_reply.models import UserProfile, LevelName
 from django.contrib.auth.models import User
 import django
 
@@ -31,7 +31,8 @@ def populate():
 
             # only add levels and courses to first 15 schools during development (to save time)
             elif line.startswith('Level') and school_count <= 10:
-                python_level = add_level(line, python_school)
+                python_level_name = add_level_name(line)
+                python_level = add_level(python_level_name, python_school)
                 course_count = 0
             elif course_count < 7 and school_count <= 15:
                 course_count += 1
@@ -99,6 +100,10 @@ def add_school(name, university):
     s = School.objects.get_or_create(name=name, university=university)[0]
     return s
 
+
+def add_level_name(name):
+    ln = LevelName.objects.get_or_create(name=name)[0]
+    return ln
 
 def add_level(name, school):
     l = Level.objects.get_or_create(name=name, school=school)[0]

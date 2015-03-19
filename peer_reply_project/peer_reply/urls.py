@@ -22,6 +22,5 @@ urlpatterns = patterns('',
     url(r'^ask/(?P<course_name_slug>[\w\-]+)/$', views.add_question, name='add_question'),
     url(r'^question/(?P<question_id>[\w\-]+)/(?P<question_title_slug>[\w\-]+)$', views.view_question, name='view_question'),
     url(r'^quiz/(?P<quiz_name_slug>[\w\-]+)/$', views.quiz, name='quiz'),
-    url(r'^quiz/(?P<quiz_name_slug>[\w\-]+)/quiz_results/', views.quiz, name='quiz_results'),
-                       )
+    url(r'^quiz/(?P<quiz_name_slug>[\w\-]+)/quiz_results/', views.quiz, name='quiz_results'),)
 
