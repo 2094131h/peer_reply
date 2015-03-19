@@ -2,6 +2,7 @@ import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'peer_reply_project.settings')
 from peer_reply.models import Course, School, Level, University,Quiz, Question, Answer, QuizQuestion, QuizAnswer
+from peer_reply.models import UserProfile
 from peer_reply.models import UserProfile, LevelName
 from django.contrib.auth.models import User
 import django
@@ -19,7 +20,7 @@ def populate():
     quiz_count = 0
 
     user = add_user('Default', 'User', 'defaultuser@glasgow.ac.uk', 'password', "default_username")
-    # user_profile = add_profile(user,'username', 'Glasgow')
+    #user_profile = add_profile(user,'username', 'Glasgow')
     # loop through each line in glasgow uni data file and add data to database
 
     with open('glasgow_uni_data.txt', 'r') as f:
@@ -116,7 +117,7 @@ def add_course(name, level):
     return c
 
 def add_profile(user, username, location):
-    profile = UserProfile.objects.get_or_create(useer=user, username=username, location=location)
+    profile = UserProfile.objects.get_or_create(user=user, username=username, location=location)
     return profile
 
 # Start execution here!

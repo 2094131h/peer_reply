@@ -1,11 +1,14 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+
+
 import datetime
 
 class University(models.Model):
     name = models.CharField(max_length=128, unique=True)
     location = models.CharField(max_length=128)
+
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
@@ -14,6 +17,7 @@ class University(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+
         if not self.id:
             self.created = datetime.datetime.today()
         self.modified = datetime.datetime.today()
@@ -27,6 +31,7 @@ class University(models.Model):
 class School(models.Model):
     name = models.CharField(max_length=128)
     university = models.ForeignKey(University)
+
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
@@ -37,6 +42,7 @@ class School(models.Model):
     
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+
         if not self.id:
             self.created = datetime.datetime.today()
         self.modified = datetime.datetime.today()
@@ -45,7 +51,6 @@ class School(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.name
-
 
 class LevelName(models.Model):
     name = models.CharField(max_length=128, unique=True)
@@ -78,6 +83,9 @@ class Course(models.Model):
     name = models.CharField(max_length=128, unique=False)
     level = models.ForeignKey(Level)
     slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
@@ -92,7 +100,6 @@ class Course(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.name
-
 
 class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
@@ -114,17 +121,10 @@ class UserProfile(models.Model):
     def display_courses(self):
         return ', '.join([ course.name for course in self.courses.all()[:5] ])
 
+
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.username
-
-    def save(self, *args, **kwargs):
-        # On save, update timestamps '''
-        if not self.id:
-            self.created = datetime.datetime.today()
-        self.modified = datetime.datetime.today()
-        return super(UserProfile, self).save(*args, **kwargs)
-
 
 # Normal question class (not used for quiz questions!)
 class Question(models.Model):
@@ -136,6 +136,13 @@ class Question(models.Model):
     views = models.IntegerField(default=0)
     course = models.ForeignKey(Course)
     user = models.ForeignKey(User)
+    slug = models.SlugField(unique=True)
+
+    # Create slug field for url
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
 
     # Create slug field for url
     slug = models.SlugField(unique=False)
@@ -154,6 +161,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
+
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
@@ -167,13 +175,6 @@ class Answer(models.Model):
     def __unicode__(self):
         #return question.title + " answer"
         return self.body
-    def save(self, *args, **kwargs):
-        # On save, update timestamps
-        if not self.id:
-            self.created = datetime.datetime.today()
-        self.modified = datetime.datetime.today()
-        return super(Answer, self).save(*args, **kwargs)
-
 
 class Quiz(models.Model):
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
@@ -189,6 +190,7 @@ class Quiz(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+
         if not self.id:
             self.created = datetime.datetime.today()
         self.modified = datetime.datetime.today()
@@ -200,6 +202,7 @@ class Quiz(models.Model):
 
 
 class QuizQuestion(models.Model):
+
 
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
@@ -222,6 +225,7 @@ class QuizQuestion(models.Model):
 
 
 class QuizAnswer(models.Model):
+
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
@@ -230,6 +234,7 @@ class QuizAnswer(models.Model):
     question = models.ForeignKey(QuizQuestion)
     answer_string = models.TextField()
     correct_answer = models.BooleanField(default=False)
+
 
     def save(self, *args, **kwargs):
         # On save, update timestamps

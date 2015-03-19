@@ -1,28 +1,50 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.forms.formsets import formset_factory
-from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, QuizAnswer, QuizQuestion
-from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import password_change
+from django.contrib.auth.decorators import login_required
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course
+from peer_reply.forms import CourseForm, QuestionForm, UserProfileForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.db.models import Q
 import json
-from django.http import HttpResponseRedirect, HttpResponse
+
 
 # @ensure_csrf_cookie
 def index(request):
-    # Query the database for the universities ordered by name
-
-    universities = University.objects.order_by('-name')[:1]
-    university = University.objects.get(slug='university-of-glasgow')
-    school_list = School.objects.all().filter(university=university).order_by('-name')
-    levels = Level.objects.all()
-
-    context_dict = {'schools': school_list, 'universities': universities}
-    levels = LevelName.objects.all().order_by('name')
-    context_dict['levels'] = levels
-    # Render the response and send it back!
+    context_dict = {}
+    if request.user.is_authenticated():
+        user_profile = UserProfile.objects.get(user=request.user)
+        relevant_questions = []
+        print user_profile.courses
+        for course in user_profile.courses.all(): # for all courses in the user
+            # append relevant questions in order
+            relevant_questions += Question.objects.all().filter(course=course).order_by('-views')[:8]
+        # add the list to ontext_dict
+        context_dict['relevant_questions'] = relevant_questions
+        return render(request,'peer_reply/course.html',context_dict)
+    else:
+        print "YAY"*20
+        # if not logged in then get most recent questions
+        recent_questions = Question.objects.all().order_by('-created')[:8]
+        print recent_questions
+        if recent_questions == []:
+            print "NOOO"*10
+            # Query the database for the universities ordered by name
+            universities = University.objects.order_by('-name')[:1]
+            university = University.objects.get(slug='university-of-glasgow')
+            school_list = School.objects.all().filter(university=university).order_by('-name')
+            levels = Level.objects.all().order_by('name')
+            context_dict['levels'] = levels
+            context_dict = {'schools': school_list, 'universities': universities}
+          
+        else:
+            
+            context_dict['recent_questions'] = recent_questions
+   
     return render(request, 'peer_reply/index.html', context_dict)
+
 
 def left_block(request):
 
@@ -49,13 +71,13 @@ def base(request):
     context_dict['user_profile'] = userprofile
     return {context_dict}
 
-
 def course(request, course_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
-    levels = LevelName.objects.all().order_by('name')
-    context_dict['levels'] = levels
+
     try:
+
+
         course = Course.objects.get(slug=course_name_slug)
         context_dict['universities'] = University.objects.order_by('-name')[:1]
         context_dict['questions'] = Question.objects.all().filter(course=course).order_by('-views')[:20]
@@ -91,24 +113,25 @@ def school(request, school_name_slug):
 def add_question(request):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
+    # if(course_name_slug ):
+    #
+    #     course = Course.objects.get(slug=course_name_slug)
+    # else:
 
-    university = University.objects.get(slug='university-of-glasgow')
-    schools = School.objects.all().filter(university=university).order_by('name')
-    context_dict['schools'] = schools
+
     # A HTTP POST?
     if request.method == 'POST':
         form = QuestionForm(request.POST)
-        course = request.POST['course']
-        # Have we been provided with a valid form?
 
+        # Have we been provided with a valid form?
         if form.is_valid():
             if course:
                 question = form.save(commit=False)
-                question.course = Course.objects.get(id=course)
+                question.course = course
                 question.user = request.user
                 question.save()
                 # probably better to use a redirect here.
-                return HttpResponseRedirect('/peer_reply/')
+                return render(request, 'peer_reply/ask.html')
         else:
 
             context_dict['error'] = 'error'
@@ -116,10 +139,11 @@ def add_question(request):
             return render(request, 'peer_reply/ask.html', context_dict)
 
     else:
-
+        university = University.objects.get(slug='university-of-glasgow')
+        schools = School.objects.all().filter(university=university).order_by('name')
         # If the request was not a POST, display the form to enter details.
         form = QuestionForm()
-        context_dict = {'form': form, 'schools':schools}
+        context_dict = {'form': form, 'course': course, 'schools':schools}
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
     return render(request, 'peer_reply/ask.html', context_dict)
@@ -167,9 +191,6 @@ def search(request, course_name_slug):
     context_dict = {}
     # if request.user:
     # context_dict['user'] = request.user
-
-    levels = LevelName.objects.all().order_by('name')
-    context_dict['levels'] = levels
     if request.method == 'GET':
         search = request.GET.get('text')
         # search = request.GET['search']
@@ -197,7 +218,7 @@ def get_levels(request):
             levels = Level.objects.all().filter(school=cur_school)
             level_list = []
             for level in levels:
-                level_list.append('<option value="' + str(level.id) + '">' + level.name.name + '</option>')
+                level_list.append('<option value="' + str(level.id) + '">' + level.name + '</option>')
 
 
     return HttpResponse(level_list)
@@ -247,8 +268,7 @@ def view_question(request, question_id, question_title_slug):
         answers = Answer.objects.filter(question=question, is_best=False).order_by('-likes')
 
 
-        levels = LevelName.objects.all().order_by('name')
-        context_dict['levels'] = levels
+
 
         # Adds our results list to the template context under name pages.
         context_dict['answers'] = answers
@@ -270,13 +290,12 @@ def quiz(request, quiz_name_slug):
         slug=quiz_name_slug
         context_dict = {}
         points = 0
-        try:
+        try:            
             quiz = Quiz.objects.get(slug=quiz_name_slug)
             user = quiz.user
             likes = quiz.likes
-            questions = quiz.quizquestion_set.all()
+            questions = quiz.quizquestion_set.order_by('id')
             context_dict = {'quiz':quiz,'user':user, 'likes':likes,'slug':slug, 'questions':questions}
-
         except:
             pass
 
@@ -285,16 +304,14 @@ def quiz(request, quiz_name_slug):
                 if question.question_string in request.POST:
                     answer = question.quizanswer_set.get(answer_string=request.POST[question.question_string])
                     if answer.correct_answer:
-                        points = points + 1
-            context_dict['points'] = points
-            return render(request, 'peer_reply/quiz_results.html', context_dict)
-
+                        points=points+1
+            context_dict['points']=points
+            return render(request,'peer_reply/quiz_results.html', context_dict)
+        
         else:
-            return render(request,'peer_reply/quiz.html', context_dict)
-
-
+            return render(request,'peer_reply/quiz.html',context_dict)
+        
         return render(request,'peer_reply/quiz.html',context_dict)
-
 
 def add_quiz(request, course_name_slug):  #Any other parameters required?
 
@@ -378,3 +395,49 @@ def add_quiz_question(request,quiz_name_slug):
 
     return render(request, 'peer_reply/add_quiz_question.html', context_dict )
 
+# pasword change functionality for the profile
+@login_required
+def change_password(request):
+    return password_change(request, post_change_redirect='/peer_reply/profile.html')
+
+@login_required
+def profile(request, username):
+    user = User.objects.get(username=username)
+    # boolean for checking if the requested profile is the logged in users.
+    user_profile = (request.user==user)
+    try:
+        profile = UserProfile.objects.get(user=user)
+        courses = profile.courses.all()
+    except UserProfile.DoesNotExist:
+        profile = None
+        courses = None
+    context_dict = {'user':user,'profile':profile,'user_profile':user_profile,'courses':courses}
+    return render(request, 'peer_reply/profile.html',context_dict)
+
+
+@login_required
+def edit_profile(request):
+    # create a profile if it does not exist. 
+    user_profile = UserProfile.objects.get(user=request.user)
+    
+    # save the details
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            # re-assign the values if they exist.
+            user_profile.website = request.POST['website']
+            if 'picture' in request.FILES:
+                user_profile.picture = request.FILES['picture']
+            if 'course' in request:
+                user_profile.courses += course
+            user_profile.save()
+            user.save()
+            url = "/peer_reply/profile/"+request.user.username+"/"
+            return redirect(url)
+
+        else:
+            print form.errors
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request,'peer_reply/edit_profile.html',{'form':form,'user_profile':user_profile})

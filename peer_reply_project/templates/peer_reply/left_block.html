@@ -1,3 +1,75 @@
+
+<div id="left-block" >
+<div id="nav-courses">
+            {% if user.is_authenticated %}
+            {% if questions %}
+                {% if user.profile %}
+
+                    <h3>My courses</h3>
+                    <br>
+                    <br>
+                    {% for course in user.profile.courses.all %}
+                    <div class="my_course">
+                        <a href="{% url 'course' course.slug %}"><div class="link_button_inner">
+                            {{ course.name }}{{ course.level }}
+                            </div>
+                            </a>
+                     </div>
+                {% endfor %}
+
+
+                 {% endif %}
+            {% endif %}
+
+            {% else %}
+
+
+{% if universities %}
+
+{% for university in universities %}
+
+<ul class="nav nav-list">
+    {% for school in university.school_set.all %}
+
+
+    <li><label class="tree-toggler nav-header"><h4>
+        <span class="glyphicon glyphicon-chevron-down school_down_icon"></span><span
+            class="glyphicon glyphicon-chevron-left school_left_icon">
+                                  </span> {{ school.name }}</h4></label>
+        <ul class="nav nav-list tree">
+
+            {% for level in school.level_set.all %}
+            <li><label class="tree-toggler-level nav-header">
+                <span class="glyphicon glyphicon-chevron-up school_down_icon"></span><span
+                    class="glyphicon glyphicon-chevron-down school_left_icon">
+                                  </span> {{ level.name }}</label>
+                <ul class="nav nav-list tree">
+
+                    {% for course in level.course_set.all %}
+
+                    <li class="course-link"><a id="course-link" href="{% url 'course' course.slug %}">{{ course.name }}</a></li>
+                    {% endfor %}
+                    <hr>
+                </ul>
+            </li>
+
+            {% endfor %}
+        </ul>
+    </li>
+
+</ul>
+{% endfor %}
+
+{% endfor %}
+
+{% else %}
+<strong>There are no courses present.</strong>
+{% endif %}
+
+
+            {% endif %}
+            </div>
+
 <div id="left-block">
     <div id="navcourses" class="navcourses default-skin">
         {% if user.is_authenticated %}
