@@ -14,10 +14,17 @@ import json
 # @ensure_csrf_cookie
 def index(request):
     context_dict = {}
+    universities = University.objects.order_by('-name')[:1]
+    university = University.objects.get(slug='university-of-glasgow')
+    school_list = School.objects.all().filter(university=university).order_by('-name')
+    levels = Level.objects.all().order_by('name')
+    context_dict['levels'] = levels
+    context_dict['schools'] = school_list
+    context_dict['universities'] = universities
     if request.user.is_authenticated():
         user_profile = UserProfile.objects.get(user=request.user)
         relevant_questions = []
-        print user_profile.courses
+        # print user_profile.courses
         for course in user_profile.courses.all(): # for all courses in the user
             # append relevant questions in order
             relevant_questions += Question.objects.all().filter(course=course).order_by('-views')[:8]
@@ -29,19 +36,13 @@ def index(request):
         # if not logged in then get most recent questions
         recent_questions = Question.objects.all().order_by('-created')[:8]
         print recent_questions
-        if recent_questions == []:
-            print "NOOO"*10
+
             # Query the database for the universities ordered by name
-            universities = University.objects.order_by('-name')[:1]
-            university = University.objects.get(slug='university-of-glasgow')
-            school_list = School.objects.all().filter(university=university).order_by('-name')
-            levels = Level.objects.all().order_by('name')
-            context_dict['levels'] = levels
-            context_dict = {'schools': school_list, 'universities': universities}
+
           
-        else:
+
             
-            context_dict['recent_questions'] = recent_questions
+        context_dict['recent_questions'] = recent_questions
    
     return render(request, 'peer_reply/index.html', context_dict)
 
