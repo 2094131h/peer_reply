@@ -9,13 +9,12 @@ body {
     font-size: 18px;
     padding-top: 100px;
  }
- 
 
-.col-sm-offset-12 {
+div.col-sm-offset-12 {
 margin-left: 0%;
 }
-.col-md-10 {
-   padding-left: 100px;
+div.col-md-10 {
+    padding-left: 100px;
     font-size: 18px;
     padding-top: 100px;
 }
@@ -56,14 +55,19 @@ span.tags
     font-weight: bold;
     padding: 2px 4px;
     }
-.dropdown-menu 
-{
+.dropdown-menu  {
     background-color: #34495e;    
     box-shadow: none;
     -webkit-box-shadow: none;
     width: 250px;
 
+
     }
+    
+.btn-group {
+padding-top:20px;
+
+}
 .dropdown-menu .divider 
 {
     background:none;    
@@ -82,9 +86,6 @@ span.tags
     border-top: 10px solid #34495e;
     border-right: 10px solid transparent;
     border-left: 10px solid transparent;
-    position: absolute;
-    bottom: -10px;
     left: 50%;
-    margin-left: -10px;
     z-index: 10;
     }

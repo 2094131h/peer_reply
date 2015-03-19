@@ -25,5 +25,6 @@ urlpatterns = patterns('',
     url(r'^quiz/(?P<quiz_name_slug>[\w\-]+)/quiz_results/', views.quiz, name='quiz_results'),
     url(r'^profile/(?P<username>\w+)/$', views.profile, name='profile'),
     url(r'^edit_profile/$', views.edit_profile, name='edit_profile'),
+
     )
 

@@ -13,16 +13,20 @@ import json
 
 # @ensure_csrf_cookie
 def index(request):
-    # Query the database for the universities ordered by name
-
-    universities = University.objects.order_by('-name')[:1]
-    university = University.objects.get(slug='university-of-glasgow')
-    school_list = School.objects.all().filter(university=university).order_by('-name')
-    levels = Level.objects.all()
-
-    context_dict = {'schools': school_list, 'universities': universities}
-
-    # Render the response and send it back!
+    context_dict = {}
+    if request.user.is_authenticated():
+        user_profile = UserProfile.objects.get(user=request.user)
+        relevant_questions = []
+        for course in user_profile.display_courses(): # for all courses in the user
+            # append relevant questions in order
+            relevant_questions += Questions.objects.get(course=course).order_by('-views')[:8] 
+        # add the list to ontext_dict
+        context_dict['relevant_questions'] = relevant_questions        
+    else:
+        # if not logged in then get most recent questions
+        recent_questions = Question.objects.order_by('-views')[:8]
+        context_dict['recent_questions'] = recent_questions
+        
     return render(request, 'peer_reply/index.html', context_dict)
 
 def left_block(request):
@@ -308,13 +312,12 @@ def profile(request, username):
     context_dict = {'user':user,'profile':profile,'user_profile':user_profile,'courses':courses}
     return render(request, 'peer_reply/profile.html',context_dict)
 
+
 @login_required
 def edit_profile(request):
-    # create a profile if it does not exist.
-    try:
-        user_profile = UserProfile.objects.get(user=request.user)
-    except UserProfile.DoesNotExist:
-        user_profile= None
+    # create a profile if it does not exist. 
+    user_profile = UserProfile.objects.get(user=request.user)
+    
     # save the details
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
