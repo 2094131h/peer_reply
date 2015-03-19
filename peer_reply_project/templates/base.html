@@ -7,12 +7,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="icon" href="{{ STATIC_URL }}images/favicon.png"> <!-- added a customized favicon  -gulen -->
+
+    <link rel="icon" href="{{ STATIC_URL }}images/favicon.png"> <!-- added a customized favicon  -gulen -->        
 
     <title>Peer Reply - {% block title %}{% endblock %}</title>
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}mystyle.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}mystyle.css">  
     <link href=" {{ STATIC_URL }}css/profile.css" rel="stylesheet"> <!--added this line to get the css files from profile -gulen -->
+ 
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery.custom-scrollbar.css">
+
+        
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -39,7 +44,9 @@
 
                 </li>
 
+    
 
+    
            <li> <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
@@ -53,7 +60,11 @@
        <div class="navbar-collapse collapse">
 
             <ul class="nav navbar-nav navbar-right">
+    
                  <li><form class="navbar-form" role="search" id="search_form" action="{% url 'search' 't' %}" method="get">
+    
+                 <li><form class="navbar-form" id="search-from" role="search" id="search_form" action="{% url 'search' 't' %}" method="get">
+        
 
                   {% csrf_token %}
                             <input type="text" class="form-control" placeholder="Search questions"  name="text" id="search" >
@@ -63,9 +74,11 @@
                     </form></li>
 
                 <li><a href="{% url 'index' %}">Home</a></li>
+
                 {% if user.is_authenticated %} 
                 <li><a  href="{% url 'auth_logout' %}?next=/peer_reply/">Logout</a></li>
                 <li><a href="{% url 'profile' user.username %}">Profile</a></li> <!--added the link to profile page -gulen -->
+        
 
                 {% else %}
                 <li><a  href="{% url 'registration_register' %}">Register Here</a></li>
@@ -77,7 +90,6 @@
         </div>
     </div>
 </div>
-
 
     <div class="col-sm-3 sidebar col-sm-offset-12 sidebar" >
         {% block left_block %}
@@ -105,11 +117,18 @@
 
     </div>
     <div class="col-sm-9 col-sm-offset-12  main" id="centre_block">
+    
+
+    <div  id="centre_block">
+        
 
             {% block body_block %}{% endblock %}
 
     </div>
     <div class="col-sm-3 col-md-2 col-sm-offset-12 sidebar" id="right_block">
+    
+    <div  id="right_block">
+        
         {% block right_block %}
 
         {% endblock %}
@@ -118,9 +137,10 @@
 
 
 <!-- Bootstrap core JavaScript
-================================================== -->
+                            = -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+         
 <script src="{{ STATIC_URL }}js/carhartl-jquery-cookie-92b7715/jquery.cookie.js"></script>
 
 <!--<script-->
@@ -155,7 +175,7 @@
 
 <!--function csrfSafeMethod(method) {-->
     <!--// these HTTP methods do not require CSRF protection-->
-    <!--return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));-->
+    <!--return (/^(GET|    |OPTIONS|TRACE)$/.test(method));-->
 <!--}-->
 <!--$.ajaxSetup({-->
     <!--beforeSend: function(xhr, settings) {-->
@@ -188,6 +208,66 @@
 <!--});-->
 <!--});-->
 
+
+    
+<script src="{{ STATIC_URL }}js/jquery.custom-scrollbar.min.js"></script>
+  <script type="text/javascript" charset="utf-­‐8">
+
+$('label.tree-toggler').parent().children('ul.tree').toggle(0);
+$(document).ready(function () {
+  $(".navcourses").customScrollbar()
+
+
+	$('label.tree-toggler').click(function () {
+        $(this).parent().find('.school_down_icon').toggleClass('glyphicon glyphicon-chevron-left glyphicon glyphicon-chevron-down');
+		$(this).parent().children('ul.tree').toggle(600);
+        $(this).parent().siblings().toggle(800);
+
+         $(".navcourses").customScrollbar("resize", true);
+	});
+
+    $('label.tree-toggler-level').parent().children('ul.tree').toggle(600);
+	$('label.tree-toggler-level').click(function () {
+        $(this).parent().find('.school_down_icon').toggleClass('glyphicon glyphicon-chevron-down glyphicon glyphicon-chevron-up');
+		$(this).parent().children('ul.tree').toggle(600);
+
+       $(".navcourses").customScrollbar("resize", true);
+
+	});
+
+$('#school_select').change(function(){
+        var query;
+        query = $(this).val();
+        $.get('/peer_reply/get_levels/', {school_id: query}, function(data){
+         $('#level_select').html(data);
+          $('select option:first-child').delay(5000).attr("selected", "selected");
+         $( "#level_select" ).trigger( "change" );
+
+        });
+
+
+
+});
+
+$('#level_select').change(function(){
+        var query;
+        query = $(this).val();
+        $.get('/peer_reply/get_courses/', {level_id: query}, function(data){
+         $('#course_select').html(data);
+        });
+});
+
+$('#course_select').change(function(){
+        var val;
+        val = $(this).val();
+
+         $('#ask-course-input').attr("value",val);
+
+});
+
+});
+
+  </script>
 
 
 <!--</script>-->

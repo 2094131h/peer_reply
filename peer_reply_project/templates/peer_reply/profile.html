@@ -43,14 +43,11 @@
                     <p><strong>Courses: </strong>
                     {% if courses %}
                         {% for course in courses %}
-                        <span class="tags">course</span> 
+                        <div id="course_span"><span class="tags">{{ course.name }}</span></div>
                         {% endfor %}
                     {% endif %}
-                        <span class="tags">Maths 2D</span>
-                        <span class="tags">CS2X</span>
-                        <span class="tags">JOOSE</span>
-                        <button type="button" class="btn fa fa-plus-circle"></button>
-            </div>           
+             
+            </div> <button type="button" class="btn fa fa-plus-circle" id="add_course_btn"></button>
             <div class="btn-group dropup btn-block">
                   <button type="button" class="btn btn-primary  dropdown-toggle" data-toggle="dropdown" ><span class="fa fa-gear" ></span> Options </button>
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -75,5 +72,5 @@
 <script type="text/javascript">
 
 </script>
-
+{% include 'peer_reply/add_courses.html' %}
 {% endblock %}

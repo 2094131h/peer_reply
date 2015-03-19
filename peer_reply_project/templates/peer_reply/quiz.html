@@ -16,8 +16,12 @@
                <br/>{% for question in questions %}
                    <h3> {{ question }} </h3>
                    <div>{% for answer in question.quizanswer_set.all %}
+    
                       <input type="radio" name="{{ question.question_string }}" value="{{ answer.answer_string }}"  required />{{ answer }}<br>
                        
+    
+                        <input type="radio" name="{{ question.question_string }}" value="{{ answer.answer_string }}" required />{{ answer }}<br>
+    
                         {% endfor %}</div><br><hr>
                   {% endfor %}
                     <input type="submit" value="Submit" /><br>

@@ -79,7 +79,11 @@
 
     </form>
     <div id="question-textarea">
+<<<<<<< HEAD
     <form class="form-horizontal" method="POST" action="/peer_reply/ask/{{course.slug}}/">
+=======
+    <form class="form-horizontal" method="POST" action="/peer_reply/ask/" id="ask-form">
+>>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
 
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
@@ -92,15 +96,31 @@
                                           alt="Peer Reply logo"/>
 
             <h2 class="ask-form-header-inner">Type your question</h2></div>
+<<<<<<< HEAD
 
                 <div class="controls">
                     {% render_field form.title placeholder="Title" size="82" %}
+=======
+                    {% render_field form.course  value="" id="ask-course-input" %}
+                <div class="controls">
+                    <div class="form-group has-error col-sm-10">
+                    {{ form.title.errors }}
+                    {% render_field form.title placeholder="Title"  %}
+                        </div>
+>>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
+<<<<<<< HEAD
 
                     {% render_field form.body rows="10" cols="80" placeholder="Question" %}
+=======
+                    <div class="form-group has-error col-sm-9">
+                    {{ form.body.errors }}
+                    {% render_field form.body  class="form-control" rows="10" cols="80" placeholder="Question" %}
+                        </div>
+>>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
                 </div>
             </div>
             <input type="submit" value="Submit your question" class="submit" id="question-submit"/>

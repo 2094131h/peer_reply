@@ -17,17 +17,34 @@ def index(request):
     if request.user.is_authenticated():
         user_profile = UserProfile.objects.get(user=request.user)
         relevant_questions = []
-        for course in user_profile.display_courses(): # for all courses in the user
+        print user_profile.courses
+        for course in user_profile.courses.all(): # for all courses in the user
             # append relevant questions in order
-            relevant_questions += Questions.objects.get(course=course).order_by('-views')[:8] 
+            relevant_questions += Question.objects.all().filter(course=course).order_by('-views')[:8]
         # add the list to ontext_dict
-        context_dict['relevant_questions'] = relevant_questions        
+        context_dict['relevant_questions'] = relevant_questions
+        return render(request,'peer_reply/course.html',context_dict)
     else:
+        print "YAY"*20
         # if not logged in then get most recent questions
-        recent_questions = Question.objects.order_by('-views')[:8]
-        context_dict['recent_questions'] = recent_questions
-        
+        recent_questions = Question.objects.all().order_by('-created')[:8]
+        print recent_questions
+        if recent_questions == []:
+            print "NOOO"*10
+            # Query the database for the universities ordered by name
+            universities = University.objects.order_by('-name')[:1]
+            university = University.objects.get(slug='university-of-glasgow')
+            school_list = School.objects.all().filter(university=university).order_by('-name')
+            levels = Level.objects.all().order_by('name')
+            context_dict['levels'] = levels
+            context_dict = {'schools': school_list, 'universities': universities}
+          
+        else:
+            
+            context_dict['recent_questions'] = recent_questions
+   
     return render(request, 'peer_reply/index.html', context_dict)
+
 
 def left_block(request):
 
@@ -48,8 +65,11 @@ def left_block(request):
 def base(request):
     user = request.user
     userprofile = UserProfile.objects.get(user=user)
-    return {'userprofile': userprofile, }
+    levels = LevelName.objects.all().order_by('name')
 
+    context_dict['levels'] = levels
+    context_dict['user_profile'] = userprofile
+    return {context_dict}
 
 def course(request, course_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
@@ -292,6 +312,88 @@ def quiz(request, quiz_name_slug):
             return render(request,'peer_reply/quiz.html',context_dict)
         
         return render(request,'peer_reply/quiz.html',context_dict)
+
+def add_quiz(request, course_name_slug):  #Any other parameters required?
+
+    #Check if course exists
+    try:
+        course = Course.objects.get(slug=course_name_slug)
+    except Course.DoesNotExist:
+        course = None
+
+    context_dict = { 'course_name_slug' : course_name_slug, 'quiz_name_slug' : None}
+
+    if request.method == 'POST':
+        quizForm = QuizForm(request.POST) #Bind data to form
+
+        if quizForm.is_valid():
+            if course:  #If there was indeed a course by that name...
+                quiz = quizForm.save(commit=False) #Saves quiz name, delay committing
+                quiz.course = course
+                quiz.user = request.user
+                quiz.likes = 0
+                quiz.save()
+                quiz_name_slug = quiz.slug ##Should now be name, slugified
+                context_dict['quiz_name_slug'] = quiz_name_slug
+                #return render(request, 'peer_reply/add_quiz.html', context_dict)
+                return render(request, 'peer_reply/add_quiz.html', context_dict )
+        else:
+            print quizForm.errors    #Can I handle errors in a better way?
+    else:
+        quizForm = QuizForm()
+    #I will have to pass quiz-name-slug also since I use it for adding quiz question link.
+    context_dict['form'] = quizForm
+
+    return render(request, 'peer_reply/add_quiz.html', context_dict)
+
+def add_quiz_question(request,quiz_name_slug):
+
+    #First check if arguments exist in database
+    # try:
+    #     course = Course.objects.get(slug=course_name_slug)
+    # except Course.DoesNotExist:
+    #     course = None
+    try:
+        quiz = Quiz.objects.get(slug=quiz_name_slug)
+    except Quiz.DoesNotExist:
+        quiz = None
+
+    QuizAnswerFormSet = formset_factory(QuizAnswerForm, extra=4) #Creating four instances of form
+    if request.method == 'POST':
+        quizQuestionForm = QuizQuestionForm(request.POST)   #Bind data to forms
+        formset = QuizAnswerFormSet(request.POST)
+
+        if quizQuestionForm.is_valid() and formset.is_valid():
+            if quiz:
+                quizQuestion = quizQuestionForm.save(commit=False) #Saving question-string, I suppose
+                quizQuestion.quiz = quiz
+                quizQuestion.save()
+
+                for form in formset:
+                    quizAnswer = form.save(commit=False) #Saving answer_string and correct_answer, I suppose
+                    quizAnswer.question = quizQuestion
+                    quizAnswer.save()
+
+                context_dict = {}
+                # context_dict['course_name_slug'] = course_name_slug
+                context_dict['quiz_name_slug'] = quiz_name_slug
+                context_dict['quizQuestionForm'] = quizQuestionForm
+                context_dict['formset'] = formset
+
+                return render(request, 'peer_reply/add_quiz_question.html',context_dict) #Redirect to same, empty page
+        else:
+            print quizQuestionForm.errors, formset.errors
+    else: #Instantiate forms to display
+        formset = QuizAnswerFormSet()
+        quizQuestionForm = QuizQuestionForm()
+
+
+    context_dict = { 'quizQuestionForm' : quizQuestionForm}
+    context_dict['formset'] = formset
+    # context_dict['course_name_slug'] = course_name_slug
+    context_dict['quiz_name_slug'] = quiz_name_slug
+
+    return render(request, 'peer_reply/add_quiz_question.html', context_dict )
 
 # pasword change functionality for the profile
 @login_required
