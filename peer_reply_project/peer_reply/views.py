@@ -294,7 +294,7 @@ def quiz(request, quiz_name_slug):
             quiz = Quiz.objects.get(slug=quiz_name_slug)
             user = quiz.user
             likes = quiz.likes
-            questions = quiz.quizquestion_set.all()
+            questions = quiz.quizquestion_set.order_by('id')
             context_dict = {'quiz':quiz,'user':user, 'likes':likes,'slug':slug, 'questions':questions}
         except:
             pass
