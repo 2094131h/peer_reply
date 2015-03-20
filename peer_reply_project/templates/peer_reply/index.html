@@ -5,8 +5,14 @@
 {% block title %}Peer Reply Home{% endblock %}
 
 {% block body_block %}
-<!--TODO-->
+<ul class="nav nav-tabs">
+    <li class="active">
+    <a  class="nav-tab-link" rank="index_recent">Recent</a>
+    </li>
+    <li><a  class="nav-tab-link" rank="index_hot">Hot</a></li>
 
+</ul>
+{% include 'peer_reply/questions.html' %}
 
 
 {% endblock %}

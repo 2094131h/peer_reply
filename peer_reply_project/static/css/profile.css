@@ -95,6 +95,8 @@ padding-top:20px;
     border-top: 10px solid #34495e;
     border-right: 10px solid transparent;
     border-left: 10px solid transparent;
-    left: 50%;
+
+    margin-left: 0%;
     z-index: 10;
     }
+

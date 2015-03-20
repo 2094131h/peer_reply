@@ -13,14 +13,13 @@
     hover:color:black;
 }
 
-<<<<<<< HEAD
-=======
+
 #nav-tabs{
 position:absolute;
 top:15%;
 left:55%;
 }
->>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
+
 ul.nav a:hover { color: #9B0004 !important; }
 
 body{
@@ -84,16 +83,12 @@ color:white;
 }
 
 #left-block{
-margin-left:2px;
 margin-top:50px;
-<<<<<<< HEAD
-box-shadow:1px 1px 1px 1px grey;
-=======
->>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
 width:20%;
 background:white;
 position:fixed;
 height:100%;
+left:-25px:
 }
 .school_icon{
  color:#ED2427;
@@ -105,30 +100,25 @@ height:100%;
  color:#ED2427;
  display:none;
  }
-<<<<<<< HEAD
 
-=======
 #left-block label{
 margin-bottom:3px;
 padding-right:5px;
 margin-right:25px;
 }
->>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
+
 #centre_block{
 margin-top:80px;
 position:absolute;
-left:20%;
-width:60%;
+left:22.5%;
+width:55%;
 }
 
 #right_block{
 top:20px;
 position:fixed;
-<<<<<<< HEAD
-right:0%;
-=======
+
 left:80%;
->>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
 
 }
 
@@ -157,42 +147,11 @@ font-size:13px;
 
 }
 
-<<<<<<< HEAD
-.school_button:hover {
-background-color: #ED2427;
-color:white;
-text-decoration: none;
-}
-
 a{
 text-decoration: none;
 }
 
-.courses{
-display:inline-block;
-margin:0px auto;
-margin-top:30px;
-}
-.nav-courses{
-background-color:white;
-box-shadow:1px 1px 1px 1px grey;
-padding-left:5px;
-left:0px;
-height:100%;
 
-}
-.nav-school{
-font-weight:bold;
-border:0px 0px 3px 0px grey;
-}
-
-.nav-list{
-height:80%;
-}
-
-.nav nav-list tree li a{
- display: none; }
-=======
 
 a{
 text-decoration: none;
@@ -210,7 +169,7 @@ height:100%;
 .nav nav-list tree li a{
  display: none;
  color:white;}
->>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
+
 
 .course-link {
 color:black;
@@ -218,32 +177,7 @@ text-decoration: none;
 }
 
 #course-link:hover {
-<<<<<<< HEAD
-background-color: #ED2427;
-color:white;
-text-decoration:none;
-}
-.nav-list > li > a:hover {
-    color: white;
-}
-.hidden { display: block; }
 
-.my-courses{
-background-color:white;
-box-shadow:1px 1px 1px 1px grey;
-padding-left:5px;
-display:inline-block;
-position:fixed;
-}
-.my_course{
-height:80px;
-margin-bottom:20px;
-padding:3px;
-margin: 5px;
-width:250px;
-}
-
-=======
 background-color: #FAF5F5;
 color: white;
 text-decoration:none;
@@ -271,19 +205,41 @@ line-height:50px;
 margin-left:20%;
 
 }
->>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
+
 #questions{
-top:200px;
+top:150px;
 position:absolute;
-width:98%;
+width:100%;
 }
 .question_link{
 background-color:white;
 height:100px;
-margin:0px 0px 20px 30px;
+margin:0px 0px 5px 5px;
 padding:3px;
-box-shadow:1px 1px 1px 1px grey;
 color:black;
+position:relative;
+}
+.question_link_title{
+position:absolute;
+left:45px;
+top:5px;
+color:blue;
+font-weight:bold;
+}
+.question_link_pic{
+box-shadow:1px 1px 1px 1px grey;
+margin:5px;
+}
+.question_link_views{
+position:absolute;
+left:5px;
+bottom:5px;
+font-size:20px;
+}
+.question_link_posted{
+position:absolute;
+right:5px;
+bottom:5px;
 }
 #level_select{
 width:200px;
@@ -356,13 +312,11 @@ textarea{
 width:70%;
 }
 
-<<<<<<< HEAD
 
-=======
 .error{
     border: 2px red solid;
 }
->>>>>>> f0998634b8c45602b46d41fdd4bdeb319fb08aaf
+
 
 
 

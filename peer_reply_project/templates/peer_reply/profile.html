@@ -6,9 +6,11 @@
 
 {% block body_block %}
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-<div class="container">
+
+<!--<div class="container">-->
 	<div class="row clearfix">
-		<div class="col-md-2 column  picturecl">
+		<div class="col-md-3 column  picturecl">
+
 			<figure>
                  {% if profile.picture %}
                 <img width="200" height="200" src="{{ profile.picture.url }}" class="img-rounded img-responsive">
@@ -36,7 +38,9 @@
                 </figcaption>
             </figure>
 		</div>
-		<div class="col-md-10 column">
+
+		<div class="col-md-7 column">
+
             <div><h2>{{ user.username }}</h2>
                     <p><strong>About: </strong> Web Designer / UI. </p>
                     <p><strong>Hobbies: </strong> Read, out with friends, listen to music, draw and learn new things. </p>
@@ -67,7 +71,11 @@
             </div>
 		</div>
 	</div>
-</div>
+
+<br>
+<br>
+<!--</div>-->
+
 
 <script type="text/javascript">
 
