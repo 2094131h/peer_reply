@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body_block %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+
+<div class="page-header">
+    <h1>{{ user.username }}</h1>
+</div>
+<form id="userprofile_form" class="form" method="post" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
+{% csrf_token %}    
+<div class="container-fluid well span6">
+
+    <h3> Edit Profile </h3>
+
+      <hr>
+      <!-- left column -->
+      <div class="col-md-6">
+        <div class="text-center">
+        {% if user_profile.picture %}
+          <img width="200" height="200" src="{{ user_profile.picture.url }}" class="avatar img-rounded" alt="profile picture"></img>
+        {% else %}
+         <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded">
+        {% endif %}
+        </div>
+        
+         <div class="uploadfile-name"><label> {{ form.picture }} </label></div>
+      </div>     
+      <!-- edit form column -->
+      <div class="col-md-6">
+        <h4>Personal info</h4>
+           <div class="form">
+            <label class="row"> 
+            Username:  {{ form.username }} </label>
+            <label class="row"> Website:   {{ form.website }}</label>
+            <label class="row"> Location:   {{form.location }}</label>
+       </div>   
+   <div class="btn-align">
+        <button class="btn btn-primary " type="submit" value="Submit" />Save</button>
+        <button class="btn btn-secondary " type="reset" value="Cancel" />Cancel</button>
+        </div>
+        </div></div>
+</form>
+<hr>
+{% endblock %}
+

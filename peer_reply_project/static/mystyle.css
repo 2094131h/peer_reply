@@ -194,17 +194,39 @@ margin-left:20%;
 
 }
 #questions{
-top:200px;
+top:150px;
 position:absolute;
 width:98%;
 }
 .question_link{
 background-color:white;
 height:100px;
-margin:0px 0px 20px 30px;
+margin:0px 0px 5px 5px;
 padding:3px;
-box-shadow:1px 1px 1px 1px grey;
 color:black;
+position:relative;
+}
+.question_link_title{
+position:absolute;
+left:45px;
+top:5px;
+color:blue;
+font-weight:bold;
+}
+.question_link_pic{
+box-shadow:1px 1px 1px 1px grey;
+margin:5px;
+}
+.question_link_views{
+position:absolute;
+left:5px;
+bottom:5px;
+font-size:20px;
+}
+.question_link_posted{
+position:absolute;
+right:5px;
+bottom:5px;
 }
 #level_select{
 width:200px;
