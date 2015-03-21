@@ -5,7 +5,7 @@ from django.contrib.auth.views import password_change
 from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
 from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, QuizAnswer, QuizQuestion
-from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm
+from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm
 from django.templatetags.static import static
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
