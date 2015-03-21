@@ -136,7 +136,6 @@ class Question(models.Model):
     views = models.IntegerField(default=0)
     course = models.ForeignKey(Course)
     user = models.ForeignKey(User)
-    slug = models.SlugField(unique=True)
 
     # Create slug field for url
     slug = models.SlugField(unique=True)
@@ -144,8 +143,6 @@ class Question(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
 
-    # Create slug field for url
-    slug = models.SlugField(unique=False)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
