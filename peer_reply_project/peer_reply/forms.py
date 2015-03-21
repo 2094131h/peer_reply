@@ -1,7 +1,4 @@
 from django import forms
-from peer_reply.models import Course, UserProfile, Question
-from django.contrib.auth.models import User
-
 from peer_reply.models import Course, UserProfile, Question, Quiz, QuizQuestion, QuizAnswer
 from django.contrib.auth.models import User
 from django.forms.formsets import formset_factory
@@ -58,11 +55,6 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('website', 'picture','location')
-
-
-    class Meta:
-        model = UserProfile
-        fields = ('website', 'picture')
 
 
 class QuizForm(forms.ModelForm):
