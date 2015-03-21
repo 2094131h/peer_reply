@@ -47,9 +47,6 @@ def index(request):
 
         # if not logged in then get most recent questions
         questions = Question.objects.all().order_by('-created')[:8]
-        print recent_questions
-
-
 
     # Render the response and send it back!
     return render(request, 'peer_reply/index.html', context_dict)
