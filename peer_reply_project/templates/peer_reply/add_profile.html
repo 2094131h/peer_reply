@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %} Add Profile {% endblock %}
+
+{% block body_block %}
+<link href=" {{ STATIC_URL }}css/profile.css" rel="stylesheet"> <!--added this line to get the css files from profile -g -->
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+<form id="userprofile_form" method="post" action="{% url 'add_profile' %}" enctype="multipart/form-data">
+
+<h2 class="form-signin-heading">Create profile for {{ user }}</h2>
+    {% csrf_token %}
+  <div class="form-group">
+    <p><strong> Enter your website: {{ form.website }} </strong></p>
+    <p><strong> Enter your location: {{ form.location }} </strong></p>
+    <p>
+    <br><label> Select a profile picture: {{ form.picture }} </label>
+  </div>
+
+<button class="btn btn-primary" type="submit" name="submit">Add profile</button>
+<button class="btn btn-secondary " type="reset" value="Cancel" />Cancel</button>
+
+</form>
+ 
+{% endblock %}
