@@ -500,7 +500,8 @@ def add_profile(request):
             if 'picture' in request.FILES:
                 profile.picture = request.FILES['picture']
             profile.save()
-            return profile(request)
+            url = "/peer_reply/profile/"+request.user.username+"/"
+            return redirect(url)
         else:
             print form.errors
     else:
