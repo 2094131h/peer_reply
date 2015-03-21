@@ -149,6 +149,9 @@ class Question(models.Model):
         # On save, update timestamps
         if not self.id:
             self.created = datetime.datetime.today()
+        # correct wrong input
+        if self.views < 0:
+            self.views = 0
         self.modified = datetime.datetime.today()
         super(Question, self).save(*args, **kwargs)
 
