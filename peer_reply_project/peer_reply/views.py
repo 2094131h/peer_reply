@@ -503,3 +503,9 @@ def edit_profile(request):
 
     return render(request, 'peer_reply/edit_profile.html', {'form': form, 'user_profile': user_profile})
 
+
+
+def user_profiles(request):
+    context_dict={}
+    context_dict ['users']=UserProfile.objects.order_by('no_quiz_likes','no_best_answers')    
+    return render(request,'peer_reply/users.html', context_dict)

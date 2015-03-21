@@ -30,6 +30,8 @@ urlpatterns = patterns('',
     url(r'^add_quiz/(?P<course_name_slug>[\w\-]+)/$', views.add_quiz, name='add_quiz'),
     url(r'^add_quiz_question/(?P<quiz_name_slug>[\w\-]+)$', views.add_quiz_question, name='add_quiz_question'),
     url(r'^quiz/(?P<quiz_name_slug>[\w\-]+)/quiz_results/', views.quiz, name='quiz_results'),
+    url(r'^users/', views.user_profiles, name='user_profiles'),
+
 
 
 )

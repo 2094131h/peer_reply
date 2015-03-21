@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+{% if users %}
+    {% block title %}Users{% endblock %}
+{% endif %}
+
+{% block body_block %}
+<div>
+           {% if users %}
+             <h2>Users</h2>
+               <br/>{% for user in users %}
+                   <div>
+				   {% if user.picture %}
+				   <img src='profile_images/{{ user.picture }}' >
+				   {% endif %}
+				   <h4><a href='{% url 'profile' user.user.username %}>{{ user.user.username }}</a></h4>
+				   <li> Courses: {{ user.courses }}</li>
+				   <li> Location: {{ user.location }}</li>
+				   <li> Website: <a href='{{ user.website }}'>{{ user.website }}</a></li>
+                   </div>
+                  {% endfor %}
+                    
+           {% else %}
+              <p>The are no users to display.</p>
+           {% endif %}
+</div>
+{% endblock %}
