@@ -1,5 +1,5 @@
 from django import forms
-from peer_reply.models import Course, UserProfile, Question, Quiz, QuizQuestion, QuizAnswer
+from peer_reply.models import Course, UserProfile, Question, Answer, Quiz, QuizQuestion, QuizAnswer
 from django.contrib.auth.models import User
 from django.forms.formsets import formset_factory
 
@@ -80,5 +80,15 @@ class QuizAnswerForm(forms.ModelForm):
 	class Meta:
 		model = QuizAnswer
 		fields = ('answer_string', 'correct_answer',)
+
+class AnswerForm(forms.ModelForm):
+    body = forms.CharField(widget=forms.Textarea(attrs={'cols': 90, 'rows': 10}))
+
+    class Meta:
+        model = Answer
+        fields = ('body',)
+        widgets = {
+          'summary': forms.Textarea(attrs={'rows':4, 'cols':15}),
+        }
 
 

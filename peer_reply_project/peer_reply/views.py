@@ -5,11 +5,12 @@ from django.contrib.auth.views import password_change
 from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
 from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, QuizAnswer, QuizQuestion
-from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm
+from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm, AnswerForm
 from django.templatetags.static import static
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.db.models import Q
+import datetime
 import json
 
 
@@ -291,36 +292,131 @@ def get_questions(request):
 def view_question(request, question_id, question_title_slug):
     context_dict = {}
 
-    try:
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
 
-        question = Question.objects.get(id=question_id, slug=question_title_slug)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.question = Question.objects.get(id=question_id, slug=question_title_slug)
+            answer.likes = 0
+            answer.is_best = False
+            answer.user = request.user
+            answer.save()
+        else:
+            print form.errors
+        if 'next' in request.GET:
+            return redirect(request.GET['next'])
 
+    if request.method == 'GET':
+        response = ""
         try:
-            bestAnswer = Answer.objects.filter(question=question, is_best=True)
+            question = Question.objects.get(id=question_id, slug=question_title_slug)
 
-        except Answer.DoesNotExist:
+            try:
+                bestAnswer = Answer.objects.get(question=question, is_best=True)
+                bestAnswerUser = Answer.objects.get(question=question, is_best=True).user
+                bestAnswerUserProfile = UserProfile.objects.get(user=bestAnswerUser)
+                context_dict['best_answer'] = bestAnswer
+                context_dict['best_answer_user'] = bestAnswerUserProfile
+            except Answer.DoesNotExist:
+                pass
+
+            answers = Answer.objects.filter(question=question, is_best=False, flags__lt=4).order_by('-likes')
+            userask = Question.objects.get(id=question_id).user
+            useraskprofile = UserProfile.objects.get(user=userask)
+            #userans = Answer.objects.filter(question=question).user
+            #useransprofile = UserProfile.objects.get(user=answers[1].user)
+
+            #useransprofile = UserProfile.objects.filter(user_in=[x['user'] for x in answers])
+
+           # for user in
+             #   useransprofile = UserProfile.objects.get(user=user)
+
+
+            context_dict['answers'] = answers
+            context_dict['userask'] = userask
+            context_dict['useraskprofile'] = useraskprofile
+            context_dict['question'] = question
+            context_dict['question_slug'] = question_title_slug
+            #context_dict['userans'] = userans
+            #context_dict['useransprofile'] = useransprofile
+            form = AnswerForm()
+            context_dict['form'] = form
+
+            response = render(request, 'peer_reply/view_question.html', context_dict)
+
+            # Increments page views but only if the user hasn't viewed it in a day.
+            reset_last_visit_time = False
+            if 'last_visit' in request.COOKIES:
+                last_visit = request.COOKIES['last_visit']
+                last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+
+                if (datetime.now() - last_visit_time).days > 0:
+                    question.views = question.views + 1
+                    question.save()
+                    reset_last_visit_time = True
+            else:
+                reset_last_visit_time = True
+
+            if reset_last_visit_time:
+                response.set_cookie('last_visit', datetime.now())
+
+        except Question.DoesNotExist:
             pass
 
-        answers = Answer.objects.filter(question=question, is_best=False).order_by('-likes')
+        return response
 
 
-        levels = LevelName.objects.all().order_by('name')
-        context_dict['levels'] = levels
+def rate_answer(request):
+    answer_id = None
+    if request.method == 'GET':
+        answer_id = request.GET['answer_id']
+
+    rating = 0
+    if answer_id:
+        answer = Answer.objects.get(id=int(answer_id))
+        if answer:
+            rating = answer.likes + 1
+            answer.likes = rating
+            answer.save()
+
+    return HttpResponse()
 
 
-        # Adds our results list to the template context under name pages.
-        context_dict['answers'] = answers
-        context_dict['best_answer'] = bestAnswer
-        # We also add the category object from the database to the context dictionary.
-        # We'll use this in the template to verify that the category exists.
-        context_dict['question'] = question
-        # Pass the slug
-        context_dict['question_slug'] = question_title_slug
-    except Question.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything - the template displays the "no category" message for us.
-        pass
-    return render(request, 'peer_reply/view_question.html', context_dict)
+def flag_answer(request):
+    print "here"
+    answer_id = None
+    if request.method == 'GET':
+        answer_id = request.GET['answer_id']
+
+    if answer_id:
+        print "here2"
+        answer = Answer.objects.get(id=int(answer_id))
+        if answer:
+            print "here3"
+            flag = answer.flags + 1
+            answer.flags = flag
+            answer.save()
+    print "here4"
+    return HttpResponse()
+
+def mark_as_best_answer(request):
+    answer_id = None
+    if request.method == 'GET':
+        answer_id = request.GET['answer_id']
+
+    if answer_id:
+        answer = Answer.objects.get(id=int(answer_id))
+        if answer:
+            answer.is_best = True
+            answer.save()
+        user = UserProfile.objects.get(user=answer.user)
+        if user:
+            best_answers = user.no_best_answers + 1
+            user.no_best_answers = best_answers
+            user.save()
+
+    return HttpResponse()
 
 
 def quiz(request, quiz_name_slug):

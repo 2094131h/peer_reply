@@ -128,9 +128,8 @@ class UserProfile(models.Model):
 
 # Normal question class (not used for quiz questions!)
 class Question(models.Model):
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
-    modified = models.DateTimeField(default=datetime.datetime.today())
-
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=128, unique=True)
     body = models.TextField()
     views = models.IntegerField(default=0)
@@ -162,9 +161,9 @@ class Question(models.Model):
 
 class Answer(models.Model):
 
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
-    modified = models.DateTimeField(default=datetime.datetime.today())
-
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    flags = models.IntegerField(default=0)
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)
     body = models.TextField()

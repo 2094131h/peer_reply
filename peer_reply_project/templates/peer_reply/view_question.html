@@ -6,33 +6,104 @@
 
 {% block body_block %}
 
+<!-- QUESTION -->
 {% if question %}
-    <h1>Question</h1>
-    <b>Question:</b> {{ question.title}}<br>
-    <b>For course:</b> {{ question.course }}<br>
-    <b>Question body:</b> {{ question.body }}<br>
-    <b>Views:</b> {{ question.views }}<br><br>
-    <b>Posted by user:</b> {{ question.user}}<br><br><br>
+<div class="page-header"><h2>{{ question.title}}</h2></div>
+    <b>{{ question.course }}</b><br>
+    <div class='question'>
+   
+    <div class='question_profile'>
+        Asked {{ question.added }}<br>
+        <a href="/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/profile/{{ question.user }}">{{ useraskprofile.username }}</a><br>
+        Viewed {{ question.views }} times.
+    </div>
     
+    <b><pre>{{ question.body }}</pre></b><br>
+   
+</div>
 
 
-{% if best_answer %}
-test
-{% endif %}
 {% if answers %}
-<h1>Answers</h1>
+<div class="page-header"></div>
+<!-- BEST ANSWER -->
+{% if best_answer %}
+
+<div class='question'> 
+
+    <div class='question_profile'>
+        Answered {{ best_answer.added }}<br>
+        <a href="/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/profile/{{ best_answer.user }}">{{ best_answer.user.profile.username }}</a><br>
+        {{ best_answer.user.profile.no_best_answers }} best answers
+    </div>
+        
+    <pre>{{ best_answer.body }}</pre>
+    <div class="answer_rating">
+            <img src="/static/images/tick.png" title="This is the best answer"</img>
+            <span title="Rating">{{ best_answer.likes }}</span>
+            <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}"</img></a>
+            <img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}."</img>
+        </div>
+
+<br><br>
+</div>
+{% endif %}
+
+<!-- OTHER ANSWERS -->
+
 {% for answer in answers %}
-    <b>Posted by:</b> {{ answer.user }}<br>
-    <b>Answer body:</b> {{ answer.body }}<br>
-    <b>Likes:</b> {{ answer.likes }}<br>
-    <b>Is best:</b> {{ answer.is_best }}<br><br><br>
+<div class="page-header">
+<div class='question'> 
+
+    <div class='question_profile'>
+        Answered {{ answer.added }}<br>
+        <a href="/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/profile/{{ answer.user }}">{{ answer.user.profile.username }}</a><br>
+        {{ answer.user.profile.no_best_answers }} best answers
+    </div>
+
+    <pre>{{ answer.body }}</pre>
+
+    <div class="answer_rating">
+        <span title="Rating">{{ answer.likes }}</span>
+        <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ answer.id }}"</img></a>
+        
+        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ answer.flags }}." class="flag" data-ansid="{{ answer.id }}"</img></a>
+        
+        {% if not best_answer %}
+            {% if user.is_authenticated and question.user == user %}
+                <a href=""><img src="/static/images/tick.png" title="Mark this answer as the best answer" class="best" data-ansid="{{ answer.id }}"</img></a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+<br><br>
+</div>
+</div>
 {% endfor %}
 {% else %}
-No answers for this question
+<div class="page-header"><h2>There are not yet any answers for this question.</h2></div>
 {% endif %}
+<!-- ADD AN ANSWER FORM -->
+<div class="page-header"><h2>Post your own answer</h2>Think you can answer this question?  Type your answer in the box below and click the button.<br>  Think carefully about your answer and how helpful it will be to the user who asked it and others.<br>  Answers that receive four flags get automaically removed and reviewed.</div>
+
+<div class='question'>
+        <form id="answer_form" method="post" action="/peer_reply/question/{{ question.id }}/{{ question.slug }}/?next=/peer_reply/question/{{ question.id }}/{{ question.slug }}/">
+
+            {% csrf_token %}
+
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            {% endfor %}
+
+            <input type="submit" name="submit" value="Post Your Answer" />
+</div>
 
 {% else %}
-Question does not exist
+<div class="page-header"><h2>Question does not exist! Please check you typed the URL correctly.</h2></div>
 {% endif %}
 
 {% endblock %}

@@ -13,7 +13,6 @@ urlpatterns = patterns('',
     url(r'^get_courses/$', views.get_courses, name='get_courses'),
     url(r'^get_questions/$', views.get_questions, name='get_questions'),
     url(r'^ask/(?P<course_name_slug>[\w\-]+)/$', views.add_question, name='add_question'),
-    url(r'^question/(?P<question_id>[\w\-]+)/(?P<question_title_slug>[\w\-]+)$', views.view_question, name='view_question'),
     url(r'^quiz/(?P<quiz_name_slug>[\w\-]+)/$', views.quiz, name='quiz'),
     url(r'^profile/(?P<username>\w+)/$', views.profile, name='profile'),
     url(r'^edit_profile/$', views.edit_profile, name='edit_profile'),
@@ -22,6 +21,10 @@ urlpatterns = patterns('',
     url(r'^add_quiz_question/(?P<quiz_name_slug>[\w\-]+)$', views.add_quiz_question, name='add_quiz_question'),
     url(r'^quiz/(?P<quiz_name_slug>[\w\-]+)/quiz_results/', views.quiz, name='quiz_results'),
     url(r'^users/', views.user_profiles, name='user_profiles'),
+    url(r'^rate_answer/$', views.rate_answer, name='rate_answer'),
+    url(r'^flag_answer/$', views.flag_answer, name='flag_answer'),
+    url(r'^mark_as_best_answer/$', views.mark_as_best_answer, name='mark_as_best_answer'),
+    url(r'^question/(?P<question_id>[\w\-]+)/(?P<question_title_slug>[\w\-]+)/$', views.view_question, name='view_question'),
 
 
 
