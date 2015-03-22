@@ -59,27 +59,27 @@ class UserProfileForm(forms.ModelForm):
 
 class QuizForm(forms.ModelForm):
 
-	name = forms.CharField(max_length=60, help_text="Please enter name of quiz.")
-	slug = forms.CharField(widget=forms.HiddenInput(), required=False)
+    name = forms.CharField(max_length=60, help_text="Please enter name of quiz.")
+    slug = forms.CharField(widget=forms.HiddenInput(), required=False)
 
-	class Meta:
-		model = Quiz
-		fields = ('name',)
+    class Meta:
+        model = Quiz
+        fields = ('name',)
 
 class QuizQuestionForm(forms.ModelForm):
-	question_string = forms.Textarea()
+    question_string = forms.Textarea()
 
-	class Meta:
-		model = QuizQuestion
-		fields = ('question_string',)
+    class Meta:
+        model = QuizQuestion
+        fields = ('question_string',)
 
 class QuizAnswerForm(forms.ModelForm):
-	answer_string = forms.Textarea()
-	correct_answer = forms.BooleanField(required=False, help_text="Correct?")
+    answer_string = forms.Textarea()
+    correct_answer = forms.BooleanField(required=False, help_text="Correct?")
 
-	class Meta:
-		model = QuizAnswer
-		fields = ('answer_string', 'correct_answer',)
+    class Meta:
+        model = QuizAnswer
+        fields = ('answer_string', 'correct_answer',)
 
 class AnswerForm(forms.ModelForm):
     body = forms.CharField(widget=forms.Textarea(attrs={'cols': 90, 'rows': 10}))
@@ -87,8 +87,6 @@ class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ('body',)
-        widgets = {
-          'summary': forms.Textarea(attrs={'rows':4, 'cols':15}),
-        }
+        widgets = {'summary': forms.Textarea(attrs={'rows':4, 'cols':15})}
 
 

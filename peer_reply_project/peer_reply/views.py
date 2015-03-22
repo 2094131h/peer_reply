@@ -12,6 +12,9 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 import datetime
 import json
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 
 
@@ -308,7 +311,7 @@ def view_question(request, question_id, question_title_slug):
             return redirect(request.GET['next'])
 
     if request.method == 'GET':
-        response = ""
+
         try:
             question = Question.objects.get(id=question_id, slug=question_title_slug)
 
@@ -324,22 +327,12 @@ def view_question(request, question_id, question_title_slug):
             answers = Answer.objects.filter(question=question, is_best=False, flags__lt=4).order_by('-likes')
             userask = Question.objects.get(id=question_id).user
             useraskprofile = UserProfile.objects.get(user=userask)
-            #userans = Answer.objects.filter(question=question).user
-            #useransprofile = UserProfile.objects.get(user=answers[1].user)
-
-            #useransprofile = UserProfile.objects.filter(user_in=[x['user'] for x in answers])
-
-           # for user in
-             #   useransprofile = UserProfile.objects.get(user=user)
-
 
             context_dict['answers'] = answers
             context_dict['userask'] = userask
             context_dict['useraskprofile'] = useraskprofile
             context_dict['question'] = question
             context_dict['question_slug'] = question_title_slug
-            #context_dict['userans'] = userans
-            #context_dict['useransprofile'] = useransprofile
             form = AnswerForm()
             context_dict['form'] = form
 
@@ -372,7 +365,7 @@ def rate_answer(request):
     if request.method == 'GET':
         answer_id = request.GET['answer_id']
 
-    rating = 0
+    #rating = 0
     if answer_id:
         answer = Answer.objects.get(id=int(answer_id))
         if answer:

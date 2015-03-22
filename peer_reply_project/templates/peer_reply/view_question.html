@@ -2,6 +2,7 @@
 
 {% load staticfiles %}
 
+
 {% block title %}{{ question.title }}{% endblock %}
 
 {% block body_block %}
@@ -13,9 +14,9 @@
     <div class='question'>
    
     <div class='question_profile'>
-        Asked {{ question.added }}<br>
-        <a href="/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
-        <a href="/profile/{{ question.user }}">{{ useraskprofile.username }}</a><br>
+        Asked {{ question.created }}<br>
+        <a href="/peer_reply/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/peer_reply/profile/{{ question.user }}">{{ question.user.profile.username }}</a><br>
         Viewed {{ question.views }} times.
     </div>
     
@@ -32,7 +33,7 @@
 <div class='question'> 
 
     <div class='question_profile'>
-        Answered {{ best_answer.added }}<br>
+        Answered {{ best_answer.created }}<br>
         <a href="/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
         <a href="/profile/{{ best_answer.user }}">{{ best_answer.user.profile.username }}</a><br>
         {{ best_answer.user.profile.no_best_answers }} best answers
@@ -57,7 +58,7 @@
 <div class='question'> 
 
     <div class='question_profile'>
-        Answered {{ answer.added }}<br>
+        Answered {{ answer.created }}<br>
         <a href="/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
         <a href="/profile/{{ answer.user }}">{{ answer.user.profile.username }}</a><br>
         {{ answer.user.profile.no_best_answers }} best answers
