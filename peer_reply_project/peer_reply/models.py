@@ -105,13 +105,13 @@ class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
     user = models.OneToOneField(User)
 
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
+    created = models.DateTimeField(editable=False, default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
     # The additional attributes we wish to include.
-    username = models.CharField(max_length=60, unique=False)
+    #username = models.CharField(unique=False, max_length=60)
     website = models.URLField(blank=True)
-    picture = models.ImageField(upload_to='profile_images', blank=True)
+    picture = models.ImageField(upload_to='profile_images', default="profile_images/default-user-icon-profile.png")
     location = models.CharField(max_length=20)
     courses = models.ManyToManyField(Course)
     no_best_answers = models.IntegerField(default=0)
@@ -124,7 +124,7 @@ class UserProfile(models.Model):
 
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.username
+        return unicode(self.user)
 
 # Normal question class (not used for quiz questions!)
 class Question(models.Model):

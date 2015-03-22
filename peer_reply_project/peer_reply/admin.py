@@ -9,7 +9,7 @@ class CourseAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('name',)}
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('username','website', 'picture', 'location', 'no_best_answers', 'no_quiz_likes', 'display_courses', 'user')
+    list_display = ('user', 'website', 'picture', 'location', 'no_best_answers', 'no_quiz_likes', 'display_courses')
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
