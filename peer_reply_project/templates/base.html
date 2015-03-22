@@ -62,7 +62,7 @@
 
             <ul class="nav navbar-nav navbar-right">
     
-                 <li><form class="navbar-form" role="search" id="search_form" action="{% url 'search' 't' %}" method="get">
+                 <li><form class="navbar-form" role="search" id="search_form" action="{% url 'search'  %}" method="get">
 
 
                   {% csrf_token %}
@@ -126,7 +126,7 @@
 
 $('label.tree-toggler').parent().children('ul.tree').toggle(0);
 $(document).ready(function () {
-  $(".navcourses").customScrollbar()
+    $(".navcourses").customScrollbar()
 
 
 	$('label.tree-toggler').click(function () {
@@ -177,13 +177,74 @@ $('#course_select').change(function(){
 
 });
 
-$('.nav-tab-link').click(function(){
+
+$('#course-more-btn').hide();
+$('.course-rank').click(function(){
 var rank = "";
 rank = $(this).attr('rank');
- $.get('/peer_reply/get_questions/', {page_rank: rank}, function(data){
+ $.get('/peer_reply/get_course_questions/', {page_rank: rank}, function(data){
          $('#questions').html(data);
         });
 $(this).tab('show');
+var count = $('#course-paginator-count').val();
+count = parseInt(count)
+if(count > 10){
+$('#search-more-btn').show();
+}
+});
+$('#search-more-btn').hide();
+$('.search-rank').click(function(){
+var rank = "";
+search_query = $('#search_query').val();
+rank = $(this).attr('rank');
+$.get('/peer_reply/get_search_questions/', {page_rank: rank, search:search_query }, function(data){
+         $('#questions').html(data);
+        });
+$(this).tab('show');
+var count = $('#search-paginator-count').val();
+count = parseInt(count)
+if(count > 10){
+$('#search-more-btn').show();
+}
+});
+
+$('.search-more-btn').click(function(){
+var rank = "";
+cur_page++;
+search_query = $('#search_query').val();
+rank = $('.active').children('a').attr('rank');
+$.get('/peer_reply/get_search_questions/', {page_rank: rank, search:search_query,page: cur_page  }, function(data){
+         $('#questions').append(data);
+        });
+$(this).tab('show');
+});
+
+$('#index-more-btn').hide();
+$('.index-rank').click(function(){
+var rank = "";
+search_query = $('#search_query').val();
+rank = $(this).attr('rank');
+$.get('/peer_reply/get_index_questions/', {page_rank: rank, search:search_query }, function(data){
+         $('#questions').html(data);
+        });
+$(this).tab('show');
+var count = $('#search-paginator-count').val();
+count = parseInt(count)
+if(count > 10){
+$('#index-more-btn').show();
+}
+});
+
+cur_page = 1;
+$('.index-more-btn').click(function(){
+cur_page++;
+var rank = "";
+search_query = $('#search_query').val();
+rank = $('.active').children('a').attr('rank');
+$.get('/peer_reply/get_index_questions/', {page_rank: rank, search:search_query, page: cur_page }, function(data){
+         $('#questions').append(data);
+        });
+
 });
 
 });

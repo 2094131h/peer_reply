@@ -1,35 +1,31 @@
 {% extends 'base.html' %}
+
+{% block left_block %}
+    {% include 'peer_reply/left_block.html' %}
+{% endblock %}
+
 {% block body_block %}
 <ul class="nav nav-tabs">
     <li class="active">
-    <a  class="nav-tab-link" rank="recent">Recent</a>
+    <a  class="nav-tab-link course-rank" rank="recent">Recent</a>
     </li>
-    <li><a  class="nav-tab-link" rank="hot">Hot</a></li>
+    <li><a  class="nav-tab-link course-rank" rank="hot">Hot</a></li>
 
 </ul>
-<div id="questions">
-    {% if questions %}
-    {% for question in questions %}
-    <!--<a><div class="question_link"><div>{{ question.title }}</div><div>{{ question.body }}</div> <div>{{question.user.picture}}</div><div>{{ question.views }}</div></div></a>-->
-
-    <a>
-        <div class="question_link">
-            <div class="question_link_title">{{ question.title }}</div>
-            <!--<div>{{ question.body }}</div>-->
-
-            <img width="30" height="30" src="{{ STATIC_URL }}images/default-user-icon-profile.png" class="question_link_pic"/>
-            <div class="question_link_username">{{ question.user.username }}</div>
-            <div class="question_link_views">Views: {{ question.views }}</div>
-            <div class="question_link_posted">Posted: {{ question.created }}</div>
-            <!--<div>Modified: {{ question.modified }}</div>-->
-        </div>
-    </a>
-    {% endfor %}
-
-    {% endif %}
-
+{% include 'peer_reply/questions.html' %}
+<div id="more_btn">
+    <span class="glyphicon glyphicon-chevron-down course-more-btn more-btn"> Load more</span>
 </div>
 {% endblock %}
-{% block left_block %}
-    {% include 'peer_reply/left_block.html' %}
+{% block right_block %}
+    {% include 'peer_reply/top_quiz_links.html' %}
+    {% if user.is_authenticated %}
+        {% if course %}
+            <a href="{% url 'add_quiz' course.slug %}"><button id="quiz_btn">
+                    Add Quiz
+                </button></a>
+        {% endif %}
+    {% endif %}
+
+
 {% endblock %}

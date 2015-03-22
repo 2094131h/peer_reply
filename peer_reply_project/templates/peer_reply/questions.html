@@ -1,25 +1,31 @@
-{% block body_block %}
+
 <div id="questions">
     {% if questions %}
     {% for question in questions %}
     <!--<a><div class="question_link"><div>{{ question.title }}</div><div>{{ question.body }}</div> <div>{{question.user.picture}}</div><div>{{ question.views }}</div></div></a>-->
 
-    <a>
+
         <div class="question_link">
-            <div class="question_link_title">{{ question.title }}</div>
+           <a href="\"> <div><div class="question_link_title">{{ question.title }}</div>
+            {% if question.body_length < 60 %}
+                <div class="question_link_text">{{ question.body }}</div></div></a>
+            {% else %}
+                <div class="question_link_text">{{ question.body|slice:":60" }}...</div></div></a>
+            {% endif %}
             <!--<div>{{ question.body }}</div>-->
 
-            <img width="30" height="30" src="{{ STATIC_URL }}images/default-user-icon-profile.png" class="question_link_pic"/>
+            <a href="{% url 'profile' question.user.username %}">
+                <img width="30" height="30" src="{{ STATIC_URL }}images/default-user-icon-profile.png" class="question_link_pic"/>
+                </a>
             <div class="question_link_username">{{ question.user.username }}</div>
             <div class="question_link_views">Views: {{ question.views }}</div>
             <div class="question_link_posted">Posted: {{ question.created }}</div>
+            <input type="hidden" value="{{ question.id }}">
             <!--<div>Modified: {{ question.modified }}</div>-->
         </div>
-    </a>
+
     {% endfor %}
 
     {% endif %}
 
 </div>
-
-{% endblock %}

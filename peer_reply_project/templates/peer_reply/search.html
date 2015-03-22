@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Search results{% endblock %}
+{% block left_block %}
+    {% include 'peer_reply/left_block.html' %}
+{% endblock %}
+
+{% block body_block %}
+{% if search %}
+    <input type="hidden" id="search_query" value="{{ search }}"/>
+{% endif %}
+<ul class="nav nav-tabs">
+    <li class="active">
+    <a  class="nav-tab-link search-rank" rank="recent">Recent</a>
+    </li>
+    <li><a  class="nav-tab-link search-rank" rank="hot">Hot</a></li>
+
+</ul>
+{% include 'peer_reply/questions.html' %}
+{% if paginator.count > 10 %}
+<div id="search-more-btn">
+    <span class="glyphicon glyphicon-chevron-down search-more-btn more-btn"> Load more</span>
+</div>
+{% endif %}
+{% endblock %}
+{% block right_block %}
+    {% include 'peer_reply/top_quiz_links.html' %}
+{% endblock %}
