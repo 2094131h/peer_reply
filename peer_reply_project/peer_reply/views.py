@@ -57,7 +57,9 @@ def index(request):
 
 
 def left_block(request):
+    context_dict = {}
     if request.user.is_authenticated():
+
         user_profile = request.user.profile
         # user = User.objects.get(username=user.username)
 
@@ -73,6 +75,7 @@ def left_block(request):
 
 
 def base(request):
+    context_dict = {}
     user = request.user
     userprofile = UserProfile.objects.get(user=user)
     levels = LevelName.objects.all().order_by('name')

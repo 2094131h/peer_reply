@@ -82,11 +82,16 @@ class QuizAnswerForm(forms.ModelForm):
         fields = ('answer_string', 'correct_answer',)
 
 class AnswerForm(forms.ModelForm):
-    body = forms.CharField(widget=forms.Textarea(attrs={'cols': 90, 'rows': 10}))
+    body = forms.CharField(widget=forms.Textarea(attrs={'rows': 10, 'style': 'width:48em;'}))
+
+    #def __init__(self, *args, **kwargs):
+     #   super(AnswerForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
+     #   self.fields['body'].widget.attrs['cols'] = 50
+     #   self.fields['body'].widget.attrs['rows'] = 15
 
     class Meta:
         model = Answer
         fields = ('body',)
-        widgets = {'summary': forms.Textarea(attrs={'rows':4, 'cols':15})}
+        #widgets = {'summary': forms.Textarea(attrs={'rows':40, 'cols':15})}
 
 
