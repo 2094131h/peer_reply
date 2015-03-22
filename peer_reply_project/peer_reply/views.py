@@ -319,7 +319,7 @@ def view_question(request, question_id, question_title_slug):
             question = Question.objects.get(id=question_id, slug=question_title_slug)
 
             try:
-                bestAnswer = Answer.objects.get(question=question, is_best=True)
+                bestAnswer = Answer.objects.get(question=question, is_best=True, flags__lt=4)
                 bestAnswerUser = Answer.objects.get(question=question, is_best=True).user
                 bestAnswerUserProfile = UserProfile.objects.get(user=bestAnswerUser)
                 context_dict['best_answer'] = bestAnswer
@@ -371,7 +371,6 @@ def rate_answer(request):
     if request.method == 'GET':
         answer_id = request.GET['answer_id']
 
-    #rating = 0
     if answer_id:
         answer = Answer.objects.get(id=int(answer_id))
         if answer:
@@ -383,20 +382,16 @@ def rate_answer(request):
 
 
 def flag_answer(request):
-    print "here"
     answer_id = None
     if request.method == 'GET':
         answer_id = request.GET['answer_id']
 
     if answer_id:
-        print "here2"
         answer = Answer.objects.get(id=int(answer_id))
         if answer:
-            print "here3"
             flag = answer.flags + 1
             answer.flags = flag
             answer.save()
-    print "here4"
     return HttpResponse()
 
 def mark_as_best_answer(request):

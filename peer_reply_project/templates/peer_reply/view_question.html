@@ -47,7 +47,7 @@
         {% if best_answer.user.profile.no_best_answers == 0 %}
             no best answers
         {% elif best_answer.user.profile.no_best_answers == 1 %}
-            {{ best_answer.user.profile.no_best_answers} best answer
+            {{ best_answer.user.profile.no_best_answers }} best answer
         {% else %}
             {{ best_answer.user.profile.no_best_answers }} best answers
         {% endif %}
@@ -58,7 +58,7 @@
             <img src="/static/images/tick.png" title="This is the best answer"</img>
             <span title="Rating">{{ best_answer.likes }}</span>
             <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}"</img></a>
-            <img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}."</img>
+        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="flag" data-ansid="{{ best_answer.id }}"</img></a>
         </div>
 
 <br><br>
