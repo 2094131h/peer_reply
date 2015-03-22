@@ -339,6 +339,9 @@ def view_question(request, question_id, question_title_slug):
             form = AnswerForm()
             context_dict['form'] = form
 
+            no_of_answers = Answer.objects.filter(question=question, flags__lt=4).count()
+            context_dict['no_of_answers'] = no_of_answers
+
             response = render(request, 'peer_reply/view_question.html', context_dict)
 
             # Increments page views but only if the user hasn't viewed it in a day.

@@ -17,7 +17,11 @@
         Asked {{ question.created }}<br>
         <a href="/peer_reply/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
         <a href="/peer_reply/profile/{{ question.user }}">{{ question.user.username }}</a><br>
-        Viewed {{ question.views }} times.
+        {% if question.views == 1 %}
+            Viewed {{ question.views }} time.
+        {% else %}
+            Viewed {{ question.views }} times.
+        {% endif %}
     </div>
     
     <b><pre>{{ question.body }}</pre></b><br>
@@ -26,7 +30,11 @@
 
 
 {% if answers %}
-<div class="page-header"></div>
+{% if no_of_answers == 1 %}
+    <div class="page-header"><h3>{{ no_of_answers }} answer</h3></div>
+{% else %}
+    <div class="page-header"><h3>{{ no_of_answers }} answers</h3></div>
+{% endif %}
 <!-- BEST ANSWER -->
 {% if best_answer %}
 
@@ -34,9 +42,15 @@
 
     <div class='question_profile'>
         Answered {{ best_answer.created }}<br>
-        <a href="/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
-        <a href="/profile/{{ best_answer.user }}">{{ best_answer.user.profile.username }}</a><br>
-        {{ best_answer.user.profile.no_best_answers }} best answers
+        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/peer_reply/profile/{{ best_answer.user }}">{{ best_answer.user.username }}</a><br>
+        {% if best_answer.user.profile.no_best_answers == 0 %}
+            no best answers
+        {% elif best_answer.user.profile.no_best_answers == 1 %}
+            {{ best_answer.user.profile.no_best_answers} best answer
+        {% else %}
+            {{ best_answer.user.profile.no_best_answers }} best answers
+        {% endif %}
     </div>
         
     <pre>{{ best_answer.body }}</pre>
@@ -59,9 +73,15 @@
 
     <div class='question_profile'>
         Answered {{ answer.created }}<br>
-        <a href="/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
-        <a href="/profile/{{ answer.user }}">{{ answer.user.profile.username }}</a><br>
-        {{ answer.user.profile.no_best_answers }} best answers
+        <a href="/peer_reply/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/peer_reply/profile/{{ answer.user }}">{{ answer.user.username }}</a><br>
+        {% if answer.user.profile.no_best_answers == 0 %}
+            no best answers
+        {% elif answer.user.profile.no_best_answers == 1 %}
+            {{ answer.user.profile.no_best_answers }} best answer
+        {% else %}
+            {{ answer.user.profile.no_best_answers }} best answers
+        {% endif %}
     </div>
 
     <pre>{{ answer.body }}</pre>
