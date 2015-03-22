@@ -1,23 +1,27 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import password_change
 from django.contrib.auth.decorators import login_required
-
 from django.forms.formsets import formset_factory
-from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, \
-    QuizAnswer, QuizQuestion
-from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm
-
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, QuizAnswer, QuizQuestion
+from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm, AnswerForm
+from django.templatetags.static import static
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.db.models import Q
+import datetime
 import json
-
+from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+
 from django.http import HttpResponseRedirect, HttpResponse
 from django.templatetags.static import static
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from datetime import datetime
+
+
 
 
 # @ensure_csrf_cookie
@@ -50,7 +54,8 @@ def index(request):
     else:
 
         # if not logged in then get most recent questions
-        relevant_questions = Question.objects.all().order_by('-created')[:20]
+
+        relevant_questions = Question.objects.all().order_by('-created')
     paginator = Paginator(relevant_questions, 10)
 
     questions = paginator.page(1)
@@ -106,12 +111,11 @@ def get_index_questions(request):
         return HttpResponse(question_list)
 
 
-    # Render the response and send it back!
-    return render(request, 'peer_reply/index.html', context_dict)
-
 
 def left_block(request):
+    context_dict = {}
     if request.user.is_authenticated():
+
         user_profile = request.user.profile
         # user = User.objects.get(username=user.username)
 
@@ -127,6 +131,7 @@ def left_block(request):
 
 
 def base(request):
+    context_dict = {}
     user = request.user
     userprofile = UserProfile.objects.get(user=user)
     levels = LevelName.objects.all().order_by('name')
@@ -399,35 +404,124 @@ def get_search_questions(request):
 def view_question(request, question_id, question_title_slug):
     context_dict = {}
 
-    try:
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
 
-        question = Question.objects.get(id=question_id, slug=question_title_slug)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.question = Question.objects.get(id=question_id, slug=question_title_slug)
+            answer.likes = 0
+            answer.is_best = False
+            answer.user = request.user
+            answer.save()
+        else:
+            print form.errors
+        if 'next' in request.GET:
+            return redirect(request.GET['next'])
+
+    if request.method == 'GET':
 
         try:
-            bestAnswer = Answer.objects.filter(question=question, is_best=True)
+            question = Question.objects.get(id=question_id, slug=question_title_slug)
 
-        except Answer.DoesNotExist:
+            try:
+                bestAnswer = Answer.objects.get(question=question, is_best=True, flags__lt=4)
+                bestAnswerUser = Answer.objects.get(question=question, is_best=True).user
+                bestAnswerUserProfile = UserProfile.objects.get(user=bestAnswerUser)
+                context_dict['best_answer'] = bestAnswer
+                context_dict['best_answer_user'] = bestAnswerUserProfile
+            except Answer.DoesNotExist:
+                pass
+
+            answers = Answer.objects.filter(question=question, is_best=False, flags__lt=4).order_by('-likes')
+            userask = Question.objects.get(id=question_id).user
+            useraskprofile = UserProfile.objects.get(user=userask)
+
+            context_dict['answers'] = answers
+            context_dict['userask'] = userask
+            context_dict['useraskprofile'] = useraskprofile
+            context_dict['question'] = question
+            context_dict['question_slug'] = question_title_slug
+            form = AnswerForm()
+            context_dict['form'] = form
+
+            no_of_answers = Answer.objects.filter(question=question, flags__lt=4).count()
+            context_dict['no_of_answers'] = no_of_answers
+
+            response = render(request, 'peer_reply/view_question.html', context_dict)
+
+            # Increments page views but only if the user hasn't viewed it in a day.
+            reset_last_visit_time = False
+            if 'last_visit' in request.COOKIES:
+                last_visit = request.COOKIES['last_visit']
+                last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+
+                if (datetime.now() - last_visit_time).days > 0:
+                    question.views = question.views + 1
+                    question.save()
+                    reset_last_visit_time = True
+            else:
+                reset_last_visit_time = True
+
+            if reset_last_visit_time:
+                response.set_cookie('last_visit', datetime.now())
+
+        except Question.DoesNotExist:
             pass
 
-        answers = Answer.objects.filter(question=question, is_best=False).order_by('-likes')
+        return response
 
-        levels = LevelName.objects.all().order_by('name')
-        context_dict['levels'] = levels
+# <<<<<<< HEAD
+#         levels = LevelName.objects.all().order_by('name')
+#         context_dict['levels'] = levels
+# =======
+
+def rate_answer(request):
+    answer_id = None
+    if request.method == 'GET':
+        answer_id = request.GET['answer_id']
+# >>>>>>> 66ca913677134329e1642a7026f744cc9375383a
+
+    if answer_id:
+        answer = Answer.objects.get(id=int(answer_id))
+        if answer:
+            rating = answer.likes + 1
+            answer.likes = rating
+            answer.save()
+
+    return HttpResponse()
 
 
-        # Adds our results list to the template context under name pages.
-        context_dict['answers'] = answers
-        context_dict['best_answer'] = bestAnswer
-        # We also add the category object from the database to the context dictionary.
-        # We'll use this in the template to verify that the category exists.
-        context_dict['question'] = question
-        # Pass the slug
-        context_dict['question_slug'] = question_title_slug
-    except Question.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything - the template displays the "no category" message for us.
-        pass
-    return render(request, 'peer_reply/view_question.html', context_dict)
+def flag_answer(request):
+    answer_id = None
+    if request.method == 'GET':
+        answer_id = request.GET['answer_id']
+
+    if answer_id:
+        answer = Answer.objects.get(id=int(answer_id))
+        if answer:
+            flag = answer.flags + 1
+            answer.flags = flag
+            answer.save()
+    return HttpResponse()
+
+def mark_as_best_answer(request):
+    answer_id = None
+    if request.method == 'GET':
+        answer_id = request.GET['answer_id']
+
+    if answer_id:
+        answer = Answer.objects.get(id=int(answer_id))
+        if answer:
+            answer.is_best = True
+            answer.save()
+        user = UserProfile.objects.get(user=answer.user)
+        if user:
+            best_answers = user.no_best_answers + 1
+            user.no_best_answers = best_answers
+            user.save()
+
+    return HttpResponse()
 
 
 @login_required
@@ -543,12 +637,10 @@ def add_quiz_question(request, quiz_name_slug):
 
     return render(request, 'peer_reply/add_quiz_question.html', context_dict)
 
-
 # pasword change functionality for the profile
 @login_required
 def change_password(request):
     return password_change(request, post_change_redirect='/peer_reply/profile.html')
-
 
 @login_required
 def profile(request, username):
@@ -561,42 +653,72 @@ def profile(request, username):
     except UserProfile.DoesNotExist:
         profile = None
         courses = None
+# <<<<<<< HEAD
     context_dict = {'user': user, 'profile': profile, 'user_profile': user_profile, 'courses': courses}
     university = University.objects.get(slug='university-of-glasgow')
     schools = School.objects.all().filter(university=university).order_by('name')
     context_dict['schools'] = schools
 
     return render(request, 'peer_reply/profile.html', context_dict)
+# =======
+#
+#     context_dict = {'user':user,'profile':profile,'user_profile':user_profile,'courses':courses}
+#     return render(request, 'peer_reply/profile.html',context_dict)
+# >>>>>>> 66ca913677134329e1642a7026f744cc9375383a
 
 
 @login_required
 def edit_profile(request):
     # create a profile if it does not exist.
-    user_profile = UserProfile.objects.get(user=request.user)
-
-
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        return add_profile(request)
     # save the details
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             user = form.save(commit=False)
             # re-assign the values if they exist.
-            user_profile.website = request.POST['website']
+            if request.POST['website'] != '':
+                user_profile.website = request.POST['website']
+            if request.POST['location'] != '':
+                user_profile.location = request.POST['location']
             if 'picture' in request.FILES:
                 user_profile.picture = request.FILES['picture']
-            if 'course' in request:
-                user_profile.courses += course
+            
             user_profile.save()
             user.save()
-
-            url = "/peer_reply/profile/" + request.user.username + "/"
-
+            url = "/peer_reply/profile/"+request.user.username+"/"
             return redirect(url)
 
         else:
             print form.errors
     else:
         form = UserProfileForm(instance=request.user)
+    return render(request,'peer_reply/edit_profile.html',{'form':form,'user_profile':user_profile})
 
-    return render(request, 'peer_reply/edit_profile.html', {'form': form, 'user_profile': user_profile})
+@login_required
+def add_profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            # connecting the use and profile
+            profile.user = request.user
+             # Profile picture supplied? If so, we put it in the new UserProfile.
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+            profile.save()
+            url = "/peer_reply/profile/"+request.user.username+"/"
+            return redirect(url)
+        else:
+            print form.errors
+    else:
+        form = UserProfileForm(instance=request.user)        
+    return render(request,'peer_reply/edit_profile.html',{'form':form})
 
+def user_profiles(request):
+    context_dict={}
+    context_dict ['users']=UserProfile.objects.order_by('no_quiz_likes','no_best_answers')    
+    return render(request,'peer_reply/users.html', context_dict)

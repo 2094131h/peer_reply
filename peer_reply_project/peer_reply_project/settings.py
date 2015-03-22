@@ -101,7 +101,12 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = True 
+# According to the documentation having this True will result in a
+# naive datetime object, hence the RunTimeWarning when populating 
+# the database. Therefore I recommend we set this to False. Other 
+# option is to refactor the code to make the datetime objects aware
+# -g
 
 
 # Static files (CSS, JavaScript, Images)

@@ -105,13 +105,13 @@ class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
     user = models.OneToOneField(User)
 
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
+    created = models.DateTimeField(editable=False, default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
     # The additional attributes we wish to include.
-    username = models.CharField(max_length=60, unique=False)
+    #username = models.CharField(unique=False, max_length=60)
     website = models.URLField(blank=True)
-    picture = models.ImageField(upload_to='profile_images', blank=True)
+    picture = models.ImageField(upload_to='profile_images', default="profile_images/default-user-icon-profile.png")
     location = models.CharField(max_length=20)
     courses = models.ManyToManyField(Course)
     no_best_answers = models.IntegerField(default=0)
@@ -124,19 +124,17 @@ class UserProfile(models.Model):
 
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.username
+        return unicode(self.user)
 
 # Normal question class (not used for quiz questions!)
 class Question(models.Model):
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
-    modified = models.DateTimeField(default=datetime.datetime.today())
-
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=128, unique=True)
     body = models.TextField()
     views = models.IntegerField(default=0)
     course = models.ForeignKey(Course)
     user = models.ForeignKey(User)
-    slug = models.SlugField(unique=True)
 
     # Create slug field for url
     slug = models.SlugField(unique=True)
@@ -144,14 +142,15 @@ class Question(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
 
-    # Create slug field for url
-    slug = models.SlugField(unique=False)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         # On save, update timestamps
         if not self.id:
             self.created = datetime.datetime.today()
+        # correct wrong input
+        if self.views < 0:
+            self.views = 0
         self.modified = datetime.datetime.today()
         super(Question, self).save(*args, **kwargs)
 
@@ -162,9 +161,9 @@ class Question(models.Model):
 
 class Answer(models.Model):
 
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
-    modified = models.DateTimeField(default=datetime.datetime.today())
-
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    flags = models.IntegerField(default=0)
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)
     body = models.TextField()
@@ -173,8 +172,9 @@ class Answer(models.Model):
 
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        #return question.title + " answer"
+
         return self.body
+
 
 class Quiz(models.Model):
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())

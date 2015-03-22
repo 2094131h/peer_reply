@@ -6,7 +6,7 @@
 
 
         <div class="question_link">
-           <a href="\"> <div><div class="question_link_title">{{ question.title }}</div>
+           <a href="{% url 'view_question' question.id question.slug %}"> <div><div class="question_link_title">{{ question.title|slice:":80"  }}</div>
             {% if question.body_length < 60 %}
                 <div class="question_link_text">{{ question.body }}</div></div></a>
             {% else %}

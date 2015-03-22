@@ -1,8 +1,5 @@
 from django import forms
-from peer_reply.models import Course, UserProfile, Question
-from django.contrib.auth.models import User
-
-from peer_reply.models import Course, UserProfile, Question, Quiz, QuizQuestion, QuizAnswer
+from peer_reply.models import Course, UserProfile, Question, Answer, Quiz, QuizQuestion, QuizAnswer
 from django.contrib.auth.models import User
 from django.forms.formsets import formset_factory
 
@@ -60,33 +57,41 @@ class UserProfileForm(forms.ModelForm):
         fields = ('website', 'picture','location')
 
 
-    class Meta:
-        model = UserProfile
-        fields = ('website', 'picture')
-
-
 class QuizForm(forms.ModelForm):
 
-	name = forms.CharField(max_length=60, help_text="Please enter name of quiz.")
-	slug = forms.CharField(widget=forms.HiddenInput(), required=False)
+    name = forms.CharField(max_length=60, help_text="Please enter name of quiz.")
+    slug = forms.CharField(widget=forms.HiddenInput(), required=False)
 
-	class Meta:
-		model = Quiz
-		fields = ('name',)
+    class Meta:
+        model = Quiz
+        fields = ('name',)
 
 class QuizQuestionForm(forms.ModelForm):
-	question_string = forms.Textarea()
+    question_string = forms.Textarea()
 
-	class Meta:
-		model = QuizQuestion
-		fields = ('question_string',)
+    class Meta:
+        model = QuizQuestion
+        fields = ('question_string',)
 
 class QuizAnswerForm(forms.ModelForm):
-	answer_string = forms.Textarea()
-	correct_answer = forms.BooleanField(required=False, help_text="Correct?")
+    answer_string = forms.Textarea()
+    correct_answer = forms.BooleanField(required=False, help_text="Correct?")
 
-	class Meta:
-		model = QuizAnswer
-		fields = ('answer_string', 'correct_answer',)
+    class Meta:
+        model = QuizAnswer
+        fields = ('answer_string', 'correct_answer',)
+
+class AnswerForm(forms.ModelForm):
+    body = forms.CharField(widget=forms.Textarea(attrs={'rows': 10, 'style': 'width:48em;'}))
+
+    #def __init__(self, *args, **kwargs):
+     #   super(AnswerForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
+     #   self.fields['body'].widget.attrs['cols'] = 50
+     #   self.fields['body'].widget.attrs['rows'] = 15
+
+    class Meta:
+        model = Answer
+        fields = ('body',)
+        #widgets = {'summary': forms.Textarea(attrs={'rows':40, 'cols':15})}
 
 

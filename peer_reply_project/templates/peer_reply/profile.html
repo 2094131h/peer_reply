@@ -5,12 +5,11 @@
 {% block title %}Profile{% endblock %}
 
 {% block body_block %}
+<link href=" {{ STATIC_URL }}css/profile.css" rel="stylesheet"> <!--added this line to get the css files from profile -g -->
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-
-<!--<div class="container">-->
+<div class="container">
 	<div class="row clearfix">
-		<div class="col-md-3 column  picturecl">
-
+		<div class="col-md-2 column  picturecl">
 			<figure>
                  {% if profile.picture %}
                 <img width="200" height="200" src="{{ profile.picture.url }}" class="img-rounded img-responsive">
@@ -18,7 +17,6 @@
                 <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded">
                 {% endif %}
                 <figcaption class="ratings"> <!--We can use this to add ratings, so far it does nothing -->
-                    <p>Ratings
                     <a href="#">
                         <span class="fa fa-star"></span>
                     </a>
@@ -34,16 +32,23 @@
                     <a href="#">
                          <span class="fa fa-star-o"></span>
                     </a> 
-                    </p>
                 </figcaption>
             </figure>
+             <p><strong>Best Answers:</strong> {{ profile.no_best_answers }}</p>
+             <p><strong>Quiz Likes:</strong> {{ profile.no_quiz_likes }}</p>
+             {% if user_profile %}
+              <div class="edit-details">  
+                    <p><a class="fa fa-lock" href="{% url 'auth_password_change' %}">  Change password</a></p>
+                    <p><a class="fa fa-edit" href="{% url 'edit_profile' %}"> Edit Profile </a></p>           
+              </div>
+           {% endif %}
 		</div>
-
-		<div class="col-md-7 column">
-
+        <div class="col-md-10 column">
             <div><h2>{{ user.username }}</h2>
-                    <p><strong>About: </strong> Web Designer / UI. </p>
-                    <p><strong>Hobbies: </strong> Read, out with friends, listen to music, draw and learn new things. </p>
+                    <p><strong>About: </strong>  </p>
+                    <p><strong>Email: </strong> {{ user.email }}</p>
+                    <p><strong>Website: </strong>{{ profile.website }}</p>
+                    <p><strong>Location: </strong> {{ profile.location }}</p>
                     <p><strong>Courses: </strong>
                     {% if courses %}
                         {% for course in courses %}
@@ -51,6 +56,7 @@
                         {% endfor %}
                     {% endif %}
              
+<!--<<<<<<< HEAD-->
             </div> <button type="button" class="btn fa fa-plus-circle" id="add_course_btn"></button>
             <div class="btn-group dropup btn-block">
                   <button type="button" class="btn btn-primary  dropdown-toggle" data-toggle="dropdown" ><span class="fa fa-gear" ></span> Options </button>
@@ -74,5 +80,17 @@
 
 <br>
 <br>
+
+<!--=======-->
+            <!--</div> <a href="#"><button type="button" class="btn fa fa-plus-circle" id="add_course_btn"></button></a>-->
+            <!---->
+        <!--</div>-->
+	<!--</div> -->
+
+
+<!--<script type="text/javascript">-->
+<!--</script>-->
+
+
 
 {% endblock %}
