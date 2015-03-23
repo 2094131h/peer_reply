@@ -14,10 +14,6 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 import datetime
 import json
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
-
-from django.http import HttpResponseRedirect, HttpResponse
 from django.templatetags.static import static
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -656,31 +652,43 @@ def add_quiz_question(request, quiz_name_slug):
 def change_password(request):
     return password_change(request, post_change_redirect='/peer_reply/profile.html')
 
-
+@login_required
 def profile(request, username):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        user_profile = UserProfile.objects.get(user=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            # for users to add/remove courses to their profiles
+            if request.POST['rem-course-input'] != '':
+                rem_course_list = request.POST['rem-course-input'].replace('\r', '').split(",")
+                for course in rem_course_list:
+                    course = Course.objects.all().filter(name=course).first()
+                    user_profile.courses.remove(course)  
+            if request.POST['select-course-input'] != '':
+                # last item in list is empty, so remove that from list.
+                add_course_list = request.POST['select-course-input'].replace('\r', '').split(",")[:-1]
+                for course in add_course_list:
+                    course = Course.objects.all().filter(name=course).first()
+                    user_profile.courses.add(course)
+                    user_profile.save()
+            user_profile.save()
+            user.save()
+        
+    university = University.objects.get(slug='university-of-glasgow')
+    schools = School.objects.all().filter(university=university).order_by('name')
     user = User.objects.get(username=username)
     # boolean for checking if the requested profile is the logged in users.
-    user_profile = (request.user == user)
+    user_profile = (request.user==user)
     try:
         profile = UserProfile.objects.get(user=user)
         courses = profile.courses.all()
     except UserProfile.DoesNotExist:
         profile = None
         courses = None
-    # <<<<<<< HEAD
-    context_dict = {'user': user, 'profile': profile, 'user_profile': user_profile, 'courses': courses}
-    university = University.objects.get(slug='university-of-glasgow')
-    schools = School.objects.all().filter(university=university).order_by('name')
-    context_dict['schools'] = schools
-
-    return render(request, 'peer_reply/profile.html', context_dict)
-
-
-# =======
-#
-#     context_dict = {'user':user,'profile':profile,'user_profile':user_profile,'courses':courses}
-#     return render(request, 'peer_reply/profile.html',context_dict)
-# >>>>>>> 66ca913677134329e1642a7026f744cc9375383a
+    
+    context_dict = {'user':user,'profile':profile,'user_profile':user_profile,'courses':courses,'schools': schools}
+    return render(request, 'peer_reply/profile.html',context_dict)
 
 
 @login_required
@@ -703,17 +711,19 @@ def edit_profile(request):
             if 'picture' in request.FILES:
                 user_profile.picture = request.FILES['picture']
 
+            if request.POST['rem-pic'] == "true":
+                user_profile.picture = None
+            
             user_profile.save()
             user.save()
-            url = "/peer_reply/profile/" + request.user.username + "/"
+            url = "/peer_reply/profile/"+request.user.username+"/"
             return redirect(url)
 
         else:
             print form.errors
     else:
         form = UserProfileForm(instance=request.user)
-    return render(request, 'peer_reply/edit_profile.html', {'form': form, 'user_profile': user_profile})
-
+    return render(request,'peer_reply/edit_profile.html',{'form':form,'user_profile':user_profile})
 
 @login_required
 def add_profile(request):
@@ -723,17 +733,17 @@ def add_profile(request):
             profile = form.save(commit=False)
             # connecting the use and profile
             profile.user = request.user
-            # Profile picture supplied? If so, we put it in the new UserProfile.
+             # Profile picture supplied? If so, we put it in the new UserProfile.
             if 'picture' in request.FILES:
                 profile.picture = request.FILES['picture']
             profile.save()
-            url = "/peer_reply/profile/" + request.user.username + "/"
+            url = "/peer_reply/profile/"+request.user.username+"/"
             return redirect(url)
         else:
             print form.errors
     else:
-        form = UserProfileForm(instance=request.user)
-    return render(request, 'peer_reply/edit_profile.html', {'form': form})
+        form = UserProfileForm(instance=request.user)        
+    return render(request,'peer_reply/edit_profile.html',{'form':form})
 
 
 def user_profiles(request):
