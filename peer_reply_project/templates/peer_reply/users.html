@@ -2,13 +2,6 @@
 
 {% load staticfiles %}
 
-{% block left_block %}
-    {% include 'peer_reply/left_block.html' %}
-{% endblock %}
-
-{% block right_block %}
-    {% include 'peer_reply/top_quiz_links.html' %}
-{% endblock %}
 
 {% if users %}
     {% block title %}Users{% endblock %}
