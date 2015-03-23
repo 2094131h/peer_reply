@@ -3,6 +3,7 @@ Group project for WAD2
 Created by Mike, Craig, Lovisa, Gulen & Monika
 
 #Description
+A question and answer resource to aid students in their studies.
 
 #Install Instructions
 In a terminal or command prompt, create a new virtual enviroment to install Peer Reply in.
@@ -34,7 +35,7 @@ This may take a few minutes to complete.  Once the script completes you can star
 Then, in your web browser, navigate to http://127.0.0.1:8000/peer_reply/ where you will be presented with the Peer Reply home page.  Congratulations!  You just installed Peer Reply!
 
 #Users
-Five users are currently registered with the application.  You can use these accounts to test functionality.  The login details for each are as follows:
+Six users are currently registered with the application.  You can use these accounts to test functionality.  The login details for each are as follows:
 
 Username/Password
 
