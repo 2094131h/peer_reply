@@ -112,8 +112,8 @@ class UserProfile(models.Model):
     #username = models.CharField(unique=False, max_length=60)
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', default="profile_images/default-user-icon-profile.png")
-    location = models.CharField(max_length=20)
-    courses = models.ManyToManyField(Course)
+    location = models.CharField(max_length=20, blank=True)
+    courses = models.ManyToManyField(Course, blank=True)
     no_best_answers = models.IntegerField(default=0)
     no_quiz_likes = models.IntegerField(default=0)
 

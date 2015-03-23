@@ -19,7 +19,7 @@
    
     <div class='question_profile'>
         Asked {{ question.created }}<br>
-        <a href="/peer_reply/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/peer_reply/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
         <a href="/peer_reply/profile/{{ question.user }}">{{ question.user.username }}</a><br>
         {% if question.views == 1 %}
             Viewed {{ question.views }} time.
@@ -46,7 +46,7 @@
 
     <div class='question_profile'>
         Answered {{ best_answer.created }}<br>
-        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
         <a href="/peer_reply/profile/{{ best_answer.user }}">{{ best_answer.user.username }}</a><br>
         {% if best_answer.user.profile.no_best_answers == 0 %}
             no best answers
@@ -77,7 +77,7 @@
 
     <div class='question_profile'>
         Answered {{ answer.created }}<br>
-        <a href="/peer_reply/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50" border="1" class="user-profiles"</img></a>
+        <a href="/peer_reply/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
         <a href="/peer_reply/profile/{{ answer.user }}">{{ answer.user.username }}</a><br>
         {% if answer.user.profile.no_best_answers == 0 %}
             no best answers

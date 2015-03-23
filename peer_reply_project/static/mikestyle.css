@@ -21,6 +21,27 @@ border: 2px solid #a1a1a1;
 border-radius: 5px;
 border-color:lightblue;
 }
+.user_profile{
+right:30px;
+padding:3px;
+color:black;
+text-align:left;
+border: 2px solid #a1a1a1;
+border-radius: 5px;
+border-color:lightblue;
+margin-left: auto;
+margin-right: auto;
+width: 50%;
+}
+.profile_picture{
+right:30px;
+color:black;
+text-align:left;
+border: 2px solid #a1a1a1;
+border-radius: 5px;
+border-color:lightblue;
+
+}
 
 .answer_rating{
 right:30px;

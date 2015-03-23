@@ -738,5 +738,5 @@ def add_profile(request):
 
 def user_profiles(request):
     context_dict = {}
-    context_dict['users'] = UserProfile.objects.order_by('no_quiz_likes', 'no_best_answers')
+    context_dict['users'] = UserProfile.objects.order_by('-no_quiz_likes', '-no_best_answers')[:20]
     return render(request, 'peer_reply/users.html', context_dict)

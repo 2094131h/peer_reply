@@ -2,6 +2,13 @@
 
 {% load staticfiles %}
 
+{% block left_block %}
+    {% include 'peer_reply/left_block.html' %}
+{% endblock %}
+
+{% block right_block %}
+    {% include 'peer_reply/top_quiz_links.html' %}
+{% endblock %}
 
 {% if users %}
     {% block title %}Users{% endblock %}
@@ -10,17 +17,20 @@
 {% block body_block %}
 <div>
            {% if users %}
-             <h2>Users</h2>
+             <h2>Top 20 Users on Peer Reply</h2>
                <br/>{% for user in users %}
-                   <div>
-				   {% if user.picture %}
-				   <img src='profile_images/{{ user.picture }}' >
-				   {% endif %}
-				   <h4><a href='{% url 'profile' user.user.username %}>{{ user.user.username }}</a></h4>
-
-				   <li> Location: {{ user.location }}</li>
-				   <li> Website: <a href='{{ user.website }}'>{{ user.website }}</a></li>
+                   <div class='user_profile'>
+				   <a href="/peer_reply/profile/{{ user }}"><img src="/media/{{ user.picture }}" height="100" width="100" border="1" class="profile_picture"</img></a>
+				   <a href="{% url 'profile' user %}">{{ user }}</a>
+                    
+				        <ol><b>Best Answers:</b> {{ user.no_best_answers }}<br>
+                        <b>Quiz Likes:</b> {{ user.no_quiz_likes }}<br>
+				        <b>Website:</b> {% if user.website %}<a href='{{ user.website }}'>{{ user.website }}</a>{% else %}<i>not provided</i>                       {% endif %}<br>
+                        <b>Location:</b> {% if user.location %}{{ user.location }}{% else %} <i>not provided</i>{% endif %}<br>
+                        <b>Member since:</b> {{ user.created|date }}</ol>
+                    
                    </div>
+                    <br>
                   {% endfor %}
                     
            {% else %}
