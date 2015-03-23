@@ -190,9 +190,10 @@ class Quiz(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-
         if not self.id:
             self.created = datetime.datetime.today()
+            if self.likes > 0: # if first time being created, don't allow any likes!
+                self.likes = 0
         self.modified = datetime.datetime.today()
         super(Quiz, self).save(*args, **kwargs)
 
