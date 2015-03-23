@@ -660,18 +660,20 @@ def profile(request, username):
         if form.is_valid():
             user = form.save(commit=False)
             # for users to add/remove courses to their profiles
-            if request.POST['rem-course-input'] != '':
-                rem_course_list = request.POST['rem-course-input'].replace('\r', '').split(",")
-                for course in rem_course_list:
-                    course = Course.objects.all().filter(name=course).first()
-                    user_profile.courses.remove(course)  
-            if request.POST['select-course-input'] != '':
-                # last item in list is empty, so remove that from list.
-                add_course_list = request.POST['select-course-input'].replace('\r', '').split(",")[:-1]
-                for course in add_course_list:
-                    course = Course.objects.all().filter(name=course).first()
-                    user_profile.courses.add(course)
-                    user_profile.save()
+           if 'rem-course-input' in request.POST:
+                # for users to add/remove courses to their profiles
+                if request.POST['rem-course-input'] != '':
+                    rem_course_list = request.POST['rem-course-input'].replace('\r', '').split(",")
+                    for course in rem_course_list:
+                        course = Course.objects.all().filter(name=course).first()
+                        user_profile.courses.remove(course)  
+                if request.POST['select-course-input'] != '':
+                    # last item in list is empty, so remove that from list.
+                    add_course_list = request.POST['select-course-input'].replace('\r', '').split(",")[:-1]
+                    for course in add_course_list:
+                        course = Course.objects.all().filter(name=course).first()
+                        user_profile.courses.add(course)
+                        user_profile.save()
             user_profile.save()
             user.save()
         
