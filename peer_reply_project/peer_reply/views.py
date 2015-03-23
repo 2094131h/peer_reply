@@ -663,7 +663,7 @@ def profile(request, username):
         if form.is_valid():
             user = form.save(commit=False)
             # for users to add/remove courses to their profiles
-           if 'rem-course-input' in request.POST:
+            if 'rem-course-input' in request.POST:
                 # for users to add/remove courses to their profiles
                 if request.POST['rem-course-input'] != '':
                     rem_course_list = request.POST['rem-course-input'].replace('\r', '').split(",")
