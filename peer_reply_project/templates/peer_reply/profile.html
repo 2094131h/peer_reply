@@ -31,15 +31,15 @@
                     </a>
                     <a href="#">
                          <span class="fa fa-star-o"></span>
-                    </a> 
+                    </a>
                 </figcaption>
             </figure>
              <p><strong>Best Answers:</strong> {{ profile.no_best_answers }}</p>
              <p><strong>Quiz Likes:</strong> {{ profile.no_quiz_likes }}</p>
              {% if user_profile %}
-              <div class="edit-details">  
+              <div class="edit-details">
                     <p><a class="fa fa-lock" href="{% url 'auth_password_change' %}">  Change password</a></p>
-                    <p><a class="fa fa-edit" href="{% url 'edit_profile' %}"> Edit Profile </a></p>           
+                    <p><a class="fa fa-edit" href="{% url 'edit_profile' %}"> Edit Profile </a></p>
               </div>
            {% endif %}
 		</div>
@@ -61,7 +61,7 @@
             <a id="edit-course-btn"><button type="button" class="btn fa fa-minus-square" id="edit_course_btn"></button></a>
             {% endif %}
         </div>
-	</div> 
+	</div>
 <br>
 <div class="row clearfix">
 <div id="add-course-div">
@@ -129,7 +129,7 @@
     {% else %}
     <h1> No courses available!</h1>
     {% endif %}
- 
+
 </div>
 
 <div id="edit-course-div">
@@ -166,26 +166,26 @@
     </table>
     <input type="hidden" id="rem-course-input" name="rem-course-input" value=""/>
  </div>
- <div class="add-courses-btns"> 
+ <div class="add-courses-btns">
     <div class="added-courses-box" id="added-courses">
-    
-    </div>  
+
+    </div>
 <button class="btn btn-primary " type="submit" value="Submit" >Save </button><button id="reset-btn" class="btn btn-secondary " type="reset" value="Cancel"> Cancel</button>
-    
+
 </div>
-</form>  
-</div>        
-</div>     
+</form>
+</div>
+</div>
 </div>
 
 <script type="text/javascript">
-document.addEventListener("DOMContentLoaded",  
+document.addEventListener("DOMContentLoaded",
     function() {
     <!-- Handling the hidden add courses block -->
     $('#add-course-div').hide();
     $('#edit-course-div').hide();
     $('.add-courses-btns').hide();
-    
+
     $('#add-course-btn').click(
             function() {
             $('#add-course-div').show();
@@ -194,10 +194,10 @@ document.addEventListener("DOMContentLoaded",
             $('html,body').animate({
             scrollTop: $('#add-course-div').offset().top
             }, 1000);
-            }         
+            }
     );
     <!-- Adding courses as user clicks on them -->
-   
+
     $('#course_select').on("click",
     function () {
         var course = this.options[this.selectedIndex].textContent;
@@ -218,17 +218,17 @@ document.addEventListener("DOMContentLoaded",
         $('html,body').animate({
         scrollTop: $('#edit-course-div').offset().top
         }, 1000);
-                    
+
     });
     $('#course_edit').on("click",
             function() {
             var course = this.options[this.selectedIndex].textContent;
             $(' <option value="{{ course.id }}">'+course+' </option>').appendTo('#course_remove');
             $('input[name="rem-course-input"]').val(''+$('input[name="rem-course-input"]').val()+course+',');
-            
-    });         
-     
- 
+
+    });
+
+
 }
 );
 
