@@ -130,7 +130,7 @@ height:100%;
 }
 
 #top_quizzes_header{
-margin-left:9%;
+margin-left:7%;
 }
 
 #top_quizzes{
@@ -138,6 +138,7 @@ margin-left:9%;
 margin-top:142px;
 width:100%;
 height:60%;
+margin-left:20%;
 }
 .top_quiz{
 margin-top:20px;
@@ -168,6 +169,7 @@ width:60%;
 background-color:#ED2427;
 color:white;
 font-weight:bold;
+margin-left:20%;
 }
 .quiz_btn_inner{
 top:30%;
@@ -268,7 +270,7 @@ margin:0px 0px 5px 5px;
 padding:3px;
 color:black;
 position:relative;
-border-bottom:2px solid grey;
+border-bottom:2px solid black;
 }
 .question_link_title{
 position:absolute;
@@ -301,6 +303,12 @@ top:75px;
 .question_link_views{
 position:absolute;
 left:5px;
+bottom:5px;
+font-size:20px;
+}
+.question_link_answers{
+position:absolute;
+left:80px;
 bottom:5px;
 font-size:20px;
 }

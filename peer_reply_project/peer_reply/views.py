@@ -105,10 +105,11 @@ def get_index_questions(request):
 
 
                 question_list.append(
-                    '<a><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
-                        'images/default-user-icon-profile.png') + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
-                        question.views) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
-                        '%b,%d,%Y,%H:%M %P') + '</div></div>')
+                    '<a href="' + '/peer_reply/question/' + str(question.id) +'/' + question.slug +'"><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
+                        question.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
+                        question.views) + '</div><div class="question_link_answers">Answers:' + str(
+                        question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
+                        '%b,%d,%Y,%I:%M %P') + '</div></div>')
         question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
 
         return HttpResponse(question_list)
@@ -354,10 +355,11 @@ def get_course_questions(request):
 
             for question in questions:
                 question_list.append(
-                    '<a><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
-                        'images/default-user-icon-profile.png') + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
-                        question.views) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
-                        '%b,%d,%Y,%H:%M %P') + '</div></div>')
+                    '<a href="' + '/peer_reply/question/' + str(question.id) +'/' + question.slug +'"><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
+                        question.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
+                        question.views) + '</div><div class="question_link_answers">Answers:' + str(
+                        question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
+                        '%b,%d,%Y,%I:%M %P') + '</div></div>')
         question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
         return HttpResponse(question_list)
 
@@ -395,10 +397,11 @@ def get_search_questions(request):
 
             for question in questions:
                 question_list.append(
-                    '<a><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
-                        'images/default-user-icon-profile.png') + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
-                        question.views) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
-                        '%b,%d,%Y,%H:%M %P') + '</div></div>')
+                    '<a href="' + '/peer_reply/question/' + str(question.id) +'/' + question.slug +'"><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
+                        question.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
+                        question.views) + '</div><div class="question_link_answers">Answers:' + str(
+                        question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
+                        '%b,%d,%Y,%I:%M %P') + '</div></div>')
             question_list.append(
                 '<input type="hidden" value="' + str(paginator.count) + '" id="search-paginator-count"/>')
         return HttpResponse(question_list)
