@@ -5,9 +5,13 @@
 
 {% block title %}{{ question.title }}{% endblock %}
 
+{% block left_block %}
+    {% include 'peer_reply/left_block.html' %}
+{% endblock %}
 {% block body_block %}
 
 <!-- QUESTION -->
+<div id="view-question-wrapper">
 {% if question %}
 <div class="page-header"><h2>{{ question.title}}</h2></div>
     <b>{{ question.course }}</b><br>
@@ -57,8 +61,8 @@
     <div class="answer_rating">
             <img src="/static/images/tick.png" title="This is the best answer"</img>
             <span title="Rating">{{ best_answer.likes }}</span>
-            <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}"</img></a>
-        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="flag" data-ansid="{{ best_answer.id }}"</img></a>
+            <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}"/></a>
+        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="flag" data-ansid="{{ best_answer.id }}"/></a>
         </div>
 
 <br><br>
@@ -88,13 +92,13 @@
 
     <div class="answer_rating">
         <span title="Rating">{{ answer.likes }}</span>
-        <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ answer.id }}"</img></a>
+        <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ answer.id }}"/></a>
         
-        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ answer.flags }}." class="flag" data-ansid="{{ answer.id }}"</img></a>
+        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ answer.flags }}." class="flag" data-ansid="{{ answer.id }}"/></a>
         
         {% if not best_answer %}
             {% if user.is_authenticated and question.user == user %}
-                <a href=""><img src="/static/images/tick.png" title="Mark this answer as the best answer" class="best" data-ansid="{{ answer.id }}"</img></a>
+                <a href=""><img src="/static/images/tick.png" title="Mark this answer as the best answer" class="best" data-ansid="{{ answer.id }}"/></a>
             {% endif %}
         {% endif %}
     </div>
@@ -120,11 +124,24 @@
                 {{ field }}
             {% endfor %}
 
-            <input type="submit" name="submit" value="Post Your Answer" />
+            <input type="submit" name="submit" value="Post Your Answer" id="view-quiz-submit" />
+            </form>
 </div>
 
 {% else %}
 <div class="page-header"><h2>Question does not exist! Please check you typed the URL correctly.</h2></div>
 {% endif %}
 
+{% endblock %}
+{% block right_block %}
+    {% include 'peer_reply/top_quiz_links.html' %}
+
+    {% if user.is_authenticated %}
+
+            <a href="{% url 'add_quiz' question.course.slug %}"><button id="quiz_btn">
+                    Add Quiz
+                </button></a>
+
+    {% endif %}
+    </div>
 {% endblock %}

@@ -17,7 +17,7 @@
 				   <img src='profile_images/{{ user.picture }}' >
 				   {% endif %}
 				   <h4><a href='{% url 'profile' user.user.username %}>{{ user.user.username }}</a></h4>
-				   <li> Courses: {{ user.courses }}</li>
+
 				   <li> Location: {{ user.location }}</li>
 				   <li> Website: <a href='{{ user.website }}'>{{ user.website }}</a></li>
                    </div>

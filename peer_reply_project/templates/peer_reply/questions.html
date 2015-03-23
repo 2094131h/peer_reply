@@ -10,7 +10,7 @@
             {% if question.body_length < 60 %}
                 <div class="question_link_text">{{ question.body }}</div></div></a>
             {% else %}
-                <div class="question_link_text">{{ question.body|slice:":60" }}...</div></div></a>
+                <div class="question_link_text">{{ question.body|slice:":200" }}...</div></div></a>
             {% endif %}
             <!--<div>{{ question.body }}</div>-->
 

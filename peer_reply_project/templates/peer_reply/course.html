@@ -12,6 +12,12 @@
     <li><a  class="nav-tab-link course-rank" rank="hot">Hot</a></li>
 
 </ul>
+      <ul class="nav nav-pills" id="post-links">
+             {% if user.is_authenticated %}
+            <li role="presentation" ><a href="{% url 'add_question' %}">Post a question</a></li>
+             {% endif %}
+            <li role="presentation" ><a href="#">View top users</a></li>
+</ul>
 {% include 'peer_reply/questions.html' %}
 <div id="more_btn">
     <span class="glyphicon glyphicon-chevron-down course-more-btn more-btn"> Load more</span>

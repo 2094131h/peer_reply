@@ -97,7 +97,6 @@
     
 
     <div  id="centre_block">
-        
 
             {% block body_block %}{% endblock %}
 
@@ -191,6 +190,7 @@ if(count > 10){
 $('#search-more-btn').show();
 }
 });
+
 $('#search-more-btn').hide();
 $('.search-rank').click(function(){
 var rank = "";
@@ -221,9 +221,8 @@ $(this).tab('show');
 $('#index-more-btn').hide();
 $('.index-rank').click(function(){
 var rank = "";
-search_query = $('#search_query').val();
 rank = $(this).attr('rank');
-$.get('/peer_reply/get_index_questions/', {page_rank: rank, search:search_query }, function(data){
+$.get('/peer_reply/get_index_questions/', {page_rank: rank }, function(data){
          $('#questions').html(data);
         });
 $(this).tab('show');

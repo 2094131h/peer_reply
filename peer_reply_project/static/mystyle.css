@@ -82,7 +82,13 @@ width:60%;
 #navbar{
 color:white;
 }
-
+#post-links{
+left:80%;
+top:50px;
+position:absolute;
+display:inline-block;
+width:250px;
+}
 #left-block{
 margin-top:50px;
 width:20%;
@@ -170,7 +176,7 @@ position:relative;
 vertical-align:center;
 text-align:center;
 top: 50%;
-color:whit;
+color:white;
 
 transform:translateY(-50%);
 }
@@ -189,7 +195,8 @@ height:100%;
 
 .nav nav-list tree li a{
  display: none;
- color:white;}
+ color:white;
+ }
 
 
 .course-link {
@@ -256,7 +263,7 @@ cursor: pointer;
 }
 .question_link{
 background-color:white;
-height:100px;
+height:120px;
 margin:0px 0px 5px 5px;
 padding:3px;
 color:black;
@@ -265,27 +272,31 @@ border-bottom:2px solid grey;
 }
 .question_link_title{
 position:absolute;
-left:45px;
+left:15px;
 top:5px;
 color:blue;
 font-weight:bold;
 }
 .question_link_text{
 position:absolute;
-left:45px;
+left:15px;
 top:25px;
-;
+height:60px;
+background-color:#E4E5ED;
+border: 2px solid;
+border-radius: 5px;
+width:80%;
 }
 .question_link_pic{
 box-shadow:1px 1px 1px 1px grey;
 position:absolute;
 right:5px;
-top:5px;
+top:40px;
 }
 .question_link_username{
 position:absolute;
 right:5px;
-top:50px;
+top:75px;
 }
 .question_link_views{
 position:absolute;
@@ -319,12 +330,28 @@ display:inline-block;
 margin-top:-12px;
 margin-right:10px;
 }
+
+#ask-form-wrapper{
+width:120%;
+background-color:white;
+margin-left:8%;
+}
 #ask_form{
 background:white;
-width:160%;
+width:80%;
 padding:10px;
 margin-left:-30%;
-margin-top:-7%;
+height:600px;
+}
+
+
+#ask-title{
+width:100%;
+margin-left:5%;
+}
+#ask-body{
+width:100%;
+margin-left:10%;
 }
 
 #quiz{
@@ -344,25 +371,32 @@ height:300px;
 }
 #quiz-results-inner{
 left:40%;
-    vertical-align: middle;
-    top:30%;
-    position:absolute;
+vertical-align: middle;
+top:30%;
+position:absolute;
 }
-
-input[type="submit"] {
+input#question-submit{
+position:absolute;
+left:80%;
+}
+input[type="submit"] #question-submit {
 background-color: #ED2427;
 color:white;
 text-decoration: none;
-width:150px;
-height:50px;
+height:80px;
 font-weight:bold;
 font-size:13px;
-margin-left:60.5%;
+margin-left:50%;
+width:250px;
+}
+#question-submit{
+color:white;
+text-decoration: none;
+margin-left:-23%;
 }
 input[type="text"],
-
 textarea{
-width:70%;
+width:500px;
 }
 
 
