@@ -22,7 +22,7 @@ from django.templatetags.static import static
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from datetime import datetime
-
+import operator
 
 
 
@@ -45,7 +45,7 @@ def index(request):
 
             # append relevant questions in order
             relevant_questions += Question.objects.all().filter(course=course).order_by('-created')
-
+        relevant_questions = sorted(relevant_questions, key=operator.attrgetter('created'), reverse=True)
         context_dict['levels'] = levels
 
     else:
@@ -75,14 +75,14 @@ def get_index_questions(request):
                 for course in user_profile.courses.all():  # for all courses in the user
 
                     # append relevant questions in order
-                    questions += Question.objects.filter(course=course).order_by('-created')
-
+                    questions += Question.objects.filter(course=course)
+                questions = sorted(questions, key=operator.attrgetter('created'), reverse=True)
             elif rank == "hot":
                 for course in user_profile.courses.all():  # for all courses in the user
                     pass
                     # append relevant questions in order
-                    questions += Question.objects.filter(course=course).order_by('-views')
-
+                    questions += Question.objects.filter(course=course)
+                questions = sorted(questions, key=operator.attrgetter('views'), reverse=True)
         else:
 
             if rank == 'recent':
@@ -210,7 +210,7 @@ def add_question(request):
             question.user = request.user
             question.save()
             # probably better to use a redirect here.
-            return render(request, 'peer_reply/view_question.html')
+            return redirect('/peer_reply/question/' + str(question.id) + '/' + str(question.slug))
         else:
 
             context_dict['error'] = 'error'

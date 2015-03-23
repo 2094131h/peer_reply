@@ -130,14 +130,14 @@ class UserProfile(models.Model):
 class Question(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    title = models.CharField(max_length=128, unique=True)
+    title = models.CharField(max_length=128)
     body = models.TextField()
     views = models.IntegerField(default=0)
     course = models.ForeignKey(Course)
     user = models.ForeignKey(User)
 
     # Create slug field for url
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField()
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
