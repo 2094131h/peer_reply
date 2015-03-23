@@ -16,44 +16,64 @@
           <img width="200" height="200" src="{{ user_profile.picture.url }}" class="img-rounded img-responsive"></img>
         {% else %}
          <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded">
-        {% endif %}  
-         <div class="uploadfile-name"><label> {{ form.picture }} </label></div>
-          <a id="rem-pic" class="fa fa-times" value="false">remove</a>
-       
+        {% endif %} 
+         <div class="uploadfile-name"><label> {{ form.picture }} </label>
+         <input type="hidden" id="rem-pic" name="rem-pic" value="false"></input>
+          <a id="rem-pic-a" class="fa fa-times"> remove picture</a>
+        
+          <div id="confirm-rem-pic-box" >
+          <br>
+          <p> Are you sure? </p>
+          <span class="btn btn-primary" id="confirm-rem-pic">Yes</span>
+          <span class="btn btn-default" id="cancel-rem-pic">Cancel</span>
+          </div>
+        </div>  
       </div>     
       <div class="col-md-10 column">
-            <div>
-            <h2>{{ user.username }}</h2>
+            
             <ul>
+            <h2>{{ user.username }}</h2>
+            <hr>
                 <li><label>Website: {{ form.website }}</label></li>
                 <li><label>Location: {{ form.location }}</label></li>
             </ul>
-            </div>   
+<div class="btn-align">
+    <button class="btn btn-primary " type="submit" value="Submit" >Save</button>
+    <button class="btn btn-secondary " type="reset" value="Cancel">Cancel</button>
+    </div>            
       </div>
     </div>
 </div>     
   
-    <div class="btn-align">
-    <button class="btn btn-primary " type="submit" value="Submit" />Save</button>
-    <button class="btn btn-secondary " type="reset" value="Cancel" />Cancel</button>
-    </div>
-<script type="text/javascript"  src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
-    <!--fix-->
-    $(document).ready(function() {
-        $('#rem-pic').click(
-            function() {
-            var input =  $('<input>').attr({
-                type:'hidden',
-                id:'rem-pic',
-                value:'true'
-                });
-            $('#userprofile_form').append($(input));
+    
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", 
+    
+    function(event) { 
+        <!-- photo removal functions start -->
+        $('#confirm-rem-pic-box').hide(); 
+        $('#cancel-rem-pic').click( 
+            function(){
+            $('#confirm-rem-pic-box').hide(); 
             }
         );
-        $('#rem-pic').click();
-    });
+        $('#confirm-rem-pic').click(
+            function() {
+            $('input[name="rem-pic"]').val('true');
+            $('#confirm-rem-pic-box').hide();
+
+            }         
+        );
+        $('#rem-pic-a').click( 
+            function() {
+            $('#confirm-rem-pic-box').show();
+            }
+        );
+        <!-- photo removal functions end -->
+    }
+    
+);    
 </script>
 </form>
-<hr>
 {% endblock %}
 
