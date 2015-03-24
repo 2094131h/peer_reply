@@ -30,7 +30,7 @@ urlpatterns = patterns('',
     url(r'^flag_answer/$', views.flag_answer, name='flag_answer'),
     url(r'^mark_as_best_answer/$', views.mark_as_best_answer, name='mark_as_best_answer'),
     url(r'^question/(?P<question_id>[\w\-]+)/(?P<question_title_slug>[\w\-]+)/$', views.view_question, name='view_question'),
-    url(r'^like_quiz/$', views.like_quiz, name='like_quiz'),
+    # url(r'^like_quiz/$', views.like_quiz, name='like_quiz'),
 
 
 )

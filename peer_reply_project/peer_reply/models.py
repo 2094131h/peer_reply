@@ -116,6 +116,31 @@ class UserProfile(models.Model):
     courses = models.ManyToManyField(Course, blank=True)
     no_best_answers = models.IntegerField(default=0)
     no_quiz_likes = models.IntegerField(default=0)
+    rep_points = models.IntegerField(default=0)
+    rep_image = models.ImageField(default="profile_images/level1.gif")
+    about = models.TextField(null=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.user.username)
+        self.rep_points = (int(self.no_quiz_likes) * 2) + int(self.no_best_answers)
+        if ((int(self.no_quiz_likes) * 2) + int(self.no_best_answers)) < 100:
+            self.rep_image = '/media/profile_images/level1.gif'
+        elif ((int(self.no_quiz_likes) * 2) + int(self.no_best_answers)) < 200:
+            self.rep_image = '/media/profile_images/level2.gif'
+        elif ((int(self.no_quiz_likes) * 2) + int(self.no_best_answers)) < 500:
+            self.rep_image = '/media/profile_images/level3.gif'
+        elif ((int(self.no_quiz_likes) * 2) + int(self.no_best_answers)) < 1000:
+            self.rep_image = '/media/profile_images/level4.gif'
+        elif ((int(self.no_quiz_likes) * 2) + int(self.no_best_answers)) < 2000:
+            self.rep_image = '/media/profile_images/level5.gif'
+        elif ((int(self.no_quiz_likes) * 2) + int(self.no_best_answers)) < 5000:
+            self.rep_image = '/media/profile_images/level6.gif'
+        elif ((int(self.no_quiz_likes) * 2) + int(self.no_best_answers)) < 10000:
+            self.rep_image = '/media/profile_images/level7.gif'
+        else:
+            self.rep_image = '/media/profile_images/level2.gif'
+
+        super(UserProfile, self).save(*args, **kwargs)
 
     # method for displaying list of users courses
     def display_courses(self):
@@ -138,10 +163,6 @@ class Question(models.Model):
 
     # Create slug field for url
     slug = models.SlugField()
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -230,8 +251,6 @@ class QuizAnswer(models.Model):
     created = models.DateTimeField(editable=False,default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
-    created = models.DateTimeField(editable=False)
-    modified = models.DateTimeField()
     question = models.ForeignKey(QuizQuestion)
     answer_string = models.TextField()
     correct_answer = models.BooleanField(default=False)

@@ -4,31 +4,38 @@
 
 
 {% if users %}
-    {% block title %}Users{% endblock %}
+{% block title %}Users{% endblock %}
 {% endif %}
 
 {% block body_block %}
 <h2>Top 20 Users on Peer Reply</h2>
-               <br/>
+<br/>
 <div id="users">
-           {% if users %}
-             {% for user in users %}
-                   <div class='user_profile'>
-				   <a href="/peer_reply/profile/{{ user }}"><img src="/media/{{ user.picture }}" height="100" width="100" border="1" class="profile_picture"/></a>
-				   <a href="{% url 'profile' user %}">{{ user }}</a>
-                    
-				        <ol><b>Best Answers:</b> {{ user.no_best_answers }}<br>
-                        <b>Quiz Likes:</b> {{ user.no_quiz_likes }}<br>
-				        <b>Website:</b> {% if user.website %}<a href='{{ user.website }}'>{{ user.website }}</a>{% else %}<i>not provided</i>                       {% endif %}<br>
-                        <b>Location:</b> {% if user.location %}{{ user.location }}{% else %} <i>not provided</i>{% endif %}<br>
-                        <b>Member since:</b> {{ user.created|date }}</ol>
-                    
-                   </div>
-                    <br>
-                  {% endfor %}
-                    
-           {% else %}
-              <p>The are no users to display.</p>
-           {% endif %}
+    {% if users %}
+    {% for user in users %}
+    <div class='user_profile'>
+        <a href="/peer_reply/profile/{{ user }}"><img src="/media/{{ user.picture }}" height="100" width="100"
+                                                      border="1" class="profile_picture"/></a>
+        <a href="{% url 'profile' user %}">{{ user }}</a>
+
+        <!--<ol><b>Best Answers:</b> {{ user.no_best_answers }}<br>-->
+           <ol> <b>Reputation: </b> {{ user.rep_points }}<br>
+            <b>Website:</b> {% if user.website %}<a href='{{ user.website }}'>{{ user.website }}</a>{% else %}<i>not
+                provided</i>{% endif %}<br>
+            <b>Location:</b> {% if user.location %}{{ user.location }}{% else %} <i>not provided</i>{% endif %}<br>
+            <b>Member since:</b> {{ user.created|date }}
+        </ol>
+        <div class="users-rep-pic">
+
+                    <img width="60" height="60"  src="{{ user.rep_image }}"/>
+                </div>
+
+    </div>
+
+    {% endfor %}
+
+    {% else %}
+    <p>The are no users to display.</p>
+    {% endif %}
 </div>
 {% endblock %}

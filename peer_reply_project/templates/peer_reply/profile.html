@@ -16,26 +16,8 @@
                 {% else %}
                 <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded">
                 {% endif %}
-                <figcaption class="ratings"> <!--We can use this to add ratings, so far it does nothing -->
-                    <a href="#">
-                        <span class="fa fa-star"></span>
-                    </a>
-                    <a href="#">
-                        <span class="fa fa-star"></span>
-                    </a>
-                    <a href="#">
-                        <span class="fa fa-star"></span>
-                    </a>
-                    <a href="#">
-                        <span class="fa fa-star"></span>
-                    </a>
-                    <a href="#">
-                         <span class="fa fa-star-o"></span>
-                    </a>
-                </figcaption>
-            </figure>
-             <p><strong>Best Answers:</strong> {{ profile.no_best_answers }}</p>
-             <p><strong>Quiz Likes:</strong> {{ profile.no_quiz_likes }}</p>
+                </figure>
+             <p><strong>Reputation:</strong> {{ profile.rep_points }}</p>
              {% if user_profile %}
               <div class="edit-details">
                     <p><a class="fa fa-lock" href="{% url 'auth_password_change' %}">  Change password</a></p>
@@ -43,6 +25,10 @@
               </div>
            {% endif %}
 		</div>
+        <div id="profile-rep-pic">
+
+                    <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image }}"/>
+                </div>
         <div class="col-md-10 column">
             <div><h2>{{ user.username }}</h2>
             <hr>

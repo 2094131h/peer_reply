@@ -93,21 +93,25 @@ def get_index_questions(request):
         except:
             questions = paginator.page(1)
 
+        question_list   = get_question_list(questions, paginator)
+        return HttpResponse(question_list)
+
+def get_question_list(questions, paginator):
         question_list = []
         if questions:
 
             for question in questions:
-
 
                 question_list.append(
                     '<a href="' + '/peer_reply/question/' + str(question.id) +'/' + question.slug +'"><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
                         question.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
                         question.views) + '</div><div class="question_link_answers">Answers:' + str(
                         question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
-                        '%b,%d,%Y,%I:%M %P') + '</div></div>')
+                        '%b,%d,%Y,%I:%M %P') + '</div><div id="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(question.user.profile.rep_image.url) + '"/></div></div>')
+
         question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
 
-        return HttpResponse(question_list)
+        return question_list
 
 
 def left_block(request):
@@ -343,19 +347,7 @@ def get_course_questions(request):
             questions = paginator.page(int(page))
         except:
             pass
-
-        # cu = School.objects.get(id=int(level_id))
-        question_list = []
-        if questions:
-
-            for question in questions:
-                question_list.append(
-                    '<a href="' + '/peer_reply/question/' + str(question.id) +'/' + question.slug +'"><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
-                        question.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
-                        question.views) + '</div><div class="question_link_answers">Answers:' + str(
-                        question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
-                        '%b,%d,%Y,%I:%M %P') + '</div></div>')
-        question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
+        question_list = get_question_list(questions, paginator)
         return HttpResponse(question_list)
 
 
@@ -386,19 +378,7 @@ def get_search_questions(request):
 
         except:
             pass
-
-        question_list = []
-        if questions:
-
-            for question in questions:
-                question_list.append(
-                    '<a href="' + '/peer_reply/question/' + str(question.id) +'/' + question.slug +'"><div class="question_link"><div class="question_link_title">' + question.title + '</div><div class="question_link_text">' + question.body[:200] + '</div></a><a href="/peer_reply/profile/' + question.user.username + '"><img width="30" height="30" src="' + static(
-                        question.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
-                        question.views) + '</div><div class="question_link_answers">Answers:' + str(
-                        question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
-                        '%b,%d,%Y,%I:%M %P') + '</div></div>')
-            question_list.append(
-                '<input type="hidden" value="' + str(paginator.count) + '" id="search-paginator-count"/>')
+        question_list = get_question_list(questions, paginator)
         return HttpResponse(question_list)
 
 
@@ -535,24 +515,6 @@ def mark_as_best_answer(request):
 
     return HttpResponse()
 
-def like_quiz(request):
-    quiz_id = None
-    if request.method == 'GET':
-        quiz_id = request.GET['quiz_id']
-
-    if quiz_id:
-        quiz = Quiz.objects.get(id=int(quiz_id))
-        if quiz:
-            quiz_likes = quiz.likes + 1
-            quiz.likes = quiz_likes
-            quiz.save()
-        user = UserProfile.objects.get(user=quiz.user)
-        if user:
-            quiz_likes = user.no_quiz_likes + 1
-            user.no_quiz_likes = quiz_likes
-            user.save()
-
-    return HttpResponse()
 
 def quiz(request, quiz_name_slug):
     slug = quiz_name_slug
