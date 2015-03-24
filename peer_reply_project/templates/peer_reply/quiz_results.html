@@ -9,14 +9,16 @@
 
 {% block body_block %}
 <div id="quiz-results-div">
-    <div id="quiz-results-inner">
-             <h2>{{ quiz.name }}</h2>
+    <!--<div id="quiz-results-inner">-->
+             <h1>{{ quiz.name }} completed!</h1>
              {% if points != 1 %} 
-             <div>Your score is: {{ points }} points.</div>
+             <div><h2>Your score is: {{ points }} points.</h2></div>
              {% else %}
-             <div>Your score is: {{ points }} point.</div>
+             <div><h2>Your score is: {{ points }} point.</h2></div>
              {% endif %}
-        </div>
+             <h2>Did you enjoy or find this quiz helpful?  Support the creator by liking it now!
+                <center>---> <a href=""><img src="/static/images/thumbup.png" title="Like this quiz" id="rate-quiz" data-quizid="{{ quiz.id }}"/></a> <---</center></h2>
+        <!--</div>-->
 </div>
 {% endblock %}
 {% block left_block %}

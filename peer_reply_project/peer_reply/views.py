@@ -536,6 +536,24 @@ def mark_as_best_answer(request):
 
     return HttpResponse()
 
+def like_quiz(request):
+    quiz_id = None
+    if request.method == 'GET':
+        quiz_id = request.GET['quiz_id']
+
+    if quiz_id:
+        quiz = Quiz.objects.get(id=int(quiz_id))
+        if quiz:
+            quiz_likes = quiz.likes + 1
+            quiz.likes = quiz_likes
+            quiz.save()
+        user = UserProfile.objects.get(user=quiz.user)
+        if user:
+            quiz_likes = user.no_quiz_likes + 1
+            user.no_quiz_likes = quiz_likes
+            user.save()
+
+    return HttpResponse()
 
 def quiz(request, quiz_name_slug):
     slug = quiz_name_slug

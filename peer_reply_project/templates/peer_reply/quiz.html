@@ -10,19 +10,28 @@
 {% block body_block %}
 <div id="quiz">
            {% if quiz %}
-             <h2>{{ quiz.name }}</h2>{{ likes }} {% if likes == 1 %} like. {% else %} likes. {% endif %}
+            <div class="page-header">
+                <h1>{{ quiz.name }}</h1>
+                <h3>{{ likes }} {% if likes == 1 %} like {% else %} likes {% endif %}<a href=""><img src="/static/images/thumbup.png" title="Like this quiz" id="rate-quiz" data-quizid="{{ quiz.id }}"/></a></h3>
+                    <div class='quiz_profile'>
+                        Created {{ quiz.created }}<br>
+                        <a href="/peer_reply/profile/{{ quiz.user }}"><img src="/media/{{ quiz.user.profile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
+                        <a href="/peer_reply/profile/{{ quiz.user }}">{{ quiz.user.username }}</a><br>
+                    </div>
+            </div>
+
              <form action='/peer_reply/quiz/{{ quiz.slug }}/quiz_results/' method = "POST">
                {% csrf_token %}
                <br/>{% for question in questions %}
+                <div class='quiz_question'>
                    <h3> {{ question }} </h3>
                    <div>{% for answer in question.quizanswer_set.all %}
                         <input type="radio" name="{{ question.question_string }}" value="{{ answer.answer_string }}" required />{{ answer }}<br>
     
-                        {% endfor %}</div><br><hr>
+                        {% endfor %}</div><br><hr></div>
                   {% endfor %}
                     <input type="submit" value="Submit" /><br>
                </form>
-              <p>Created by: {{ user.username }}</p>
            {% else %}
               <p>The requested quiz does not exist.</p>
            {% endif %}

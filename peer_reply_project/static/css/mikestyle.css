@@ -21,6 +21,25 @@ border: 2px solid #a1a1a1;
 border-radius: 5px;
 border-color:lightblue;
 }
+.quiz_profile{
+right:30px;
+padding:3px;
+color:black;
+text-align:left;
+
+margin-right: auto;
+width: 50%;
+
+}
+.quiz_question{
+right:30px;
+padding:3px;
+color:black;
+text-align:left;
+margin-right: auto;
+width: 100%;
+
+}
 .user_profile{
 right:30px;
 padding:3px;
