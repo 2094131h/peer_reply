@@ -16,7 +16,6 @@ import datetime
 import json
 from django.templatetags.static import static
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from datetime import datetime
 import operator
 
@@ -54,7 +53,7 @@ def index(request):
     questions = paginator.page(1)
 
     context_dict['questions'] = questions
-    context_dict['top_quizzes'] = Quiz.objects.all().order_by('likes')[:5]
+    context_dict['top_quizzes'] = Quiz.objects.all().order_by('-likes')[:5]
     context_dict['paginator'] = paginator
     return render(request, 'peer_reply/index.html', context_dict)
 
@@ -157,7 +156,7 @@ def course(request, course_name_slug):
         context_dict['course'] = cur_course
         context_dict['universities'] = University.objects.order_by('-name')[:1]
         context_dict['questions'] = Question.objects.all().filter(course=cur_course).order_by('-views')[:10]
-        context_dict['top_quizzes'] = Quiz.objects.filter(course=cur_course).order_by('likes')[:5]
+        context_dict['top_quizzes'] = Quiz.objects.filter(course=cur_course).order_by('-likes')[:5]
     except Course.DoesNotExist:
         # We get here if we didn't find the specified category.
         # Don't do anything - the template displays the "no category" message for us.
@@ -575,7 +574,16 @@ def quiz(request, quiz_name_slug):
                 answer = question.quizanswer_set.get(answer_string=request.POST[question.question_string])
                 if answer.correct_answer:
                     points = points + 1
+
+            universities = University.objects.order_by('-name')[:1]
+            university = University.objects.get(slug='university-of-glasgow')
+            school_list = School.objects.all().filter(university=university).order_by('-name')
+            context_dict['schools'] = school_list
+            context_dict['universities'] = universities
+            levels = LevelName.objects.all().order_by('name')
+            context_dict['levels'] = levels
         context_dict['points'] = points
+
         return render(request, 'peer_reply/quiz_results.html', context_dict)
 
     else:
@@ -673,7 +681,7 @@ def add_quiz_question(request, quiz_name_slug):
 def change_password(request):
     return password_change(request, post_change_redirect='/peer_reply/profile.html')
 
-@login_required
+
 def profile(request, username):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=request.user)

@@ -19,8 +19,8 @@
                 </a>
             <div class="question_link_username">{{ question.user.username }}</div>
             <div class="question_link_views">Views:{{ question.views }}</div>
-            <div class="question_link_answers">Answers: {{ question.answer_set.count }}</div>
-            <div class="question_link_posted">Posted: {{ question.created }}</div>
+            <div class="question_link_answers">Answers:{{ question.answer_set.count }}</div>
+            <div class="question_link_posted">Posted:{{ question.created }}</div>
             <input type="hidden" value="{{ question.id }}">
             <!--<div>Modified: {{ question.modified }}</div>-->
         </div>

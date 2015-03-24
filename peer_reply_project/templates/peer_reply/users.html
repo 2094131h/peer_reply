@@ -8,12 +8,13 @@
 {% endif %}
 
 {% block body_block %}
-<div>
+<h2>Top 20 Users on Peer Reply</h2>
+               <br/>
+<div id="users">
            {% if users %}
-             <h2>Top 20 Users on Peer Reply</h2>
-               <br/>{% for user in users %}
+             {% for user in users %}
                    <div class='user_profile'>
-				   <a href="/peer_reply/profile/{{ user }}"><img src="/media/{{ user.picture }}" height="100" width="100" border="1" class="profile_picture"</img></a>
+				   <a href="/peer_reply/profile/{{ user }}"><img src="/media/{{ user.picture }}" height="100" width="100" border="1" class="profile_picture"/></a>
 				   <a href="{% url 'profile' user %}">{{ user }}</a>
                     
 				        <ol><b>Best Answers:</b> {{ user.no_best_answers }}<br>

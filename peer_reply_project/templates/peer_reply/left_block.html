@@ -3,7 +3,7 @@
         {% if user.is_authenticated %}
 
         {% if user.profile %}
-
+        {% if user.profile.courses.count > 0 %}
         <h3>My courses</h3>
         <br>
         <br>
@@ -30,7 +30,11 @@
                     {% endfor %}
                 </ul>
 
-
+        {% else %}
+        <br>
+        <br>
+            <h4><strong>Add courses to your profile to view questions and quizzes related to them.</strong></h4>
+        {% endif %}
         {% endif %}
 
 
@@ -77,6 +81,8 @@
         {% endfor %}
 
         {% else %}
+        <br>
+        <br>
         <strong>There are no courses present.</strong>
         {% endif %}
 

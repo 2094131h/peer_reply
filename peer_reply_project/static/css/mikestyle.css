@@ -51,6 +51,7 @@ border-color:lightblue;
 margin-left: auto;
 margin-right: auto;
 width: 50%;
+float:left;
 }
 .profile_picture{
 right:30px;
