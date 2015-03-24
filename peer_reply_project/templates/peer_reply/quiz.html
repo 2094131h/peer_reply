@@ -9,6 +9,7 @@
 
 {% block body_block %}
 <div id="quiz">
+    <div id="quiz-inner">
            {% if quiz %}
              <h2>{{ quiz.name }}</h2>{{ likes }} {% if likes == 1 %} like. {% else %} likes. {% endif %}
              <form action='/peer_reply/quiz/{{ quiz.slug }}/quiz_results/' method = "POST">
@@ -26,5 +27,6 @@
            {% else %}
               <p>The requested quiz does not exist.</p>
            {% endif %}
+        </div>
 </div>
 {% endblock %}

@@ -83,11 +83,11 @@ width:60%;
 color:white;
 }
 #post-links{
-left:80%;
+left:70%;
 top:50px;
 position:absolute;
 display:inline-block;
-width:250px;
+width:350px;
 }
 #left-block{
 margin-top:50px;
@@ -362,9 +362,11 @@ margin-left:10%;
 }
 
 #quiz{
-background-color:white;
+background-color:#F5F5F5;
 padding:20px;
+vertical-align:center;
 }
+
 hr{
 height:5px;
 }
