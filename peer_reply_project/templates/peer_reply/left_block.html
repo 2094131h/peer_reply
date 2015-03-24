@@ -49,10 +49,10 @@
             {% for school in university.school_set.all %}
 
 
-            <li><label class="tree-toggler nav-header"><h4>
+            <li><h4><label class="tree-toggler nav-header">
                 <span class="glyphicon glyphicon-chevron-down school_down_icon"></span><span
                     class="glyphicon glyphicon-chevron-left school_left_icon">
-                                  </span> {{ school.name }}</h4></label>
+                                  </span> {{ school.name }}</label></h4>
                 <ul class="nav nav-list tree">
 
                     {% for level in school.level_set.all %}
@@ -64,7 +64,7 @@
 
                             {% for course in level.course_set.all %}
 
-                            <li class="course-link"><a id="course-link" href="{% url 'course' course.slug %}">{{ course.name }}</a></li>
+                            <li class="course-link"><a href="{% url 'course' course.slug %}">{{ course.name }}</a></li>
 
                             {% endfor %}
                             <hr>

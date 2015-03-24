@@ -132,15 +132,15 @@ def left_block(request):
     return render(request, 'peer_reply/left_block.html', context_dict)
 
 
-def base(request):
-    context_dict = {}
-    user = request.user
-    userprofile = UserProfile.objects.get(user=user)
-    levels = LevelName.objects.all().order_by('name')
-
-    context_dict['levels'] = levels
-    context_dict['user_profile'] = userprofile
-    return {context_dict}
+# def base(request):
+#     context_dict = {}
+#     user = request.user
+#     userprofile = UserProfile.objects.get(user=user)
+#     levels = LevelName.objects.all().order_by('name')
+#
+#     context_dict['levels'] = levels
+#     context_dict['user_profile'] = userprofile
+#     return {context_dict}
 
 
 def course(request, course_name_slug):
@@ -168,6 +168,64 @@ def course(request, course_name_slug):
 
     # Go render the response and return it to the client.
     return render(request, 'peer_reply/course.html', context_dict)
+
+def quizzes(request, course_name_slug):
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+
+    try:
+        universities = University.objects.order_by('-name')[:1]
+        university = University.objects.get(slug='university-of-glasgow')
+        school_list = School.objects.all().filter(university=university).order_by('-name')
+        context_dict['schools'] = school_list
+        context_dict['universities'] = universities
+        levels = LevelName.objects.all().order_by('name')
+        context_dict['levels'] = levels
+
+        cur_course = Course.objects.get(slug=course_name_slug)
+        context_dict['course'] = cur_course
+        context_dict['universities'] = University.objects.order_by('-name')[:1]
+        context_dict['quizzes'] = Quiz.objects.all().filter(course=cur_course).order_by('-likes')[:10]
+
+    except Course.DoesNotExist:
+
+        pass
+
+    # Go render the response and return it to the client.
+    return render(request, 'peer_reply/quizzes.html', context_dict)
+
+def get_quizzes(request):
+    if request.method == 'GET':
+        quizzes = None
+        rank = request.GET['page_rank']
+        course_slug = request.GET['course_slug']
+        qcourse = Course.objects.get(slug=course_slug)
+        if rank == 'recent':
+            quizzes = Quiz.objects.filter(course=qcourse).order_by('-created')
+        elif rank == 'hot':
+            quizzes = Quiz.objects.filter(course=qcourse).order_by('-likes')
+
+        try:
+            paginator = Paginator(quizzes, 10)
+            page = request.GET['page']
+            quizzes = paginator.page(int(page))
+        except:
+            pass
+
+        quiz_list = []
+        if quizzes:
+
+            for quiz in quizzes:
+
+                quiz_list.append(
+                    '<a href="' + '/peer_reply/quiz/' + quiz.slug +'"><div class="question_link"><div class="question_link_title">' + quiz.name + '</div></a></a><a href="/peer_reply/profile/' + quiz.user.username + '"><img width="30" height="30" src="' + static(
+                        quiz.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + quiz.user.username + '</div><div class="question_link_views">Views:' + str(
+                        quiz.likes) + '</div><div class="question_link_posted">Posted:' + quiz.created.strftime(
+                        '%b,%d,%Y,%I:%M %P') + '</div><div id="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(quiz.user.profile.rep_image.url) + '"/></div></div>')
+
+        quiz_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="quiz_paginator-count"/>')
+
+        return HttpResponse(quiz_list)
 
 
 def school(request, school_name_slug):

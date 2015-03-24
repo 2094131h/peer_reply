@@ -176,6 +176,32 @@ $('#course_select').change(function(){
 
 });
 
+$('#quiz-more-btn').hide();
+$('.quiz-rank').click(function(){
+var rank = "";
+course = $('#quizzes-course').val();
+rank = $(this).attr('rank');
+ $.get('/peer_reply/get_quizzes/', {page_rank: rank, course_slug: course}, function(data){
+         $('#quizzes').html(data);
+        });
+$(this).tab('show');
+var count = $('#quizzes-paginator-count').val();
+count = parseInt(count)
+if(count > 10){
+$('#quiz-more-btn').show();
+}
+});
+
+$('.quizzes-more-btn').click(function(){
+var rank = "";
+cur_page++;
+rank = $('.active').children('a').attr('rank');
+$.get('/peer_reply/get_quizzes/', {page_rank: rank,page: cur_page  }, function(data){
+         $('#quizzes').append(data);
+        });
+$(this).tab('show');
+});
+
 
 $('#course-more-btn').hide();
 $('.course-rank').click(function(){
@@ -188,7 +214,7 @@ $(this).tab('show');
 var count = $('#course-paginator-count').val();
 count = parseInt(count)
 if(count > 10){
-$('#search-more-btn').show();
+$('#course-more-btn').show();
 }
 });
 
