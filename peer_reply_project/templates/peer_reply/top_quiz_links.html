@@ -1,12 +1,13 @@
-d<div id="top_quizzes">
+<div id="top_quizzes">
     {% if top_quizzes %}
         <h3 id="top_quizzes_header">Top Quizzes</h3>
         {% for quiz in top_quizzes %}
 
-                <a href="{% url 'quiz' quiz.slug %}">
-                    <button class="top_quiz_btn">
+                <a href="{% url 'quiz' quiz.slug %}"><div class="top_quiz_btn"><div class="quiz-btn-inner">
+
                         {{ quiz.name }}
-                        </button>
+                        </div>
+                        </div>
                     </a>
 
 

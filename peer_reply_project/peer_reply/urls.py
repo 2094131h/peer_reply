@@ -3,14 +3,14 @@ from peer_reply import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^/left_block/$', views.left_block, name='left_block'),
+    # url(r'^/left_block/$', views.left_block, name='left_block'),
     url(r'^course/(?P<course_name_slug>[\w\-]+)/$', views.course, name='course'),
     url(r'^quizzes/(?P<course_name_slug>[\w\-]+)/$', views.quizzes, name='quizzes'),
 
     # url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
     url(r'^search/$', views.search, name='search'),
 
-    url(r'^uni/(?P<university_name_slug>[\w\-]+)/add_course/$', views.add_course, name='add_course'),
+    # url(r'^uni/(?P<university_name_slug>[\w\-]+)/add_course/$', views.add_course, name='add_course'),
     url(r'^ask/$', views.add_question, name='add_question'),
     url(r'^get_levels/$', views.get_levels, name='get_levels'),
     url(r'^get_courses/$', views.get_courses, name='get_courses'), 

@@ -15,16 +15,18 @@
             <!--<div>{{ question.body }}</div>-->
 
             <a href="{% url 'profile' question.user.username %}">
-                <img width="30" height="30" src="{{ question.user.profile.picture.url }}" class="question_link_pic"/>
+                <img width="30" height="30" src="{{ question.user.profile.picture.url }}" class="question_link_pic" alt="user avatar"/>
                 </a>
             <div class="question_link_username">{{ question.user.username }}</div>
+
             <div class="question_link_views">Views:{{ question.views }}</div>
             <div class="question_link_answers">Answers:{{ question.answer_set.count }}</div>
             <div class="question_link_posted">Posted:{{ question.created }}</div>
-            <input type="hidden" value="{{ question.id }}">
-            <div id="rep-pic">
 
-                    <img width="60" height="60" class="square-rep-pic" src="{{ question.user.profile.rep_image.url }}"/>
+            <input type="hidden" value="{{ question.id }}">
+            <div class="rep-pic">
+
+                    <img width="60" height="60" class="square-rep-pic" src="{{ question.user.profile.rep_image.url }}" alt="reputation award"/>
                 </div>
             <!--<div>Modified: {{ question.modified }}</div>-->
         </div>

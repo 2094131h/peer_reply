@@ -4,12 +4,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import password_change
 from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
-from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, \
-    QuizAnswer, QuizQuestion
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName
 from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm, \
     AnswerForm
 from django.templatetags.static import static
-from django.views.decorators.csrf import ensure_csrf_cookie
+# from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.db.models import Q
 import datetime
@@ -23,14 +22,9 @@ import operator
 
 # @ensure_csrf_cookie
 def index(request):
-    context_dict = {}
-    universities = University.objects.order_by('-name')[:1]
-    university = University.objects.get(slug='university-of-glasgow')
-    school_list = School.objects.all().filter(university=university).order_by('-name')
 
-    context_dict = {'schools': school_list, 'universities': universities}
-    levels = LevelName.objects.all().order_by('name')
-    context_dict['levels'] = levels
+    context_dict = get_left_block_content()
+
 
     if request.user.is_authenticated():
         user_profile = request.user.profile
@@ -41,7 +35,7 @@ def index(request):
             # append relevant questions in order
             relevant_questions += Question.objects.all().filter(course=course).order_by('-created')
         relevant_questions = sorted(relevant_questions, key=operator.attrgetter('created'), reverse=True)
-        context_dict['levels'] = levels
+
 
     else:
 
@@ -51,13 +45,24 @@ def index(request):
 
     paginator = Paginator(relevant_questions, 10)
     questions = paginator.page(1)
-
     context_dict['questions'] = questions
     context_dict['top_quizzes'] = Quiz.objects.all().order_by('-likes')[:5]
     context_dict['paginator'] = paginator
     return render(request, 'peer_reply/index.html', context_dict)
 
+#returns the objects needed to fill the left navigation bar
+def get_left_block_content():
+    context_dict ={}
+    universities = University.objects.order_by('-name')[:1]
+    university = University.objects.get(slug='university-of-glasgow')
+    school_list = School.objects.all().filter(university=university).order_by('-name')
+    levels = LevelName.objects.all().order_by('name')
+    context_dict['levels'] = levels
+    context_dict = {'schools': school_list, 'universities': universities, 'levels': levels}
+    return context_dict
 
+# Used to return questions for the index page when the 'Hot' or 'Recent' tabs are clicked
+# Aslo returns a new page of questions for when the load more button is clicked
 def get_index_questions(request):
     if request.method == 'GET':
         questions = []
@@ -66,13 +71,13 @@ def get_index_questions(request):
         if request.user.is_authenticated():
             user_profile = request.user.profile
 
-            if rank == "recent":
+            if rank == "Recent":
                 for course in user_profile.courses.all():  # for all courses in the user
 
                     # append relevant questions in order
                     questions += Question.objects.filter(course=course)
                 questions = sorted(questions, key=operator.attrgetter('created'), reverse=True)
-            elif rank == "hot":
+            elif rank == "Hot":
                 for course in user_profile.courses.all():  # for all courses in the user
                     pass
                     # append relevant questions in order
@@ -80,9 +85,9 @@ def get_index_questions(request):
                 questions = sorted(questions, key=operator.attrgetter('views'), reverse=True)
         else:
 
-            if rank == 'recent':
+            if rank == 'Recent':
                 questions = Question.objects.order_by('-created')
-            elif rank == 'hot':
+            elif rank == 'Hot':
                 questions = Question.objects.order_by('-views')
 
         paginator = Paginator(questions, 10)
@@ -96,6 +101,7 @@ def get_index_questions(request):
         question_list   = get_question_list(questions, paginator)
         return HttpResponse(question_list)
 
+# returns questions in html format to add or append to current list
 def get_question_list(questions, paginator):
         question_list = []
         if questions:
@@ -108,83 +114,56 @@ def get_question_list(questions, paginator):
                         question.views) + '</div><div class="question_link_answers">Answers:' + str(
                         question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
                         '%b,%d,%Y,%I:%M %P') + '</div><div id="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(question.user.profile.rep_image.url) + '"/></div></div>')
-
-        question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
+        if paginator:
+            question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
 
         return question_list
 
 
-def left_block(request):
-    context_dict = {}
-    if request.user.is_authenticated():
-
-        user_profile = request.user.profile
-        # user = User.objects.get(username=user.username)
-
-        # userprofile = UserProfile.objects.all().filter(user=user)
-        context_dict['user_profile'] = user_profile
-    else:
-        universities = University.objects.order_by('-name')[:1]
-        university = University.objects.get(slug='university-of-glasgow')
-        school_list = School.objects.all().filter(university=university).order_by('-name')
-        context_dict['schools'] = School.objects.all().filter(university=university).order_by('-name')
-    # Render the response and send it back!
-    return render(request, 'peer_reply/left_block.html', context_dict)
-
-
-# def base(request):
+# def left_block(request):
 #     context_dict = {}
-#     user = request.user
-#     userprofile = UserProfile.objects.get(user=user)
-#     levels = LevelName.objects.all().order_by('name')
-#
-#     context_dict['levels'] = levels
-#     context_dict['user_profile'] = userprofile
-#     return {context_dict}
+#     if request.user.is_authenticated():
 
+#         user_profile = request.user.profile
+#         # user = User.objects.get(username=user.username)
 
+#         # userprofile = UserProfile.objects.all().filter(user=user)
+#         context_dict['user_profile'] = user_profile
+#     else:
+#         universities = University.objects.order_by('-name')[:1]
+#         university = University.objects.get(slug='university-of-glasgow')
+#         school_list = School.objects.all().filter(university=university).order_by('-name')
+#         context_dict['schools'] = School.objects.all().filter(university=university).order_by('-name')
+#     # Render the response and send it back!
+#     return render(request, 'peer_reply/left_block.html', context_dict)
+
+# render the course pase which displays questions in the specified course
 def course(request, course_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
 
     try:
-        universities = University.objects.order_by('-name')[:1]
-        university = University.objects.get(slug='university-of-glasgow')
-        school_list = School.objects.all().filter(university=university).order_by('-name')
-        context_dict['schools'] = school_list
-        context_dict['universities'] = universities
-        levels = LevelName.objects.all().order_by('name')
-        context_dict['levels'] = levels
-
+        context_dict = get_left_block_content()
         cur_course = Course.objects.get(slug=course_name_slug)
         context_dict['course'] = cur_course
-        context_dict['universities'] = University.objects.order_by('-name')[:1]
         context_dict['questions'] = Question.objects.all().filter(course=cur_course).order_by('-views')[:10]
         context_dict['top_quizzes'] = Quiz.objects.filter(course=cur_course).order_by('-likes')[:5]
     except Course.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything - the template displays the "no category" message for us.
+
         pass
 
     # Go render the response and return it to the client.
     return render(request, 'peer_reply/course.html', context_dict)
 
+# render the course pase which displays questions in the specified course
 def quizzes(request, course_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
 
     try:
-        universities = University.objects.order_by('-name')[:1]
-        university = University.objects.get(slug='university-of-glasgow')
-        school_list = School.objects.all().filter(university=university).order_by('-name')
-        context_dict['schools'] = school_list
-        context_dict['universities'] = universities
-        levels = LevelName.objects.all().order_by('name')
-        context_dict['levels'] = levels
-
+        context_dict = get_left_block_content()
         cur_course = Course.objects.get(slug=course_name_slug)
         context_dict['course'] = cur_course
-        context_dict['universities'] = University.objects.order_by('-name')[:1]
         context_dict['quizzes'] = Quiz.objects.all().filter(course=cur_course).order_by('-likes')[:10]
 
     except Course.DoesNotExist:
@@ -194,24 +173,26 @@ def quizzes(request, course_name_slug):
     # Go render the response and return it to the client.
     return render(request, 'peer_reply/quizzes.html', context_dict)
 
+# returns quizzes in html format to add or append to current list in the quizzes page
+# quizzes will be orderd by date/time or views depending on Ajax call params
 def get_quizzes(request):
     if request.method == 'GET':
         quizzes = None
         rank = request.GET['page_rank']
         course_slug = request.GET['course_slug']
         qcourse = Course.objects.get(slug=course_slug)
-        if rank == 'recent':
+        if rank == 'Recent':
             quizzes = Quiz.objects.filter(course=qcourse).order_by('-created')
-        elif rank == 'hot':
+        elif rank == 'Hot':
             quizzes = Quiz.objects.filter(course=qcourse).order_by('-likes')
 
+        paginator = Paginator(quizzes, 10)
         try:
-            paginator = Paginator(quizzes, 10)
             page = request.GET['page']
             quizzes = paginator.page(int(page))
         except:
             pass
-
+        quizzes = paginator.page(1)
         quiz_list = []
         if quizzes:
 
@@ -219,34 +200,15 @@ def get_quizzes(request):
 
                 quiz_list.append(
                     '<a href="' + '/peer_reply/quiz/' + quiz.slug +'"><div class="question_link"><div class="question_link_title">' + quiz.name + '</div></a></a><a href="/peer_reply/profile/' + quiz.user.username + '"><img width="30" height="30" src="' + static(
-                        quiz.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + quiz.user.username + '</div><div class="question_link_views">Views:' + str(
+                        quiz.user.profile.picture.url) + '" alt="user avatar" class="question_link_pic"/></a><div class="question_link_username">' + quiz.user.username + '</div><div class="question_link_views">Views:' + str(
                         quiz.likes) + '</div><div class="question_link_posted">Posted:' + quiz.created.strftime(
-                        '%b,%d,%Y,%I:%M %P') + '</div><div id="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(quiz.user.profile.rep_image.url) + '"/></div></div>')
-
-        quiz_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="quiz_paginator-count"/>')
+                        '%b,%d,%Y,%I:%M %P') + '</div><div id="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(quiz.user.profile.rep_image.url) + '" alt="reputation award"/></div></div>')
+            if paginator:
+                quiz_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="quiz_paginator-count"/>')
 
         return HttpResponse(quiz_list)
 
-
-def school(request, school_name_slug):
-    # Create a context dictionary which we can pass to the template rendering engine.
-    context_dict = {}
-
-    try:
-
-        cur_school = School.objects.get(slug=school_name_slug)
-        level_list = Level.objects.all().filter(school=cur_school).order_by('name')
-        context_dict['levels'] = level_list
-        context_dict['school'] = cur_school
-    except School.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything - the template displays the "no category" message for us.
-        pass
-
-    # Go render the response and return it to the client.
-    return render(request, 'peer_reply/school.html', context_dict)
-
-
+# render the page for postiing questions
 @login_required
 def add_question(request):
     # Create a context dictionary which we can pass to the template rendering engine.
@@ -285,58 +247,45 @@ def add_question(request):
     return render(request, 'peer_reply/ask.html', context_dict)
 
 
-def add_course(request, university_name_slug):
-    try:
-        uni = University.objects.get(slug=university_name_slug)
-    except University.DoesNotExist:
-        uni = None
+# def add_course(request, university_name_slug):
+#     try:
+#         uni = University.objects.get(slug=university_name_slug)
+#     except University.DoesNotExist:
+#         uni = None
 
-    # A HTTP POST?
-    if request.method == 'POST':
-        form = CourseForm(request.POST)
+#     # A HTTP POST?
+#     if request.method == 'POST':
+#         form = CourseForm(request.POST)
 
-        # Have we been provided with a valid form?
-        if form.is_valid():
-            if uni:
-                course = form.save(commit=False)
-                course.university = uni
-                course.save()
-                # probably better to use a redirect here.
-                return render(request, 'peer_reply/index.html')
-        else:
-            print form.errors
-            # Save the new category to the database.
-            form.save(commit=True)
+#         # Have we been provided with a valid form?
+#         if form.is_valid():
+#             if uni:
+#                 course = form.save(commit=False)
+#                 course.university = uni
+#                 course.save()
+#                 # probably better to use a redirect here.
+#                 return render(request, 'peer_reply/index.html')
+#         else:
+#             print form.errors
+#             # Save the new category to the database.
+#             form.save(commit=True)
 
-            # Now call the index() view.
-            # The user will be shown the homepage.
-            return index(request)
+#             # Now call the index() view.
+#             # The user will be shown the homepage.
+#             return index(request)
 
-    else:
-        # If the request was not a POST, display the form to enter details.
-        form = CourseForm()
+#     else:
+#         # If the request was not a POST, display the form to enter details.
+#         form = CourseForm()
 
-    # Bad form (or form details), no form supplied...
-    # Render the form with error messages (if any).
-    return render(request, 'peer_reply/index.html', {'form': form})
+#     # Bad form (or form details), no form supplied...
+#     # Render the form with error messages (if any).
+#     return render(request, 'peer_reply/index.html', {'form': form})
 
-
+# renders the page whick displays search results when user enters a search in navbar
 def search(request):
-    universities = University.objects.order_by('-name')[:1]
-    university = University.objects.get(slug='university-of-glasgow')
-    school_list = School.objects.all().filter(university=university).order_by('-name')
+    context_dict = get_left_block_content()
 
-    # levels = Level.objects.all()
-
-    context_dict = {'schools': school_list, 'universities': universities}
-    levels = LevelName.objects.all().order_by('name')
-    context_dict['levels'] = levels
-
-    # enerate  search  suggestions
-    # get 
-
-    # if request.user:
-    # context_dict['user'] = request.user
     if request.method == 'GET':
         search = request.GET.get('text')
         # search = request.GET['search']
@@ -346,24 +295,20 @@ def search(request):
             for term in search.split():
                 qset |= Q(title__contains=term)
                 qqset |= Q(name__contains=term)
+
             questions = Question.objects.filter(qset).order_by('-views')
             paginator = Paginator(questions, 10)
 
             questions = paginator.page(1)
             context_dict['questions'] = questions
-
             context_dict['top_quizzes'] = Quiz.objects.filter(qqset).order_by('-likes')[:5]
             context_dict['search'] = search
         return render(request, 'peer_reply/search.html', context_dict)
-        # else:
-        # course = Course.objects.get(slug=course_name_slug)
-        #     context_dict['questions'] = Question.objects.all().filter(course=course).order_by('-views')[:20]
-        #     return render(request, 'peer_reply/course.html', context_dict)
 
-
+# return levels in a course specified in Ajax request
 def get_levels(request):
-    if request.method == 'GET':
 
+    if request.method == 'GET':
         school_id = request.GET['school_id']
         cur_school = School.objects.get(id=int(school_id))
 
@@ -375,7 +320,7 @@ def get_levels(request):
 
     return HttpResponse(level_list)
 
-
+# return courses in a course specified in Ajax request
 def get_courses(request):
     if request.method == 'GET':
 
@@ -389,23 +334,29 @@ def get_courses(request):
                 course_list.append('<option value="' + str(course.id) + '">' + course.name + '</option>')
         return HttpResponse(course_list)
 
-
+# returns questions in html format to add or append to current list in the course page
+# questions qill be orderd by date/time or views depending on Ajax call params
 def get_course_questions(request):
     if request.method == 'GET':
         questions = None
         rank = request.GET['page_rank']
-        if rank == 'recent':
-            questions = Question.objects.all().order_by('-created')
-        elif rank == 'hot':
-            questions = Question.objects.all().order_by('-views')
-
+        course_slug = request.GET['course_slug']
+        course = Course.objects.get(slug=course_slug)
+        if rank == 'Recent':
+            questions = Question.objects.filter(course=course).order_by('-created')
+        elif rank == 'Hot':
+            questions = Question.objects.filter(course=course).order_by('-views')
+        paginator = Paginator(questions, 10)
         try:
-            paginator = Paginator(questions, 10)
             page = request.GET['page']
             questions = paginator.page(int(page))
+
         except:
             pass
-        question_list = get_question_list(questions, paginator)
+
+        questions = paginator.page(1)
+
+        question_list   = get_question_list(questions, paginator)
         return HttpResponse(question_list)
 
 
@@ -424,22 +375,23 @@ def get_search_questions(request):
                 qset |= Q(title__contains=term)
                 qqset |= Q(name__contains=term)
 
-        if rank == 'recent':
+        if rank == 'Recent':
             questions = Question.objects.filter(qset).order_by('-created')
-        elif rank == 'hot':
+        elif rank == 'Hot':
             questions = Question.objects.filter(qset).order_by('-views')
 
+        # create paginator to return questions in pages of size 10
+        paginator = Paginator(questions, 10)
         try:
-            paginator = Paginator(questions, 5)
             page = request.GET['page']
             questions = paginator.page(int(page))
 
         except:
-            pass
+            questions = paginator.page(1)
         question_list = get_question_list(questions, paginator)
         return HttpResponse(question_list)
 
-
+# renders the page for viewing a particular question and any answers which have been added to it
 def view_question(request, question_id, question_title_slug):
     context_dict = {}
 
@@ -477,13 +429,7 @@ def view_question(request, question_id, question_title_slug):
             useraskprofile = UserProfile.objects.get(user=userask)
 
             # Added to load courses in left navbar
-            universities = University.objects.order_by('-name')[:1]
-            university = University.objects.get(slug='university-of-glasgow')
-            school_list = School.objects.all().filter(university=university).order_by('-name')
-            context_dict['schools'] = school_list
-            context_dict['universities'] = universities
-            levels = LevelName.objects.all().order_by('name')
-            context_dict['levels'] = levels
+            context_dict = get_left_block_content()
             context_dict['top_quizzes'] = Quiz.objects.filter(course=question.course).order_by('-likes')[:5]
             context_dict['answers'] = answers
             context_dict['userask'] = userask
@@ -520,16 +466,11 @@ def view_question(request, question_id, question_title_slug):
         return response
 
 
-# <<<<<<< HEAD
-# levels = LevelName.objects.all().order_by('name')
-#         context_dict['levels'] = levels
-# =======
-
+# adds likes to anwers specified in Ajax request
 def rate_answer(request):
     answer_id = None
     if request.method == 'GET':
         answer_id = request.GET['answer_id']
-    # >>>>>>> 66ca913677134329e1642a7026f744cc9375383a
 
     if answer_id:
         answer = Answer.objects.get(id=int(answer_id))
@@ -540,7 +481,7 @@ def rate_answer(request):
 
     return HttpResponse()
 
-
+# adds flags to anwers specified in Ajax request
 def flag_answer(request):
     answer_id = None
     if request.method == 'GET':
@@ -554,7 +495,7 @@ def flag_answer(request):
             answer.save()
     return HttpResponse()
 
-
+# marks an answer to a particular question as the best answer.
 def mark_as_best_answer(request):
     answer_id = None
     if request.method == 'GET':
@@ -573,7 +514,7 @@ def mark_as_best_answer(request):
 
     return HttpResponse()
 
-
+# renders the page for viewing a particular quiz
 def quiz(request, quiz_name_slug):
     slug = quiz_name_slug
     context_dict = {}
@@ -595,13 +536,7 @@ def quiz(request, quiz_name_slug):
                 if answer.correct_answer:
                     points = points + 1
 
-            universities = University.objects.order_by('-name')[:1]
-            university = University.objects.get(slug='university-of-glasgow')
-            school_list = School.objects.all().filter(university=university).order_by('-name')
-            context_dict['schools'] = school_list
-            context_dict['universities'] = universities
-            levels = LevelName.objects.all().order_by('name')
-            context_dict['levels'] = levels
+            context_dict = get_left_block_content()
         context_dict['points'] = points
 
         return render(request, 'peer_reply/quiz_results.html', context_dict)
@@ -611,7 +546,7 @@ def quiz(request, quiz_name_slug):
 
     return render(request, 'peer_reply/quiz.html', context_dict)
 
-
+# render the page for adding a quiz to a specified course
 @login_required
 def add_quiz(request, course_name_slug):  # Any other parameters required?
 
@@ -646,7 +581,7 @@ def add_quiz(request, course_name_slug):  # Any other parameters required?
 
     return render(request, 'peer_reply/add_quiz.html', context_dict)
 
-
+# renders the page for adding questions to a particular quiz
 @login_required
 def add_quiz_question(request, quiz_name_slug):
     # First check if arguments exist in database
@@ -701,7 +636,7 @@ def add_quiz_question(request, quiz_name_slug):
 def change_password(request):
     return password_change(request, post_change_redirect='/peer_reply/profile.html')
 
-
+# renders the page for viewing a particular users profile
 def profile(request, username):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=request.user)
@@ -715,7 +650,7 @@ def profile(request, username):
                     rem_course_list = request.POST['rem-course-input'].replace('\r', '').split(",")
                     for course in rem_course_list:
                         course = Course.objects.all().filter(name=course).first()
-                        user_profile.courses.remove(course)  
+                        user_profile.courses.remove(course)
                 if request.POST['select-course-input'] != '':
                     # last item in list is empty, so remove that from list.
                     add_course_list = request.POST['select-course-input'].replace('\r', '').split(",")[:-1]
@@ -725,7 +660,7 @@ def profile(request, username):
                         user_profile.save()
             user_profile.save()
             user.save()
-        
+
     university = University.objects.get(slug='university-of-glasgow')
     schools = School.objects.all().filter(university=university).order_by('name')
     user = User.objects.get(username=username)
@@ -737,11 +672,11 @@ def profile(request, username):
     except UserProfile.DoesNotExist:
         profile = None
         courses = None
-    
+
     context_dict = {'user':user,'profile':profile,'user_profile':user_profile,'courses':courses,'schools': schools}
     return render(request, 'peer_reply/profile.html',context_dict)
 
-
+# render the page for users to edit their profile
 @login_required
 def edit_profile(request):
     # create a profile if it does not exist.
@@ -764,7 +699,7 @@ def edit_profile(request):
 
             if request.POST['rem-pic'] == "true":
                 user_profile.picture = None
-            
+
             user_profile.save()
             user.save()
             url = "/peer_reply/profile/"+request.user.username+"/"
@@ -776,6 +711,7 @@ def edit_profile(request):
         form = UserProfileForm(instance=request.user)
     return render(request,'peer_reply/edit_profile.html',{'form':form,'user_profile':user_profile})
 
+# render page for users to add their profile details
 @login_required
 def add_profile(request):
     if request.method == 'POST':
@@ -793,10 +729,10 @@ def add_profile(request):
         else:
             print form.errors
     else:
-        form = UserProfileForm(instance=request.user)        
+        form = UserProfileForm(instance=request.user)
     return render(request,'peer_reply/edit_profile.html',{'form':form})
 
-
+# renders page for viewing the top 20 registered users
 def user_profiles(request):
     context_dict = {}
     context_dict['users'] = UserProfile.objects.order_by('-no_quiz_likes', '-no_best_answers')[:20]

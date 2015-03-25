@@ -9,13 +9,12 @@
         <br>
 
             <ul class="nav nav-list tree">
-
-
                     {% for level in levels %}
                     <li><label class="tree-toggler-level nav-header">
                         <span class="glyphicon glyphicon-chevron-down school_down_icon"></span><span
                             class="glyphicon glyphicon-chevron-up school_left_icon">
                                   </span> {{ level.name }}</label>
+                        {% if user.profile.courses.all.count > 0 %}
                         <ul class="nav nav-list tree">
                             {% for course in user.profile.courses.all %}
 
@@ -23,14 +22,13 @@
                                     <li class="course-link"><a  href="{% url 'course' course.slug %}">{{ course.name }}</a></li>
                                 {% endifequal %}
                             {% endfor %}
-                            <hr>
+                            <li><hr></li>
                         </ul>
+                        {% endif %}
                     </li>
 
                     {% endfor %}
                 </ul>
-
-
         {% endif %}
 
 
@@ -40,15 +38,16 @@
         {% if universities %}
 
         {% for university in universities %}
-
+        <h3>Courses</h3>
+        {% if university.school_set.count > 0 %}
         <ul class="nav nav-list">
             {% for school in university.school_set.all %}
 
-
-            <li><label class="tree-toggler nav-header"><h4>
+            <li><label class="tree-toggler nav-header">
                 <span class="glyphicon glyphicon-chevron-down school_down_icon"></span><span
                     class="glyphicon glyphicon-chevron-left school_left_icon">
-                                  </span> {{ school.name }}</h4></label>
+                                  </span> {{ school.name }}</label>
+                {% if school.level_set.count > 0 %}
                 <ul class="nav nav-list tree">
 
                     {% for level in school.level_set.all %}
@@ -56,23 +55,28 @@
                         <span class="glyphicon glyphicon-chevron-up school_down_icon"></span><span
                             class="glyphicon glyphicon-chevron-down school_left_icon">
                                   </span> {{ level.name }}</label>
+                        {% if level.course_set.count > 0 %}
                         <ul class="nav nav-list tree">
 
                             {% for course in level.course_set.all %}
 
-                            <li class="course-link"><a id="course-link" href="{% url 'course' course.slug %}">{{ course.name }}</a></li>
+                            <li class="course-link"><a  href="{% url 'course' course.slug %}">{{ course.name }}</a></li>
 
                             {% endfor %}
-                            <hr>
+                            <li><hr></li>
                         </ul>
+                     {% endif %}
                     </li>
 
                     {% endfor %}
                 </ul>
+                {% endif %}
+                <br>
+                <br>
             </li>
-
-        </ul>
         {% endfor %}
+        </ul>
+        {% endif %}
 
         {% endfor %}
 
@@ -81,7 +85,7 @@
         {% endif %}
 
         {% endif %}
-    <br>
+        <br>
         <br>
     </div>
 

@@ -16,10 +16,10 @@
 <div class="page-header"><h2>{{ question.title}}</h2></div>
     <b>{{ question.course }}</b><br>
     <div class='question'>
-   
+
     <div class='question_profile'>
         Asked {{ question.created }}<br>
-        <a href="/peer_reply/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
+        <a href="/peer_reply/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" class="profile_picture" alt="user avatar"/></a>
         <a href="/peer_reply/profile/{{ question.user }}">{{ question.user.username }}</a><br>
 
         {% if question.views == 1 %}
@@ -29,11 +29,11 @@
         {% endif %}
          <div id="view-question-rep-pic">
 
-                    <img width="60" height="60" src="{{ question.user.profile.rep_image }}"/>
+                    <img width="60" height="60" src="{{ question.user.profile.rep_image }}" alt="reputation award image"/>
                 </div>
     </div>
-    <b><pre>{{ question.body }}</pre></b><br>
-   
+    <pre><b>{{ question.body }}</b></pre><br>
+
 </div>
 
 
@@ -46,11 +46,11 @@
 <!-- BEST ANSWER -->
 {% if best_answer %}
 
-<div class='question'> 
+<div class='question'>
 
     <div class='question_profile'>
         Answered {{ best_answer.created }}<br>
-        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"/></a>
+        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" class="profile_picture" alt="user avatar"/></a>
         <a href="/peer_reply/profile/{{ best_answer.user }}">{{ best_answer.user.username }}</a><br>
         {% if best_answer.user.profile.no_best_answers == 0 %}
             no best answers
@@ -61,16 +61,16 @@
         {% endif %}
         <div class="view-question-answer-rep-pic">
 
-                    <img width="60" height="60"  src="{{ best_answer.user.profile.rep_image }}"/>
+                    <img width="60" height="60"  src="{{ best_answer.user.profile.rep_image }}" alt="reputation award image"/>
                 </div>
     </div>
-        
+
     <pre>{{ best_answer.body }}</pre>
     <div class="answer_rating">
-            <img src="/static/images/tick.png" title="This is the best answer"</img>
+            <img src="/static/images/tick.png" title="This is the best answer" alt="tick image"/>
             <span title="Rating">{{ best_answer.likes }}</span>
-            <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}"/></a>
-        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="flag" data-ansid="{{ best_answer.id }}"/></a>
+            <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}" alt="thumbs up"/></a>
+        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="flag" data-ansid="{{ best_answer.id }}" alt="flag image"/></a>
         </div>
 
 <br><br>
@@ -81,11 +81,11 @@
 
 {% for answer in answers %}
 <div class="page-header">
-<div class='question'> 
+<div class='question'>
 
     <div class='question_profile'>
         Answered {{ answer.created }}<br>
-        <a href="/peer_reply/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
+        <a href="/peer_reply/profile/{{ answer.user }}"><img src="/media/{{ answer.user.profile.picture }}" height="50" width="50"  class="profile_picture" alt="user avatar"/></a>
         <a href="/peer_reply/profile/{{ answer.user }}">{{ answer.user.username }}</a><br>
         {% if answer.user.profile.no_best_answers == 0 %}
             no best answers
@@ -96,7 +96,7 @@
         {% endif %}
         <div class="view-question-answer-rep-pic">
 
-                    <img width="60" height="60" src="{{ answer.user.profile.rep_image }}"/>
+                    <img width="60" height="60" src="{{ answer.user.profile.rep_image }}" alt="reputation award image"/>
                 </div>
     </div>
 
@@ -104,13 +104,13 @@
 
     <div class="answer_rating">
         <span title="Rating">{{ answer.likes }}</span>
-        <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ answer.id }}"/></a>
-        
-        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ answer.flags }}." class="flag" data-ansid="{{ answer.id }}"/></a>
-        
+        <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ answer.id }}" alt="thumbs up"/></a>
+
+        <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ answer.flags }}." class="flag" data-ansid="{{ answer.id }}" alt="flag"/></a>
+
         {% if not best_answer %}
             {% if user.is_authenticated and question.user == user %}
-                <a href=""><img src="/static/images/tick.png" title="Mark this answer as the best answer" class="best" data-ansid="{{ answer.id }}"/></a>
+                <a href=""><img src="/static/images/tick.png" title="Mark this answer as the best answer" class="best" data-ansid="{{ answer.id }}" alt="tick image"/></a>
             {% endif %}
         {% endif %}
     </div>

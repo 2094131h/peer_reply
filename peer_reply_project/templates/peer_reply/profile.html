@@ -5,16 +5,15 @@
 {% block title %}Profile{% endblock %}
 
 {% block left_block %}
-<link href=" {{ STATIC_URL }}css/profile.css" rel="stylesheet"> <!--added this line to get the css files from profile -g -->
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-2 column  picturecl">
 			<figure>
                  {% if profile.picture %}
-                <img width="200" height="200" src="{{ profile.picture.url }}" class="img-rounded img-responsive">
+                <img width="200" height="200" src="{{ profile.picture.url }}" class="img-rounded img-responsive" alt="user avatar">
                 {% else %}
-                <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded">
+                <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded" alt="user avatar">
                 {% endif %}
                 </figure>
              <p><strong>Reputation:</strong> {{ profile.rep_points }}</p>
@@ -27,7 +26,7 @@
 		</div>
         <div id="profile-rep-pic">
 
-                    <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image }}"/>
+                    <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image.url }}" alt="reputation award"/>
                 </div>
         <div class="col-md-10 column">
             <div><h2>{{ user.username }}</h2>
@@ -39,7 +38,7 @@
                     <p><strong>Courses: </strong>
                     {% if courses %}
                         {% for course in courses %}
-                        <div id="course_span"><span class="tags">{{ course.name }}</span></div>
+                        <div class="course_span"><span class="tags">{{ course.name }}</span></div>
                         {% endfor %}
                     {% endif %}
             {% if user_profile %}
@@ -53,7 +52,7 @@
 <div id="add-course-div">
 {% if schools %}
 
-<form id="userprofile_form" class="form" method="post" action="{% url 'profile' user.username %}" >
+<form id="userprofile_form" class="form" method="post" action="{% url 'profile' user.username %}">
  {% csrf_token %}
  <br>
     <h3 class="select-course-header">Add courses</h3>
@@ -94,7 +93,7 @@
     </select>
     </td>
     <td>
-    <select name="course" id="course_select" size="6">
+    <select name="course" class="course_select" size="6">
         {% if selected_level %}
         {% for course in selected_level %}
 
@@ -115,13 +114,13 @@
     {% else %}
     <h1> No courses available!</h1>
     {% endif %}
-
+</form>
 </div>
 
 <div id="edit-course-div">
 
     <h3 class="select-course-header">Remove Courses</h3>
-    <table class="table table-striped table-condensed" id="ask_table" style="width: auto">
+    <table class="table table-striped table-condensed"  style="width: auto">
     <thead>
     <tr>
     <th>Curent Courses</th>
@@ -143,7 +142,7 @@
     </td>
     <td>
     <select name="remove-courses" id="course_remove" size="6">
-        <option id="empty_option" value="..."></option>
+        <option id="empty_option" value="...">...</option>
     </select>
     </td>
     </tr>
@@ -159,8 +158,9 @@
 <button class="btn btn-primary " type="submit" value="Submit" >Save </button><button id="reset-btn" class="btn btn-secondary " type="reset" value="Cancel"> Cancel</button>
 
 </div>
-</form>
+
 </div>
+
 </div>
 </div>
 

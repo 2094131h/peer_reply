@@ -13,10 +13,10 @@
            {% if quiz %}
             <div class="page-header">
                 <h1>{{ quiz.name }}</h1>
-                <h3>{{ likes }} {% if likes == 1 %} like {% else %} likes {% endif %}<a href=""><img src="/static/images/thumbup.png" title="Like this quiz" id="rate-quiz" data-quizid="{{ quiz.id }}"/></a></h3>
+                <h3>{{ likes }} {% if likes == 1 %} like {% else %} likes {% endif %}<a href=""><img src="/static/images/thumbup.png" title="Like this quiz" id="rate-quiz" data-quizid="{{ quiz.id }}" alt="thumbs up"/></a></h3>
                     <div class='quiz_profile'>
                         Created {{ quiz.created }}<br>
-                        <a href="/peer_reply/profile/{{ quiz.user }}"><img src="/media/{{ quiz.user.profile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
+                        <a href="/peer_reply/profile/{{ quiz.user }}"><img src="/media/{{ quiz.user.profile.picture }}" height="50" width="50"  class="profile_picture" alt="user avatar"/></a>
                         <a href="/peer_reply/profile/{{ quiz.user }}">{{ quiz.user.username }}</a><br>
                     </div>
             </div>
@@ -28,7 +28,7 @@
                    <h3> {{ question }} </h3>
                    <div>{% for answer in question.quizanswer_set.all %}
                         <input type="radio" name="{{ question.question_string }}" value="{{ answer.answer_string }}" required />{{ answer }}<br>
-    
+
                         {% endfor %}</div><br><hr></div>
                   {% endfor %}
                     <input type="submit" value="Submit" /><br>

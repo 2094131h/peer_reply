@@ -1,20 +1,22 @@
 <!DOCTYPE html>
+
 <html>
 <head lang="en">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Quesiotion and answer forum for Glasgow University students">
+    <meta name="author" content="Blue Screen">
 
 
-    <link rel="icon" href="{{ STATIC_URL }}images/favicon.png"> <!-- added a customized favicon  -g -->        
+    <link rel="icon" href="{{ STATIC_URL }}images/favicon.png"> <!-- added a customized favicon  -g -->
 
     <title>Peer Reply - {% block title %}{% endblock %}</title>
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mystyle.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.custom-scrollbar.css">
-
+    <link href=" {{ STATIC_URL }}css/profile.css" rel="stylesheet"> <!--added this line to get the css files from profile -g -->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mikestyle.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{{ STATIC_URL }}js/mikes_functions.js"></script>
@@ -53,7 +55,7 @@
        <div class="navbar-collapse collapse">
 
             <ul class="nav navbar-nav navbar-right">
-    
+
                  <li><form class="navbar-form" role="search" id="search_form" action="{% url 'search'  %}" method="get">
 
 
@@ -80,14 +82,14 @@
     </div>
 </div>
 
-    <div >
+
         {% block left_block %}
 
         {% endblock %}
 
-    </div>
 
-    
+
+
 
     <div  id="centre_block">
 
@@ -95,9 +97,9 @@
 
     </div>
 
-    
+
     <div  id="right_block">
-        
+
         {% block right_block %}
 
         {% endblock %}
@@ -109,7 +111,7 @@
                             = -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-         
+
 <script src="{{ STATIC_URL }}js/carhartl-jquery-cookie-92b7715/jquery.cookie.js"></script>
 
 <script src="{{ STATIC_URL }}js/jquery.custom-scrollbar.min.js"></script>
@@ -172,7 +174,7 @@ $('#quiz-more-btn').hide();
 $('.quiz-rank').click(function(){
 var rank = "";
 course = $('#quizzes-course').val();
-rank = $(this).attr('rank');
+rank = $(this).text();
  $.get('/peer_reply/get_quizzes/', {page_rank: rank, course_slug: course}, function(data){
          $('#quizzes').html(data);
         });
@@ -187,7 +189,7 @@ $('#quiz-more-btn').show();
 $('.quizzes-more-btn').click(function(){
 var rank = "";
 cur_page++;
-rank = $('.active').children('a').attr('rank');
+rank = $('.active').children('a').text();
 $.get('/peer_reply/get_quizzes/', {page_rank: rank,page: cur_page  }, function(data){
          $('#quizzes').append(data);
         });
@@ -198,8 +200,9 @@ $(this).tab('show');
 $('#course-more-btn').hide();
 $('.course-rank').click(function(){
 var rank = "";
-rank = $(this).attr('rank');
- $.get('/peer_reply/get_course_questions/', {page_rank: rank}, function(data){
+rank = $(this).text();
+course_sl = $('#course_slug').val();
+ $.get('/peer_reply/get_course_questions/', {page_rank: rank, course_slug: course_sl}, function(data){
          $('#questions').html(data);
         });
 $(this).tab('show');
@@ -214,7 +217,7 @@ $('#search-more-btn').hide();
 $('.search-rank').click(function(){
 var rank = "";
 search_query = $('#search_query').val();
-rank = $(this).attr('rank');
+rank = $(this).text();
 $.get('/peer_reply/get_search_questions/', {page_rank: rank, search:search_query }, function(data){
          $('#questions').html(data);
         });
@@ -240,7 +243,7 @@ $(this).tab('show');
 $('#index-more-btn').hide();
 $('.index-rank').click(function(){
 var rank = "";
-rank = $(this).attr('rank');
+rank = $(this).text();
 $.get('/peer_reply/get_index_questions/', {page_rank: rank }, function(data){
          $('#questions').html(data);
         });

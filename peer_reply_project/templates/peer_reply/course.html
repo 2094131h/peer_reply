@@ -7,9 +7,9 @@
 {% block body_block %}
 <ul class="nav nav-tabs">
     <li class="active">
-    <a  class="nav-tab-link course-rank" rank="recent">Recent</a>
+    <a  class="nav-tab-link course-rank">Recent</a>
     </li>
-    <li><a  class="nav-tab-link course-rank" rank="hot">Hot</a></li>
+    <li><a  class="nav-tab-link course-rank">Hot</a></li>
 
 </ul>
       <ul class="nav nav-pills" id="post-links">
@@ -20,17 +20,24 @@
             <li role="presentation" ><a href="{% url 'quizzes' course.slug %}">Quizzes</a></li>
 </ul>
 {% include 'peer_reply/questions.html' %}
+<input type="hidden" value="{{ course.slug }}" id="course_slug">
 <div id="more_btn">
     <span class="glyphicon glyphicon-chevron-down course-more-btn more-btn"> Load more</span>
 </div>
+
 {% endblock %}
 {% block right_block %}
     {% include 'peer_reply/top_quiz_links.html' %}
     {% if user.is_authenticated %}
         {% if course %}
-            <a href="{% url 'add_quiz' course.slug %}"><button id="quiz_btn">
+            <a  href="{% url 'add_quiz' course.slug %}">
+                <div id="quiz_btn">
+                <div class="add-quiz-btn-inner">
                     Add Quiz
-                </button></a>
+                    </div>
+
+                    </div>
+                </a>
         {% endif %}
     {% endif %}
 

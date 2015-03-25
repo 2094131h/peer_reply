@@ -7,9 +7,9 @@
 {% block body_block %}
 <ul class="nav nav-tabs">
     <li class="active">
-    <a  class="nav-tab-link quiz-rank" rank="recent">Recent</a>
+    <a  class="nav-tab-link quiz-rank">Recent</a>
     </li>
-    <li><a  class="nav-tab-link quiz-rank" rank="hot">Hot</a></li>
+    <li><a  class="nav-tab-link quiz-rank">Hot</a></li>
 
 </ul>
       <ul class="nav nav-pills" id="post-links">
@@ -23,24 +23,22 @@
 <div id="quizzes">
     {% if quizzes %}
     {% for quiz in quizzes %}
-    <!--<a><div class="question_link"><div>{{ question.title }}</div><div>{{ question.body }}</div> <div>{{question.user.picture}}</div><div>{{ question.views }}</div></div></a>-->
 
 
         <div class="question_link">
-           <a href="{% url 'quiz' quiz.slug %}"> <div class="question_link_title">{{ quiz.title|slice:":80"  }}</div></a>
-
+           <a href="{% url 'quiz' quiz.slug %}"> <div class="question_link_title">{{ quiz.name }}</div></a>
 
             <a href="{% url 'profile' quiz.user.username %}">
-                <img width="30" height="30" src="{{ quiz.user.profile.picture.url }}" class="question_link_pic"/>
+                <img width="30" height="30" src="{{ quiz.user.profile.picture.url }}" class="question_link_pic" alt="user avatar"/>
                 </a>
             <div class="question_link_username">{{ quiz.user.username }}</div>
-            <div class="question_link_views">Views:{{ quiz.views }}</div>
-            <div class="question_link_answers">Answers:{{ quiz.answer_set.count }}</div>
+            <div class="question_link_views">Likes:{{ quiz.likes}}</div>
+            <div class="question_link_answers">Questions:{{ quiz.quizquestion_set.count }}</div>
             <div class="question_link_posted">Posted:{{ quiz.created }}</div>
             <input type="hidden" value="{{ quiz.id }}">
-            <div id="rep-pic">
+            <div class="rep-pic">
 
-                    <img width="60" height="60" class="square-rep-pic" src="{{ quiz.user.profile.rep_image.url }}"/>
+                    <img width="60" height="60" class="square-rep-pic" src="{{ quiz.user.profile.rep_image.url }}" alt="reputation award"/>
                 </div>
             <!--<div>Modified: {{ question.modified }}</div>-->
         </div>
