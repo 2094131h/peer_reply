@@ -21,6 +21,10 @@ $(document).ready( function() {
         });       
     });
 
+    $(".mine").click( function(event) {
+        alert("You can't do that to you own answer!")       
+    });
+
     $("#rate-quiz").click( function(event) {
         quizid = $(this).attr("data-quizid");      
         $.get('/peer_reply/like_quiz/', {quiz_id: quizid}, function(){

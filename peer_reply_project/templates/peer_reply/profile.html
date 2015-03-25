@@ -63,6 +63,9 @@
         </div>
 	</div>
 <br>
+
+
+
 <div class="row clearfix">
 <div id="add-course-div">
 {% if schools %}
@@ -175,8 +178,30 @@
 </div>
 </form>
 </div>
+<center>
+<div class="box">
+{% if my_question %} 
+    <h3>My Questions</h3>
+    {% for question in my_question %}
+        <a href="/peer_reply/question/{{ question.id }}/{{question.slug }}"><h4>{{ question.title }} - {{ question.views }} views</h4></a><br>
+    {% endfor %}
+    
+    </div>
+{% endif %}
+<div class="box">
+{% if my_quiz %}       
+        <h3>My Quiz's</h3>       
+        {% for quiz in my_quiz %}
+            <a href="/peer_reply/quiz/{{ quiz.slug }}"><h4>{{ quiz.name }} - {{ quiz.likes }} likes</h4></a><br>
+        {% endfor %}    
+{% endif %}
 </div>
+</center>
 </div>
+
+</div>
+
+
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded",

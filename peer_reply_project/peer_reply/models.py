@@ -227,7 +227,7 @@ class QuizQuestion(models.Model):
 
 class QuizAnswer(models.Model):
 
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
+    created = models.DateTimeField(editable=False, default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
     created = models.DateTimeField(editable=False)

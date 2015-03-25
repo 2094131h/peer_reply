@@ -67,14 +67,14 @@ class QuizForm(forms.ModelForm):
         fields = ('name',)
 
 class QuizQuestionForm(forms.ModelForm):
-    question_string = forms.Textarea()
+    question_string = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'style': 'width:40em;'}))
 
     class Meta:
         model = QuizQuestion
         fields = ('question_string',)
 
 class QuizAnswerForm(forms.ModelForm):
-    answer_string = forms.Textarea()
+    answer_string = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'style': 'width:30em;'}))
     correct_answer = forms.BooleanField(required=False, help_text="Correct?")
 
     class Meta:

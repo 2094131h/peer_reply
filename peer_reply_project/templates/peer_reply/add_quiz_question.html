@@ -10,8 +10,8 @@
 <br><br>
 
 <div>
-    <form id="quiz_forms" method="post" action="/peer_reply/add_quiz_question/{{quiz_name_slug}}/">
-        <p><h1> Enter question text </h1></p>
+    <form id="quiz_forms" method="post" action="/peer_reply/add_quiz_question/{{quiz_name_slug}}">
+        <p><h2> Enter question text </h2></p>
         {% csrf_token %}
 	    {% for hidden in quizQuestionForm.hidden_fields %}
 		     {{ hidden }}
@@ -25,7 +25,7 @@
         {% csrf_token %}
         {{ formset.management_form }}
         {% for form in formset %}
-        <p><h1> Enter answer text </h1></p>
+        <p><h2> Enter answer text </h2></p>
              {% for hidden in form.hidden_fields %}
                  {{ hidden }}
              {% endfor %}
@@ -43,12 +43,13 @@
 
 <br><br>
 
+<h2>
 <p>
 <a href="/peer_reply/add_quiz_question/{{quiz_name_slug}}"> Add a question </a>
 </p>
 <p>
-<a href="/peer_reply/course/{{course_name_slug}}/"> Complete quiz </a>
+<a href="/peer_reply/course/{{ quiz_course_slug }}"> Complete quiz </a>
 </p>
-
+</h2>
 
 {% endblock %}
