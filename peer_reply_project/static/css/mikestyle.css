@@ -101,3 +101,11 @@ text-align: center;
 margin-top:30px;
 margin-left:66%;
 }
+.box {
+display: inline-block;
+vertical-align:top;
+text-align: center;
+padding:10px;
+width: 35em;
+word-wrap: break-word;
+}

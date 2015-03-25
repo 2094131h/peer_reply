@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %} Create a new quiz {% endblock %}
+
+{% block body_block %}
+
+{% if quiz %}
+    <h2>Quiz Name: {{quiz.name}}</h2>
+    <a href="/peer_reply/add_quiz_question/{{quiz.slug}}"><h4>Add a Question</h4></a>
+    <a href="/peer_reply/course/{{ quiz.course.slug }}"><h4>Submit Quiz</h4></a><br>
+{% if quiz_questions %}
+    <h4>Questions</h4><br>
+    {% for question in quiz_questions %}
+        <h4>-- {{ question.question_string }}</h4><br>
+    {% endfor %}
+{% endif %}
+{% endif %}
+
+
+{% endblock %}

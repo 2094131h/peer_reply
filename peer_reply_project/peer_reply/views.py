@@ -19,8 +19,7 @@ from datetime import datetime
 import operator
 
 
-
-# @ensure_csrf_cookie
+# renders the home page and displays questions ordered by date/time created
 def index(request):
 
     context_dict = get_left_block_content()
@@ -450,7 +449,7 @@ def view_question(request, question_id, question_title_slug):
                 last_visit = request.COOKIES['last_visit']
                 last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
 
-                if (datetime.now() - last_visit_time).days > 0:
+                if (datetime.now() - last_visit_time).seconds > 5:
                     question.views = question.views + 1
                     question.save()
                     reset_last_visit_time = True
@@ -571,7 +570,7 @@ def add_quiz(request, course_name_slug):  # Any other parameters required?
                 quiz_name_slug = quiz.slug  ##Should now be name, slugified
                 context_dict['quiz_name_slug'] = quiz_name_slug
                 #return render(request, 'peer_reply/add_quiz.html', context_dict)
-                return render(request, 'peer_reply/add_quiz.html', context_dict)
+                return redirect('/peer_reply/edit_quiz/' + quiz.slug)
         else:
             print quizForm.errors  # Can I handle errors in a better way?
     else:
@@ -580,6 +579,27 @@ def add_quiz(request, course_name_slug):  # Any other parameters required?
     context_dict['form'] = quizForm
 
     return render(request, 'peer_reply/add_quiz.html', context_dict)
+
+
+
+@login_required
+def edit_quiz(request, quiz_name_slug):
+    context_dict = {}
+    quiz = Quiz.objects.get(slug=quiz_name_slug)
+
+    if quiz:
+        context_dict['quiz'] = quiz
+    else:
+        pass
+
+    quiz_questions = QuizQuestion.objects.filter(quiz=quiz)
+    if quiz_questions:
+        context_dict['quiz_questions'] = quiz_questions
+    else:
+        pass
+
+    return render(request, 'peer_reply/edit_quiz.html', context_dict)
+
 
 # renders the page for adding questions to a particular quiz
 @login_required
@@ -610,13 +630,18 @@ def add_quiz_question(request, quiz_name_slug):
                     quizAnswer.question = quizQuestion
                     quizAnswer.save()
 
+
+
                 context_dict = {}
                 # context_dict['course_name_slug'] = course_name_slug
                 context_dict['quiz_name_slug'] = quiz_name_slug
                 context_dict['quizQuestionForm'] = quizQuestionForm
                 context_dict['formset'] = formset
+                context_dict['quiz_course_slug'] = quiz.course.slug
 
-                return render(request, 'peer_reply/add_quiz_question.html', context_dict)  #Redirect to same, empty page
+                return redirect('/peer_reply/edit_quiz/' + quiz_name_slug)
+
+                #return render(request, 'peer_reply/add_quiz_question.html', context_dict)  #Redirect to same, empty page
         else:
             print quizQuestionForm.errors, formset.errors
     else:  #Instantiate forms to display
@@ -674,6 +699,12 @@ def profile(request, username):
         courses = None
 
     context_dict = {'user':user,'profile':profile,'user_profile':user_profile,'courses':courses,'schools': schools}
+
+    my_question = Question.objects.filter(user=user)
+    my_quiz = Quiz.objects.filter(user=user)
+    context_dict['my_question'] = my_question
+    context_dict['my_quiz'] = my_quiz
+
     return render(request, 'peer_reply/profile.html',context_dict)
 
 # render the page for users to edit their profile

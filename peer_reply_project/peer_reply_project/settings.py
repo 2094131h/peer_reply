@@ -41,8 +41,6 @@ TEMPLATE_DIRS = [
     TEMPLATE_PATH,
 ]
 
-LOGIN_URL = '/peer_reply/login/'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media directory
 

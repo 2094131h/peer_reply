@@ -118,7 +118,7 @@ class UserProfile(models.Model):
     no_quiz_likes = models.IntegerField(default=0)
     rep_points = models.IntegerField(default=0)
     rep_image = models.ImageField(default="profile_images/level1.gif")
-    about = models.TextField(null=True)
+ 
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.user.username)
@@ -248,7 +248,7 @@ class QuizQuestion(models.Model):
 
 class QuizAnswer(models.Model):
 
-    created = models.DateTimeField(editable=False,default=datetime.datetime.today())
+    created = models.DateTimeField(editable=False, default=datetime.datetime.today())
     modified = models.DateTimeField(default=datetime.datetime.today())
 
     question = models.ForeignKey(QuizQuestion)

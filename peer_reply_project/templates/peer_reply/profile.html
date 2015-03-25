@@ -16,22 +16,27 @@
                 <img width="200" height="200" src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="img-rounded" alt="user avatar">
                 {% endif %}
                 </figure>
-             <p><strong>Reputation:</strong> {{ profile.rep_points }}</p>
-             {% if user_profile %}
+	     <p>
+             <img width="60" height="60"src="{{ profile.rep_image }}"/><br><strong>Reputation:</strong> {{ profile.rep_points }}
+             </p>             {% if user_profile %}
               <div class="edit-details">
                     <p><a class="fa fa-lock" href="{% url 'auth_password_change' %}">  Change password</a></p>
                     <p><a class="fa fa-edit" href="{% url 'edit_profile' %}"> Edit Profile </a></p>
               </div>
            {% endif %}
 		</div>
-        <div id="profile-rep-pic">
+        <!--<div id="profile-rep-pic">
 
+<<<<<<< HEAD
                     <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image.url }}" alt="reputation award"/>
                 </div>
+=======
+                    <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image }}"/>
+                </div>-->
+>>>>>>> 8bcdbc3dca2f91517aa25d91596b3dc83bef2caa
         <div class="col-md-10 column">
             <div><h2>{{ user.username }}</h2>
             <hr>
-                    <p><strong>About: </strong>  </p>
                     <p><strong>Email: </strong> {{ user.email }}</p>
                     <p><strong>Website: </strong>{{ profile.website }}</p>
                     <p><strong>Location: </strong> {{ profile.location }}</p>
@@ -48,6 +53,9 @@
         </div>
 	</div>
 <br>
+
+
+
 <div class="row clearfix">
 <div id="add-course-div">
 {% if schools %}
@@ -161,8 +169,31 @@
 
 </div>
 
+<center>
+<div class="box">
+{% if my_question %} 
+    <h3>My Questions</h3>
+    {% for question in my_question %}
+        <a href="/peer_reply/question/{{ question.id }}/{{question.slug }}"><h4>{{ question.title }} - {{ question.views }} views</h4></a><br>
+    {% endfor %}
+    
+    </div>
+{% endif %}
+<div class="box">
+{% if my_quiz %}       
+        <h3>My Quiz's</h3>       
+        {% for quiz in my_quiz %}
+            <a href="/peer_reply/quiz/{{ quiz.slug }}"><h4>{{ quiz.name }} - {{ quiz.likes }} likes</h4></a><br>
+        {% endfor %}    
+{% endif %}
 </div>
+</center>
+
 </div>
+
+</div>
+
+
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded",
