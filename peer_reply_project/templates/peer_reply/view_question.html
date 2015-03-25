@@ -21,13 +21,17 @@
         Asked {{ question.created }}<br>
         <a href="/peer_reply/profile/{{ question.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
         <a href="/peer_reply/profile/{{ question.user }}">{{ question.user.username }}</a><br>
+
         {% if question.views == 1 %}
             Viewed {{ question.views }} time.
         {% else %}
             Viewed {{ question.views }} times.
         {% endif %}
+         <div id="view-question-rep-pic">
+
+                    <img width="60" height="60" src="{{ question.user.profile.rep_image }}"/>
+                </div>
     </div>
-    
     <b><pre>{{ question.body }}</pre></b><br>
    
 </div>
@@ -46,7 +50,7 @@
 
     <div class='question_profile'>
         Answered {{ best_answer.created }}<br>
-        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"</img></a>
+        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"/></a>
         <a href="/peer_reply/profile/{{ best_answer.user }}">{{ best_answer.user.username }}</a><br>
         {% if best_answer.user.profile.no_best_answers == 0 %}
             no best answers
@@ -55,6 +59,10 @@
         {% else %}
             {{ best_answer.user.profile.no_best_answers }} best answers
         {% endif %}
+        <div class="view-question-answer-rep-pic">
+
+                    <img width="60" height="60"  src="{{ best_answer.user.profile.rep_image }}"/>
+                </div>
     </div>
         
     <pre>{{ best_answer.body }}</pre>
@@ -96,6 +104,10 @@
         {% else %}
             {{ answer.user.profile.no_best_answers }} best answers
         {% endif %}
+        <div class="view-question-answer-rep-pic">
+
+                    <img width="60" height="60" src="{{ answer.user.profile.rep_image }}"/>
+                </div>
     </div>
 
     <pre>{{ answer.body }}</pre>
@@ -124,6 +136,7 @@
             {% endif %}
         {% endif %}
     </div>
+
 
 <br><br>
 </div>
