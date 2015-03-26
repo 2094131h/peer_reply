@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import password_change
 from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
-from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName
+from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, QuizQuestion
 from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm, \
     AnswerForm
 from django.templatetags.static import static
@@ -23,6 +23,7 @@ import operator
 def index(request):
 
     context_dict = get_left_block_content()
+
 
 
     if request.user.is_authenticated():
@@ -51,7 +52,9 @@ def index(request):
 
 #returns the objects needed to fill the left navigation bar
 def get_left_block_content():
+
     context_dict ={}
+
     universities = University.objects.order_by('-name')[:1]
     university = University.objects.get(slug='university-of-glasgow')
     school_list = School.objects.all().filter(university=university).order_by('-name')
@@ -112,7 +115,7 @@ def get_question_list(questions, paginator):
                         question.user.profile.picture.url) + '" class="question_link_pic"/></a><div class="question_link_username">' + question.user.username + '</div><div class="question_link_views">Views:' + str(
                         question.views) + '</div><div class="question_link_answers">Answers:' + str(
                         question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
-                        '%b,%d,%Y,%I:%M %P') + '</div><div id="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(question.user.profile.rep_image.url) + '"/></div></div>')
+                        '%b,%d,%Y,%I:%M %P') + '</div><div class="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(question.user.profile.rep_image.url) + '"/></div></div>')
         if paginator:
             question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
 
@@ -201,7 +204,7 @@ def get_quizzes(request):
                     '<a href="' + '/peer_reply/quiz/' + quiz.slug +'"><div class="question_link"><div class="question_link_title">' + quiz.name + '</div></a></a><a href="/peer_reply/profile/' + quiz.user.username + '"><img width="30" height="30" src="' + static(
                         quiz.user.profile.picture.url) + '" alt="user avatar" class="question_link_pic"/></a><div class="question_link_username">' + quiz.user.username + '</div><div class="question_link_views">Views:' + str(
                         quiz.likes) + '</div><div class="question_link_posted">Posted:' + quiz.created.strftime(
-                        '%b,%d,%Y,%I:%M %P') + '</div><div id="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(quiz.user.profile.rep_image.url) + '" alt="reputation award"/></div></div>')
+                        '%b,%d,%Y,%I:%M %P') + '</div><div class="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(quiz.user.profile.rep_image.url) + '" alt="reputation award"/></div></div>')
             if paginator:
                 quiz_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="quiz_paginator-count"/>')
 
@@ -245,41 +248,6 @@ def add_question(request):
     # Render the form with error messages (if any).
     return render(request, 'peer_reply/ask.html', context_dict)
 
-
-# def add_course(request, university_name_slug):
-#     try:
-#         uni = University.objects.get(slug=university_name_slug)
-#     except University.DoesNotExist:
-#         uni = None
-
-#     # A HTTP POST?
-#     if request.method == 'POST':
-#         form = CourseForm(request.POST)
-
-#         # Have we been provided with a valid form?
-#         if form.is_valid():
-#             if uni:
-#                 course = form.save(commit=False)
-#                 course.university = uni
-#                 course.save()
-#                 # probably better to use a redirect here.
-#                 return render(request, 'peer_reply/index.html')
-#         else:
-#             print form.errors
-#             # Save the new category to the database.
-#             form.save(commit=True)
-
-#             # Now call the index() view.
-#             # The user will be shown the homepage.
-#             return index(request)
-
-#     else:
-#         # If the request was not a POST, display the form to enter details.
-#         form = CourseForm()
-
-#     # Bad form (or form details), no form supplied...
-#     # Render the form with error messages (if any).
-#     return render(request, 'peer_reply/index.html', {'form': form})
 
 # renders the page whick displays search results when user enters a search in navbar
 def search(request):
@@ -393,7 +361,7 @@ def get_search_questions(request):
 # renders the page for viewing a particular question and any answers which have been added to it
 def view_question(request, question_id, question_title_slug):
     context_dict = {}
-
+    context_dict = get_left_block_content()
     if request.method == 'POST':
         form = AnswerForm(request.POST)
 
@@ -416,7 +384,7 @@ def view_question(request, question_id, question_title_slug):
 
             try:
                 bestAnswer = Answer.objects.get(question=question, is_best=True, flags__lt=4)
-                bestAnswerUser = Answer.objects.get(question=question, is_best=True).user
+                bestAnswerUser = bestAnswer.user
                 bestAnswerUserProfile = UserProfile.objects.get(user=bestAnswerUser)
                 context_dict['best_answer'] = bestAnswer
                 context_dict['best_answer_user'] = bestAnswerUserProfile
@@ -428,7 +396,7 @@ def view_question(request, question_id, question_title_slug):
             useraskprofile = UserProfile.objects.get(user=userask)
 
             # Added to load courses in left navbar
-            context_dict = get_left_block_content()
+
             context_dict['top_quizzes'] = Quiz.objects.filter(course=question.course).order_by('-likes')[:5]
             context_dict['answers'] = answers
             context_dict['userask'] = userask
@@ -480,6 +448,21 @@ def rate_answer(request):
 
     return HttpResponse()
 
+# adda likes to a quiz
+def like_quiz(request):
+    quiz_id = None
+    if request.method == 'GET':
+        quiz_id = request.GET['quiz_id']
+
+    if quiz_id:
+        quiz = Quiz.objects.get(id=int(quiz_id))
+        if quiz:
+            rating = quiz.likes + 1
+            quiz.likes = rating
+            quiz.save()
+
+    return HttpResponse()
+
 # adds flags to anwers specified in Ajax request
 def flag_answer(request):
     answer_id = None
@@ -517,6 +500,7 @@ def mark_as_best_answer(request):
 def quiz(request, quiz_name_slug):
     slug = quiz_name_slug
     context_dict = {}
+
     points = 0
     try:
         quiz = Quiz.objects.get(slug=quiz_name_slug)
@@ -534,9 +518,13 @@ def quiz(request, quiz_name_slug):
                 answer = question.quizanswer_set.get(answer_string=request.POST[question.question_string])
                 if answer.correct_answer:
                     points = points + 1
-
-            context_dict = get_left_block_content()
+        try:
+            quiz = Quiz.objects.get(slug=quiz_name_slug)
+        except Quiz.DoesNotExist:
+            pass
+        context_dict = get_left_block_content()
         context_dict['points'] = points
+        context_dict['quiz'] = quiz
 
         return render(request, 'peer_reply/quiz_results.html', context_dict)
 
@@ -579,7 +567,6 @@ def add_quiz(request, course_name_slug):  # Any other parameters required?
     context_dict['form'] = quizForm
 
     return render(request, 'peer_reply/add_quiz.html', context_dict)
-
 
 
 @login_required

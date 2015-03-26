@@ -18,8 +18,7 @@
     <link href=" {{ STATIC_URL }}css/profile.css" rel="stylesheet"> <!--added this line to get the css files from profile -g -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mikestyle.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="{{ STATIC_URL }}js/mikes_functions.js"></script>
+
 
 
     <!--[if lt IE 9]>
@@ -110,12 +109,13 @@
 <!-- Bootstrap core JavaScript
                             = -->
 <!-- Placed at the end of the document so the pages load faster -->
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
+<script src="{{ STATIC_URL }}js/mikes_functions.js"></script>
 <script src="{{ STATIC_URL }}js/carhartl-jquery-cookie-92b7715/jquery.cookie.js"></script>
-
 <script src="{{ STATIC_URL }}js/jquery.custom-scrollbar.min.js"></script>
-<script>
+<script type="text/javascript">
 
 $('label.tree-toggler').parent().children('ul.tree').toggle(0);
 $(document).ready(function () {

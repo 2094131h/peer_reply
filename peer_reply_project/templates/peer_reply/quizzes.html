@@ -22,7 +22,7 @@
 
 <div id="quizzes">
     {% if quizzes %}
-    {% for quiz in quizzes %}
+        {% for quiz in quizzes %}
 
 
         <div class="question_link">
@@ -43,8 +43,9 @@
             <!--<div>Modified: {{ question.modified }}</div>-->
         </div>
 
-    {% endfor %}
-
+        {% endfor %}
+    {% else %}
+        <h4>No questions added yet to this category</h4>
     {% endif %}
 
 </div>

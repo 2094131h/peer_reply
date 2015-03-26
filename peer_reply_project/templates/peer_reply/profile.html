@@ -17,7 +17,7 @@
                 {% endif %}
                 </figure>
 	     <p>
-             <img width="60" height="60"src="{{ profile.rep_image }}"/><br><strong>Reputation:</strong> {{ profile.rep_points }}
+             <img width="60" height="60" src="{{ profile.rep_image }}" alt="reputation award image"/><br><strong>Reputation:</strong> {{ profile.rep_points }}
              </p>             {% if user_profile %}
               <div class="edit-details">
                     <p><a class="fa fa-lock" href="{% url 'auth_password_change' %}">  Change password</a></p>
@@ -27,13 +27,8 @@
 		</div>
         <!--<div id="profile-rep-pic">
 
-<<<<<<< HEAD
-                    <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image.url }}" alt="reputation award"/>
-                </div>
-=======
                     <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image }}"/>
                 </div>-->
->>>>>>> 8bcdbc3dca2f91517aa25d91596b3dc83bef2caa
         <div class="col-md-10 column">
             <div><h2>{{ user.username }}</h2>
             <hr>
@@ -57,10 +52,11 @@
 
 
 <div class="row clearfix">
-<div id="add-course-div">
+
 {% if schools %}
 
-<form id="userprofile_form" class="form" method="post" action="{% url 'profile' user.username %}">
+<form id="userprofile_form" class="form" method="post" action="{% url 'profile' user.username %}" >
+    <div id="add-course-div">
  {% csrf_token %}
  <br>
     <h3 class="select-course-header">Add courses</h3>
@@ -101,7 +97,7 @@
     </select>
     </td>
     <td>
-    <select name="course" class="course_select" size="6">
+    <select name="course" id="course_select" size="6">
         {% if selected_level %}
         {% for course in selected_level %}
 
@@ -122,7 +118,7 @@
     {% else %}
     <h1> No courses available!</h1>
     {% endif %}
-</form>
+
 </div>
 
 <div id="edit-course-div">
@@ -166,34 +162,31 @@
 <button class="btn btn-primary " type="submit" value="Submit" >Save </button><button id="reset-btn" class="btn btn-secondary " type="reset" value="Cancel"> Cancel</button>
 
 </div>
-
+</form>
 </div>
 
-<center>
 <div class="box">
-{% if my_question %} 
+{% if my_question %}
     <h3>My Questions</h3>
     {% for question in my_question %}
         <a href="/peer_reply/question/{{ question.id }}/{{question.slug }}"><h4>{{ question.title }} - {{ question.views }} views</h4></a><br>
     {% endfor %}
-    
+
     </div>
 {% endif %}
 <div class="box">
-{% if my_quiz %}       
-        <h3>My Quiz's</h3>       
+{% if my_quiz %}
+        <h3>My Quiz's</h3>
         {% for quiz in my_quiz %}
             <a href="/peer_reply/quiz/{{ quiz.slug }}"><h4>{{ quiz.name }} - {{ quiz.likes }} likes</h4></a><br>
-        {% endfor %}    
+        {% endfor %}
 {% endif %}
 </div>
-</center>
 
 </div>
 
 </div>
-
-
+</div>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded",

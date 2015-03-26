@@ -195,6 +195,9 @@ color:white;
 top: 50%;
 transform:translateY(-50%);
 }
+#rate-quiz:hover{
+    cursor:pointer;
+}
 a{
 text-decoration: none;
 
@@ -308,25 +311,25 @@ position:absolute;
 right:55px;
 top:30px;
 }
-#rep-pic{
+.rep-pic{
 position:absolute;
 right:0px;
-top:20px;
+
 }
 .square-rep-pic{
 position:absolute;
 right:-10px;
-top:0px;
+top:15px;
 }
 #profile-rep-pic{
 position:absolute;
 left:23%;
-top:35%;
+top:30%;
 }
 
 .question_link_username{
 position:absolute;
-left:89%;
+left:88%;
 top:75px;
 }
 .question_link_views{
@@ -437,3 +440,4 @@ input[type="text"],
 textarea{
 width:500px;
 }
+

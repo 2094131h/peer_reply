@@ -1,13 +1,11 @@
 
 <div id="questions">
     {% if questions %}
-    {% for question in questions %}
-    <!--<a><div class="question_link"><div>{{ question.title }}</div><div>{{ question.body }}</div> <div>{{question.user.picture}}</div><div>{{ question.views }}</div></div></a>-->
-
+        {% for question in questions %}
 
         <div class="question_link">
            <a href="{% url 'view_question' question.id question.slug %}"> <div><div class="question_link_title">{{ question.title|slice:":80"  }}</div>
-            {% if question.body_length < 60 %}
+            {% if question.body|length < 200 %}
                 <div class="question_link_text">{{ question.body }}</div></div></a>
             {% else %}
                 <div class="question_link_text">{{ question.body|slice:":200" }}...</div></div></a>
@@ -15,7 +13,7 @@
             <!--<div>{{ question.body }}</div>-->
 
             <a href="{% url 'profile' question.user.username %}">
-                <img width="30" height="30" src="{{ question.user.profile.picture.url }}" class="question_link_pic" alt="user avatar"/>
+                <div class="rep-pic"><img width="30" height="30" src="{{ question.user.profile.picture.url }}" class="question_link_pic" alt="user avatar"/></div>
                 </a>
             <div class="question_link_username">{{ question.user.username }}</div>
 
@@ -28,11 +26,13 @@
 
                     <img width="60" height="60" class="square-rep-pic" src="{{ question.user.profile.rep_image.url }}" alt="reputation award"/>
                 </div>
-            <!--<div>Modified: {{ question.modified }}</div>-->
+
         </div>
 
-    {% endfor %}
-
+        {% endfor %}
+    {% else %}
+        <h4>No questions added yet to this category</h4>
     {% endif %}
 
 </div>
+
