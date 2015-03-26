@@ -34,7 +34,7 @@ To populate the database with the sample data we have provided, issue the comman
 
 >>python populate_peer_reply.py
 
-This may take a few minutes to complete.  Once the script completes you can start the application by typing
+This may take a few minutes to complete (normally around 3).  Once the script completes you can start the application by typing
 
 >>python manage.py runserver
 
