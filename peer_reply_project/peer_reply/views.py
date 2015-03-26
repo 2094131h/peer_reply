@@ -5,7 +5,7 @@ from django.contrib.auth.views import password_change
 from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
 from peer_reply.models import University, School, Level, UserProfile, Question, Answer, Quiz, Course, LevelName, QuizQuestion
-from peer_reply.forms import CourseForm, QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm, \
+from peer_reply.forms import QuestionForm, QuizForm, QuizQuestionForm, QuizAnswerForm, UserProfileForm, \
     AnswerForm
 from django.templatetags.static import static
 # from django.views.decorators.csrf import ensure_csrf_cookie
@@ -24,8 +24,6 @@ def index(request):
 
     context_dict = get_left_block_content()
 
-
-
     if request.user.is_authenticated():
         user_profile = request.user.profile
         relevant_questions = []
@@ -36,11 +34,9 @@ def index(request):
             relevant_questions += Question.objects.all().filter(course=course).order_by('-created')
         relevant_questions = sorted(relevant_questions, key=operator.attrgetter('created'), reverse=True)
 
-
     else:
 
         # if not logged in then get most recent questions
-
         relevant_questions = Question.objects.all().order_by('-created')
 
     paginator = Paginator(relevant_questions, 10)
@@ -92,19 +88,23 @@ def get_index_questions(request):
             elif rank == 'Hot':
                 questions = Question.objects.order_by('-views')
 
-        paginator = Paginator(questions, 10)
-        try:
-            page = request.GET['page']
-            questions = paginator.page(int(page))
+        page = request.GET['page']
 
-        except:
-            questions = paginator.page(1)
+        question_list = get_question_list(questions, page)
 
-        question_list   = get_question_list(questions, paginator)
         return HttpResponse(question_list)
 
 # returns questions in html format to add or append to current list
-def get_question_list(questions, paginator):
+def get_question_list(questions, page):
+
+        paginator = Paginator(questions, 10)
+
+
+        if page:
+            questions = paginator.page(int(page))
+        else:
+            questions = paginator.page(1)
+
         question_list = []
         if questions:
 
@@ -117,27 +117,10 @@ def get_question_list(questions, paginator):
                         question.answer_set.count()) + '</div><div class="question_link_posted">Posted:' + question.created.strftime(
                         '%b,%d,%Y,%I:%M %P') + '</div><div class="rep-pic"><img width="60" height="60" class="square-rep-pic" src="' + static(question.user.profile.rep_image.url) + '"/></div></div>')
         if paginator:
-            question_list.append('<input type="hidden" value="' + str(paginator.count) + '" id="course_paginator-count"/>')
+            question_list.append('<input type="hidden" value="' + str(paginator.num_pages) + '" id="paginator-count"/>')
 
         return question_list
 
-
-# def left_block(request):
-#     context_dict = {}
-#     if request.user.is_authenticated():
-
-#         user_profile = request.user.profile
-#         # user = User.objects.get(username=user.username)
-
-#         # userprofile = UserProfile.objects.all().filter(user=user)
-#         context_dict['user_profile'] = user_profile
-#     else:
-#         universities = University.objects.order_by('-name')[:1]
-#         university = University.objects.get(slug='university-of-glasgow')
-#         school_list = School.objects.all().filter(university=university).order_by('-name')
-#         context_dict['schools'] = School.objects.all().filter(university=university).order_by('-name')
-#     # Render the response and send it back!
-#     return render(request, 'peer_reply/left_block.html', context_dict)
 
 # render the course pase which displays questions in the specified course
 def course(request, course_name_slug):
@@ -292,7 +275,7 @@ def get_courses(request):
     if request.method == 'GET':
 
         level_id = request.GET['level_id']
-        cur_level = School.objects.get(id=int(level_id))
+        cur_level = Level.objects.get(id=int(level_id))
 
         if cur_level:
             courses = Course.objects.all().filter(level=cur_level)
@@ -313,17 +296,11 @@ def get_course_questions(request):
             questions = Question.objects.filter(course=course).order_by('-created')
         elif rank == 'Hot':
             questions = Question.objects.filter(course=course).order_by('-views')
-        paginator = Paginator(questions, 10)
-        try:
-            page = request.GET['page']
-            questions = paginator.page(int(page))
 
-        except:
-            pass
 
-        questions = paginator.page(1)
+        page = request.GET['page']
 
-        question_list   = get_question_list(questions, paginator)
+        question_list = get_question_list(questions, page)
         return HttpResponse(question_list)
 
 
@@ -347,15 +324,8 @@ def get_search_questions(request):
         elif rank == 'Hot':
             questions = Question.objects.filter(qset).order_by('-views')
 
-        # create paginator to return questions in pages of size 10
-        paginator = Paginator(questions, 10)
-        try:
-            page = request.GET['page']
-            questions = paginator.page(int(page))
-
-        except:
-            questions = paginator.page(1)
-        question_list = get_question_list(questions, paginator)
+        page = request.GET['page']
+        question_list = get_question_list(questions, page)
         return HttpResponse(question_list)
 
 # renders the page for viewing a particular question and any answers which have been added to it
@@ -677,7 +647,12 @@ def profile(request, username):
     schools = School.objects.all().filter(university=university).order_by('name')
     user = User.objects.get(username=username)
     # boolean for checking if the requested profile is the logged in users.
-    user_profile = (request.user==user)
+    #user_profile = (request.user==user)
+    user_profile = None
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except:
+        pass
     try:
         profile = UserProfile.objects.get(user=user)
         courses = profile.courses.all()

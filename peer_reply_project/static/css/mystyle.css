@@ -372,15 +372,15 @@ margin-right:10px;
 }
 
 #ask-form-wrapper{
-width:120%;
+width:130%;
 background-color:white;
 margin-left:8%;
 }
 #ask_form{
 background:white;
-width:80%;
+width:70%;
 padding:10px;
-margin-left:-30%;
+margin-left:-35%;
 height:600px;
 }
 
@@ -419,7 +419,7 @@ position:absolute;
 }
 input#question-submit{
 position:absolute;
-left:80%;
+left:65%;
 }
 input[type="submit"] #question-submit {
 background-color: #ED2427;
@@ -428,7 +428,7 @@ text-decoration: none;
 height:80px;
 font-weight:bold;
 font-size:13px;
-margin-left:50%;
+margin-left:40%;
 width:250px;
 }
 #question-submit{

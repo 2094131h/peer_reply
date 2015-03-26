@@ -25,7 +25,10 @@
               </div>
            {% endif %}
 		</div>
+        <!--<div id="profile-rep-pic">
 
+                    <img width="60" height="60" class="square-rep-pic" src="{{ profile.rep_image }}"/>
+                </div>-->
         <div class="col-md-10 column">
             <div><h2>{{ user.username }}</h2>
             <hr>
@@ -38,7 +41,7 @@
                         <div class="course_span"><span class="tags">{{ course.name }}</span></div>
                         {% endfor %}
                     {% endif %}
-            {% if user_profile %}
+            {% if user_profile and user_profile.user == user %}
             </div> <a id="add-course-btn"><button type="button" class="btn fa fa-plus-square" id="add_course_btn"></button></a>
             <a id="edit-course-btn"><button type="button" class="btn fa fa-minus-square" id="edit_course_btn"></button></a>
             {% endif %}
@@ -57,60 +60,7 @@
  {% csrf_token %}
  <br>
     <h3 class="select-course-header">Add courses</h3>
-    <table class="table table-striped table-condensed" id="ask_table">
-    <thead>
-    <tr>
-    <th>School</th>
-    <th>Level</th>
-    <th>Course</th>
-
-    </tr>
-    </thead>
-    <tbody>
-
-    <tr>
-    <td>
-    <select name="school" id="school_select" size="6">
-        {% for school in schools %}
-        <option value="{{ school.id }}">{{ school.name }}</option>
-        {% endfor %}
-    </select>
-    </td>
-    <td>
-    <select name="level" id="level_select" size="6">
-        {% if selected_school %}
-        {% for level in selected_school %}
-
-        <option value="{{ level.id }}">{{ level.name }}</option>
-        {% endfor %}
-        {% else %}
-        <option value="...">...</option>
-        <option value="...">...</option>
-        <option value="...">...</option>
-        <option value="...">...</option>
-        <option value="...">...</option>
-        {% endif %}
-
-    </select>
-    </td>
-    <td>
-    <select name="course" id="course_select" size="6">
-        {% if selected_level %}
-        {% for course in selected_level %}
-
-        <option value="{{ course.id }}">{{ course.name }}</option>
-        {% endfor %}
-        {% else %}
-        <option value="...">Couldn't find any courses here</option>
-
-        {% endif %}
-
-    </select>
-    </td>
-    </tr>
-
-    </tbody>
-    </table>
+    {% include 'peer_reply/add_courses.html' %}
     <input type="hidden" id="select-course-input" name="select-course-input" value=""/>
     {% else %}
     <h1> No courses available!</h1>
@@ -162,6 +112,7 @@
 </form>
 </div>
 
+{% if user_profile.user == user %}
 <div class="box">
 {% if my_question %}
     <h3>My Questions</h3>
@@ -179,11 +130,11 @@
         {% endfor %}
 {% endif %}
 </div>
-
+{% endif %}
 </div>
 
 </div>
-</div>
+
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded",

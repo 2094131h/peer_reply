@@ -109,7 +109,7 @@ class UserProfile(models.Model):
     modified = models.DateTimeField(default=datetime.datetime.today())
 
     # The additional attributes we wish to include.
-    #username = models.CharField(unique=False, max_length=60)
+
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', default="profile_images/default-user-icon-profile.png")
     location = models.CharField(max_length=20, blank=True)

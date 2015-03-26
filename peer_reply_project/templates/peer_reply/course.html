@@ -27,6 +27,7 @@
 
 {% endblock %}
 {% block right_block %}
+    <div  id="right_block">
     {% include 'peer_reply/top_quiz_links.html' %}
     {% if user.is_authenticated %}
         {% if course %}
@@ -41,5 +42,5 @@
         {% endif %}
     {% endif %}
 
-
+    </div>
 {% endblock %}
