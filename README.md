@@ -24,11 +24,17 @@ Once completed, issue the command
 
 to build the applications database.  When it prompts you to create a superuser, select yes and enter your details.
 
+issue command: 
+>> python manage.py makemigrations peer_reply
+then:
+>> python manage.py migrate
+to create and update migration files
+
 To populate the database with the sample data we have provided, issue the command
 
 >>python populate_peer_reply.py
 
-This may take a few minutes to complete.  Once the script completes you can start the application by typing
+This may take a few minutes to complete (normally around 3).  Once the script completes you can start the application by typing
 
 >>python manage.py runserver
 
