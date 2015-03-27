@@ -26,9 +26,9 @@ to build the applications database.  When it prompts you to create a superuser, 
 
 issue command: 
 >> python manage.py makemigrations peer_reply
-then:
+
+Then to create and update migration files:
 >> python manage.py migrate
-to create and update migration files
 
 To populate the database with the sample data we have provided, issue the command
 
