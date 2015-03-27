@@ -51,7 +51,12 @@
 </div>
 <input type="hidden" value="{{ course.slug }}" id="quizzes-course">
 
-<div id="quiz-more-btn">
-    <span class="glyphicon glyphicon-chevron-down quizzes-more-btn more-btn"> Load more</span>
-</div>
+
 {% endblock %}
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+$('quiz_btn').show();
+})
+    </script>

@@ -20,27 +20,23 @@
             <li role="presentation" ><a href="{% url 'quizzes' course.slug %}">Quizzes</a></li>
 </ul>
 {% include 'peer_reply/questions.html' %}
-<input type="hidden" value="{{ course.slug }}" id="course_slug">
+
 <div id="more_btn">
     <span class="glyphicon glyphicon-chevron-down course-more-btn more-btn"> Load more</span>
 </div>
-
+<input type="hidden" value="{{ course.slug }}" id="course_slug">
 {% endblock %}
 {% block right_block %}
     <div  id="right_block">
     {% include 'peer_reply/top_quiz_links.html' %}
-    {% if user.is_authenticated %}
-        {% if course %}
-            <a  href="{% url 'add_quiz' course.slug %}">
-                <div id="quiz_btn">
-                <div class="add-quiz-btn-inner">
-                    Add Quiz
-                    </div>
 
-                    </div>
-                </a>
-        {% endif %}
-    {% endif %}
 
     </div>
 {% endblock %}
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+$('quiz_btn').show();
+})
+    </script>

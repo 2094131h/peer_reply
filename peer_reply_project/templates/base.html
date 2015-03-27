@@ -87,12 +87,16 @@
     </div>
 </div>
 
-
+<div class="container col-md-11">
+<div class="row">
+<div class="col-md-3">
+            <div class="sidebar-nav-fixed affix hidden-xs hidden-sm" id="left-block">
 {% block left_block %}
 
 {% endblock %}
-
-<div id="centre_block">
+</div>
+    </div>
+<div id="centre_block" class="col-md-7">
 
     {% block body_block %}{% endblock %}
 
@@ -101,8 +105,8 @@
 {% block right_block %}
 
 {% endblock %}
-
-
+    </div>
+</div>
 <!-- Bootstrap core JavaScript
                             = -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -113,7 +117,7 @@
 <script src="{{ STATIC_URL }}js/carhartl-jquery-cookie-92b7715/jquery.cookie.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.custom-scrollbar.min.js"></script>
 <script type="text/javascript">
-
+$('quiz_btn').hide();
 $('label.tree-toggler').parent().children('ul.tree').toggle(0);
 $(document).ready(function () {
     $(".navcourses").customScrollbar()
@@ -198,7 +202,7 @@ $('.course-rank').click(function(){
 var rank = "";
 rank = $(this).text();
 course_sl = $('#course_slug').val();
- $.get('/peer_reply/get_course_questions/', {page_rank: rank, course_slug: course_sl}, function(data){
+ $.get('/peer_reply/get_course_questions/', {page_rank: rank, course_slug: course_sl, page: 1}, function(data){
          $('#questions').html(data);
         });
 $(this).tab('show');
@@ -214,7 +218,7 @@ $('.search-rank').click(function(){
 var rank = "";
 search_query = $('#search_query').val();
 rank = $(this).text();
-$.get('/peer_reply/get_search_questions/', {page_rank: rank, search:search_query }, function(data){
+$.get('/peer_reply/get_search_questions/', {page_rank: rank, search:search_query, page: 1 }, function(data){
          $('#questions').html(data);
         });
 $(this).tab('show');

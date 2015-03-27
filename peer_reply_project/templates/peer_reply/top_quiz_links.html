@@ -1,4 +1,5 @@
-<div id="top_quizzes">
+<div class="col-md-3" id="right-block">
+            <div class="sidebar-nav-fixed affix hidden-xs hidden-sm pull-right" >
     {% if top_quizzes %}
         <h3 id="top_quizzes_header">Top Quizzes</h3>
         {% for quiz in top_quizzes %}
@@ -13,5 +14,17 @@
 
         {% endfor %}
     {% endif %}
+                  {% if user.is_authenticated %}
+        {% if course %}
+            <a  href="{% url 'add_quiz' course.slug %}">
+                <div id="quiz_btn">
+                <div class="add-quiz-btn-inner">
+                    Add Quiz
+                    </div>
 
+                    </div>
+                </a>
+        {% endif %}
+    {% endif %}
+    </div>
 </div>
