@@ -50,7 +50,11 @@
 
     <div class='question_profile'>
         Answered {{ best_answer.created }}<br>
-        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"/></a>
+
+        <a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ best_answer.user.profile.picture }}" height="50" width="50" border="1" class="profile_picture" alt="user avatar"/></a>
+
+        <!--<a href="/peer_reply/profile/{{ best_answer.user }}"><img src="/media/{{ useraskprofile.picture }}" height="50" width="50" border="1" class="profile_picture"/></a>-->
+
         <a href="/peer_reply/profile/{{ best_answer.user }}">{{ best_answer.user.username }}</a><br>
         {% if best_answer.user.profile.no_best_answers == 0 %}
             no best answers
@@ -67,18 +71,18 @@
 
     <pre>{{ best_answer.body }}</pre>
     <div class="answer_rating">
-            <img src="/static/images/tick.png" title="This is the best answer"</img>
+            <img src="/static/images/tick.png" title="This is the best answer"alt="best answer tick"/>
             <span title="Rating">{{ best_answer.likes }}</span>
             {% if best_answer.user == user %}
                         <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="mine"/></a>
-            <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="mine"/></a>
+            <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="mine" alt="flag answer"/></a>
 
             {% elif user.is_authenticated %}
-                <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}"/></a>
-            <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="flag" data-ansid="{{ best_answer.id }}"/></a>
+                <a href=""><img src="/static/images/thumbup.png" title="Add to this answers rating" class="rate" data-ansid="{{ best_answer.id }}" alt="like answer"/></a>
+            <a href=""><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." class="flag" data-ansid="{{ best_answer.id }}" alt="flag answer"/></a>
             {% else %}
-            <a href="/accounts/login/"><img src="/static/images/thumbup.png" title="Add to this answers rating"/></a>
-            <a href="/accounts/login/"><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}."/></a>
+            <a href="/accounts/login/"><img src="/static/images/thumbup.png" title="Add to this answers rating" alt="like answer"/></a>
+            <a href="/accounts/login/"><img src="/static/images/flag.png" title="Flag this answer as inappropriate. Currently {{ best_answer.flags }}." alt="flag answer"/></a>
             {% endif %}
 
         </div>
@@ -182,4 +186,5 @@
 $(document).ready(function () {
 $('quiz_btn').show();
 })
+
     </script>
