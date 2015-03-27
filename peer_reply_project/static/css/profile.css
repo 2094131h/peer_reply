@@ -6,7 +6,11 @@ body {
 .profile {
     display: inline-block;
 }
+#main-profile{
+   position:absolute;
+   left:-30%;
 
+}
 .picturecl {
     font-size: 16px;
     padding-top: 100px;

@@ -119,7 +119,7 @@ class UserProfile(models.Model):
     rep_points = models.IntegerField(default=0)
     rep_image = models.ImageField(default="profile_images/level1.gif")
  
-
+    #set the users rep reward image depending on rep points
     def save(self, *args, **kwargs):
         self.slug = slugify(self.user.username)
         self.rep_points = (int(self.no_quiz_likes) * 2) + int(self.no_best_answers)

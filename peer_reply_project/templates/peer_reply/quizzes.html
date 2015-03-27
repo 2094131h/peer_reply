@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block body_block %}
+{% if cur_school %}<h4 id="current-location">{{ cur_school }}/{{ cur_level }}/{{ course.name }}</h4>
+
+                {% endif %}
 <ul class="nav nav-tabs">
     <li class="active">
     <a  class="nav-tab-link quiz-rank">Recent</a>

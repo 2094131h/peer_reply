@@ -131,6 +131,8 @@ def course(request, course_name_slug):
         context_dict = get_left_block_content()
         cur_course = Course.objects.get(slug=course_name_slug)
         context_dict['course'] = cur_course
+        context_dict['cur_level'] = cur_course.level.name.name
+        context_dict['cur_school'] = cur_course.level.school.name
         context_dict['questions'] = Question.objects.all().filter(course=cur_course).order_by('-views')[:10]
         context_dict['top_quizzes'] = Quiz.objects.filter(course=cur_course).order_by('-likes')[:5]
     except Course.DoesNotExist:
@@ -149,6 +151,8 @@ def quizzes(request, course_name_slug):
         context_dict = get_left_block_content()
         cur_course = Course.objects.get(slug=course_name_slug)
         context_dict['course'] = cur_course
+        context_dict['cur_level'] = cur_course.level.name.name
+        context_dict['cur_school'] = cur_course.level.school.name
         context_dict['quizzes'] = Quiz.objects.all().filter(course=cur_course).order_by('-likes')[:10]
 
     except Course.DoesNotExist:
@@ -418,7 +422,7 @@ def rate_answer(request):
 
     return HttpResponse()
 
-# adda likes to a quiz
+# add likes to a quiz
 def like_quiz(request):
     quiz_id = None
     if request.method == 'GET':

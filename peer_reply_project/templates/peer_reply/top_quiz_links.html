@@ -14,7 +14,7 @@
 
         {% endfor %}
     {% endif %}
-                  {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
         {% if course %}
             <a  href="{% url 'add_quiz' course.slug %}">
                 <div id="quiz_btn">
